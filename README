@@ -1,3 +1,6 @@
 # Actor Web SDK
 
 Actor SDK for building messaging web apps on top of Actor platform
+
+gulp dev 本机测试
+gulp sdk 编译sdk到build目录，需要提交到git
