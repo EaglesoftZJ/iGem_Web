@@ -213,7 +213,7 @@ var MentionDropdown = function (_Component) {
           mention.isNick && _react2.default.createElement(
             'span',
             { className: 'nickname' },
-            mention.mentionText
+            mention.peer.title
           ),
           _react2.default.createElement(
             'span',
@@ -238,12 +238,13 @@ var MentionDropdown = function (_Component) {
           _react2.default.createElement(
             'div',
             { className: 'pull-left' },
+            '\u53EF\u4EE5\u901A\u8FC7',
             _react2.default.createElement(
               'strong',
               null,
               'tab'
             ),
-            '\xA0 or \xA0',
+            '\xA0 \u548C \xA0',
             _react2.default.createElement(
               'strong',
               null,
@@ -254,7 +255,7 @@ var MentionDropdown = function (_Component) {
               null,
               '\u2193'
             ),
-            '\xA0 to navigate'
+            '\xA0 \u8FDB\u884C\u9009\u62E9'
           ),
           _react2.default.createElement(
             'div',
@@ -262,9 +263,9 @@ var MentionDropdown = function (_Component) {
             _react2.default.createElement(
               'strong',
               null,
-              '\u21B5'
+              '\u56DE\u8F66\u952E'
             ),
-            '\xA0 to select'
+            '\xA0 \u786E\u8BA4\u9009\u62E9'
           ),
           _react2.default.createElement(
             'div',
@@ -272,9 +273,9 @@ var MentionDropdown = function (_Component) {
             _react2.default.createElement(
               'strong',
               null,
-              'esc'
+              'Esc'
             ),
-            '\xA0 to close'
+            '\xA0 \u5173\u95ED'
           )
         ),
         _react2.default.createElement(
