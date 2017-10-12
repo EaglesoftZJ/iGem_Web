@@ -119,11 +119,13 @@ class UserMenu extends Component {
   openHomePage(event) {
     const { homePage } = SharedContainer.get();
 
+    let page = 'http://www.eaglesoft.cn'
+
     event.preventDefault();
     if (ActorClient.isElectron()) {
       ActorClient.handleLinkClick(event);
     } else {
-      window.open(homePage, '_blank');
+      window.open(page, '_blank');
     }
   }
 
@@ -164,7 +166,7 @@ class UserMenu extends Component {
 
   renderHomeLink() {
     const { homePage } = SharedContainer.get();
-    if (!homePage) return null;
+    // if (!homePage) return null;
 
     return (
       <li className="dropdown__menu__item">

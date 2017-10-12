@@ -41,7 +41,7 @@ class GroupProfile extends Component {
       // should not require to pass a peer
       isNotificationsEnabled: peer ? NotificationsStore.isNotificationsEnabled(peer) : true,
       integrationToken: GroupStore.getToken(),
-      message: OnlineStore.getMessage()
+      message: OnlineStore.getMessage().replace('members', '位成员').replace('online', '在线').replace('offline', '离线')
     };
   }
 
@@ -185,7 +185,7 @@ class GroupProfile extends Component {
               </Fold>
             </li>
 
-            {this.renderToken()}
+            {/* {this.renderToken()} */}
           </ul>
         </Scrollbar>
       </div>

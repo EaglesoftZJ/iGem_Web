@@ -107,7 +107,12 @@ class DialogHeader extends Component {
   renderMessage() {
     const { message } = this.props;
 
-    return message;
+    if (!message)
+      return message;
+
+
+
+    return message.replace('members', '位成员').replace('online', '在线').replace('offline', '离线');
   }
 
   renderInfoButton() {

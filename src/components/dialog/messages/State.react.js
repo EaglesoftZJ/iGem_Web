@@ -22,15 +22,15 @@ class State extends Component {
 
     switch (state) {
       case MessageStates.PENDING:
-        return <i className="status status--pending material-icons icon-access_time"></i>;
+        return <i className="status status--pending material-icons">发送</i>;
       case MessageStates.SENT:
-        return <i className="status status--sent material-icons icon-done"></i>;
+        return <i className="status status--sent material-icons">未读</i>;
       case MessageStates.RECEIVED:
-        return <i className="status status--received material-icons icon-done_all"></i>;
+        return <i className="status status--received material-icons">未读</i>;
       case MessageStates.READ:
-        return <i className="status status--read material-icons icon-done_all"></i>;
+        return <i className="status status--read material-icons">已读</i>;
       case MessageStates.ERROR:
-        return <i className="status status--error material-icons icon-report_problem"></i>;
+        return <i className="status status--error material-icons">错误</i>;
       case MessageStates.UNKNOWN:
       default:
         return null;

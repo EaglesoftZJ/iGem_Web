@@ -164,12 +164,15 @@ class MoreDropdown extends Component {
   renderToggleContact() {
     const { info: { isContact } } = this.props;
 
+    return null;
+
     if (isContact) {
-      return (
-        <li className="dropdown__menu__item" onClick={this.handleRemoveFromContacts}>
-          <FormattedMessage id="removeFromContacts"/>
-        </li>
-      );
+      return null;
+      // (
+      //   <li className="dropdown__menu__item" onClick={this.handleRemoveFromContacts}>
+      //     <FormattedMessage id="removeFromContacts"/>
+      //   </li>
+      // );
     }
 
     return (
@@ -180,9 +183,9 @@ class MoreDropdown extends Component {
   }
 
   renderBlockUser() {
-    if (!this.context.delegate.features.blocking) {
-      return null;
-    }
+    // if (!this.context.delegate.features.blocking) {
+    //   return null;
+    // }
 
     const { info: { isBlocked } } = this.props;
 

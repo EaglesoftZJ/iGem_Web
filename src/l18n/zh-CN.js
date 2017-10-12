@@ -34,7 +34,7 @@ export default {
       editProfile: '个人信息',
       addToContacts: '添加联系人',
       createGroup: '创建群组',
-      blockedUsers: '屏蔽用户',
+      blockedUsers: '该用户已被屏蔽',
       helpAndFeedback: '用户帮助与反馈',
       twitter: 'Our Twitter',
       preferences: '设置',
@@ -116,7 +116,7 @@ export default {
       'dropzone': '拖拽到此处发送.',
       'notMember': '您不是该群组的成员',
       'start': '开始',
-      'unblock': '屏蔽用户'
+      'unblock': '移出黑名单'
     },
 
     // Modals
@@ -266,7 +266,7 @@ export default {
         },
         'newDialog': '创建新的会话',
         'addPeople': 'add people',
-        'favourites': '收藏夹',
+        'favourites': '置顶',
         'groups': '群组',
         'privates': '聊天记录',
         'history': '过往聊天对象'
@@ -275,7 +275,7 @@ export default {
         'empty': '创建您的首个群组'
       },
       'private': {
-        'empty': '暂时无人在线'
+        'empty': '无'
       }
     },
 
@@ -375,7 +375,7 @@ export default {
     tooltip: {
       toolbar: {
         info: '当前会话的相关信息',
-        favorite: '收藏'
+        favorite: '置顶'
       },
       recent: {
         groupsList: '群组列表',
@@ -389,8 +389,8 @@ export default {
 
     context: {
       favorite: {
-        add: '收藏',
-        remove: '取消收藏'
+        add: '置顶',
+        remove: '取消置顶'
       },
       archive: '移动到过往聊天对象',
       delete: '从会话列表移除'

@@ -171,7 +171,7 @@ class Department extends Component {
 
           <div className="title col-xs">
             <div className="hint pull-right"><FormattedMessage id="modal.department.openDialog" /></div>
-            {result.xm}
+            {result.xm}{result.zwmc ? '(' + result.zwmc +')' : ''}
           </div>
         </li>
       );

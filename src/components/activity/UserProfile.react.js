@@ -75,11 +75,12 @@ class UserProfile extends Component {
     const { isContact } = this.props.user;
 
     if (isContact) {
-      return (
-        <li className="dropdown__menu__item" onClick={this.onRemoveFromContacts}>
-          <FormattedMessage id="removeFromContacts"/>
-        </li>
-      );
+      return null;
+      // (
+      //   <li className="dropdown__menu__item" onClick={this.onRemoveFromContacts}>
+      //     <FormattedMessage id="removeFromContacts"/>
+      //   </li>
+      // );
     }
 
     return (
@@ -124,7 +125,7 @@ class UserProfile extends Component {
               <div className="user_profile__meta__message">{message}</div>
             </header>
 
-            {this.renderAbout()}
+            {/* {this.renderAbout()} */}
           </li>
 
           <li className="profile__list__item user_profile__contact_info no-p">

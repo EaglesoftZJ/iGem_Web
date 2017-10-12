@@ -231,7 +231,7 @@ class Profile extends Component {
                 {this.renderNick()}
                 {this.renderPhones()}
                 {this.renderEmails()}
-                {this.renderAbout()}
+                {/* {this.renderAbout()} */}
               </div>
 
               <PictureChanger {...profile}

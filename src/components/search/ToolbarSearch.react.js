@@ -82,7 +82,7 @@ class ToolbarSearch extends Component {
         <ToolbarSearchResults query={query}results={results} />
         <SelectListItem index={results.length}>
           <footer className="toolbar__search__footer">
-            <FormattedMessage id="search.inDialog"/> <i className="material-icons">arrow_forward</i>
+            {/* <FormattedMessage id="search.inDialog"/> <i className="material-icons">arrow_forward</i> */}
           </footer>
         </SelectListItem>
       </SelectList>
