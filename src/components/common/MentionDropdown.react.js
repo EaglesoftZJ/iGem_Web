@@ -166,7 +166,7 @@ class MentionDropdown extends Component {
                       size="tiny"
                       title={mention.peer.title}/>
           <div className="title">
-            {mention.isNick && <span className="nickname">{mention.mentionText}</span>}
+            {mention.isNick && <span className="nickname">{mention.peer.title}</span>}
             <span className="name">{mention.mentionText}</span>
           </div>
         </li>
@@ -179,9 +179,9 @@ class MentionDropdown extends Component {
       <div className={mentionClassName}>
         <div className="mention__wrapper">
           <header className="mention__header">
-            <div className="pull-left"><strong>tab</strong>&nbsp; or &nbsp;<strong>↑</strong><strong>↓</strong>&nbsp; to navigate</div>
-            <div className="pull-left"><strong>↵</strong>&nbsp; to select</div>
-            <div className="pull-right"><strong>esc</strong>&nbsp; to close</div>
+            <div className="pull-left">可以通过<strong>tab</strong>&nbsp; 和 &nbsp;<strong>↑</strong><strong>↓</strong>&nbsp; 进行选择</div>
+            <div className="pull-left"><strong>回车键</strong>&nbsp; 确认选择</div>
+            <div className="pull-right"><strong>Esc</strong>&nbsp; 关闭</div>
           </header>
           <ul className="mention__list" ref="mentionList">
             {mentionsElements}
