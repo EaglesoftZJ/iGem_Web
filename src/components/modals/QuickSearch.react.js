@@ -208,9 +208,7 @@ class QuickSearch extends Component {
     return (
       <header className="header">
         <div className="pull-left"><FormattedMessage id="modal.quickSearch.title"/></div>
-        <div className="pull-right"><strong>esc</strong>&nbsp; <FormattedMessage id="modal.quickSearch.toClose"/></div>
-        <div className="pull-right"><strong>↵</strong>&nbsp; <FormattedMessage id="modal.quickSearch.toSelect"/></div>
-        <div className="pull-right"><strong>tab</strong>&nbsp; or &nbsp;<strong>↑</strong><strong>↓</strong>&nbsp; <FormattedMessage id="modal.quickSearch.toNavigate"/></div>
+        <div className="pull-right" style={{cursor: 'Pointer'}}><strong onClick={() => this.handleClose()}>关闭</strong></div>
       </header>
     );
   }
