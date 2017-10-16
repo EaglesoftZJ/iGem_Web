@@ -160,7 +160,6 @@ var Login = function (_Component) {
       isCodeSended: _LoginStore2.default.isCodeSended(),
       isLoginRequested: _LoginStore2.default.isLoginRequested(),
       isSignupStarted: _LoginStore2.default.isSignupStarted(),
-      storeName: _LoginStore2.default.getStoreName(),
       isOpened: false
     };
   };
@@ -179,30 +178,31 @@ var Login = function (_Component) {
   // Form submit handlers
 
 
-  Login.prototype.renderDropIcon = function renderDropIcon() {
-    var storeName = this.state.storeName;
-
-    if (storeName && storeName.length === 0) return null;
-    return _react2.default.createElement(
-      'i',
-      { className: 'drop-icon material-icons', onClick: this.toggleDropdown },
-      'arrow_drop_down'
-    );
-  };
-
-  Login.prototype.renderNameItem = function renderNameItem() {
+  Login.prototype.renderDropDown = function renderDropDown() {
     var _this2 = this;
 
-    var storeName = this.state.storeName;
-
+    var storeName = localStorage.getItem('storeName') ? localStorage.getItem('storeName').split(',') : [];
     if (storeName && storeName.length === 0) return null;
-    return storeName.map(function (item, index) {
-      return _react2.default.createElement(
-        'li',
-        { className: 'dropdown__menu__item', onClick: _this2.handleSelectName.bind(_this2, item), key: index },
-        item
-      );
-    });
+    return _react2.default.createElement(
+      'div',
+      null,
+      _react2.default.createElement(
+        'i',
+        { className: 'drop-icon material-icons', onClick: this.toggleDropdown },
+        'arrow_drop_down'
+      ),
+      _react2.default.createElement(
+        'ul',
+        { className: 'dropdown__menu' },
+        storeName.map(function (item, index) {
+          return _react2.default.createElement(
+            'li',
+            { className: 'dropdown__menu__item', onClick: _this2.handleSelectName.bind(_this2, item), key: index },
+            item
+          );
+        })
+      )
+    );
   };
 
   Login.prototype.render = function render() {
@@ -284,11 +284,7 @@ var Login = function (_Component) {
                 onChange: this.onLoginChange,
                 ref: 'login',
                 value: login }),
-              _react2.default.createElement(
-                'ul',
-                { className: 'dropdown__menu' },
-                this.renderNameItem()
-              )
+              this.renderDropDown()
             ),
             _react2.default.createElement('div', { style: { height: 20 + 'px' } }),
             _react2.default.createElement(_TextField2.default, { className: 'login-new__forms__form__input input__material--wide',

@@ -107,6 +107,8 @@ var UserMenu = function (_Component) {
     _this.openCreateGroup = _this.openCreateGroup.bind(_this);
     _this.openAddContactModal = _this.openAddContactModal.bind(_this);
     _this.onSettingsOpen = _this.onSettingsOpen.bind(_this);
+    // console.log('profile', this.state.profile);
+    // localStorage.getItem('storeName').indexOf(this.state.profile)
     return _this;
   }
 

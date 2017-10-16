@@ -225,8 +225,8 @@ exports.default = {
       'email': '邮箱',
       'phone': '手机号',
       'nickname': '昵称',
-      'unit': '单位名称',
-      'dept': '部门名称',
+      'unit': '所在单位',
+      'dept': '所在部门',
       'about': '简介'
     },
     'createdBy': '创建者',
