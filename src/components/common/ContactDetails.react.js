@@ -12,7 +12,7 @@ class ContactDetails extends Component {
     peerInfo: React.PropTypes.object.isRequired
   };
 
-  renderNickname() {
+renderNickname() {
     const { nick } = this.props.peerInfo;
     if (!nick) return null;
 
@@ -39,6 +39,39 @@ class ContactDetails extends Component {
       );
     });
   }
+    renderSjh() {
+        const { sjh } = this.props.peerInfo;
+        if (!sjh) return null;
+        return (
+            <li>
+                <i className="material-icons icon icon--green">call</i>
+                <span className="title"><a href={'tel:+' + sjh}>{'+' + sjh}</a></span>
+                <span className="description"><FormattedMessage id="profile.phone"/></span>
+            </li>
+        );
+    }
+    renderDwmc() {
+        const { dwmc } = this.props.peerInfo;
+        if (!dwmc) return null;
+        return (
+            <li>
+                <i className="material-icons icon icon--blue">business</i>
+                <span className="title">{dwmc}</span>
+                <span className="description"><FormattedMessage id="profile.unit"/></span>
+            </li>
+        );
+    }
+    renderBmmc() {
+        const { bmmc } = this.props.peerInfo;
+        if (!bmmc) return null;
+        return (
+            <li>
+                <i className="material-icons icon icon--blue">device_hub</i>
+                <span className="title">{bmmc}</span>
+                <span className="description"><FormattedMessage id="profile.dept"/></span>
+            </li>
+        );
+    }
 
   renderEmail() {
     const { emails } = this.props.peerInfo;
@@ -59,8 +92,10 @@ class ContactDetails extends Component {
     return (
       <ul className="user_profile__contact_info__list">
         {this.renderNickname()}
-        {this.renderPhone()}
-        {this.renderEmail()}
+        {this.renderSjh()}
+        {this.renderDwmc()}
+        {this.renderBmmc()}
+        {/*this.renderEmail()*/}
       </ul>
     );
   }

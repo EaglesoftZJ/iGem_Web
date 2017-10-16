@@ -69,12 +69,22 @@ class LoginActionCreators extends ActionCreators {
     }, { phone });
   }
 
-  requestNickName(nickname) {
-    dispatchAsync(ActorClient.requestNickName(nickname), {
+  requestNickName(nickname, reslove, reject) {
+   dispatchAsync(ActorClient.requestNickName(nickname), {
       request: ActionTypes.AUTH_USER_REQUEST,
       success: ActionTypes.AUTH_USER_REQUEST_SUCCESS,
       failure: ActionTypes.AUTH_USER_REQUEST_FAILURE
-    }, { nickname });
+    }, {
+      nickname
+    }).then((state) => {
+     switch (state) {
+       case 'start':
+         reslove();
+       break;
+       default:
+         reject();
+     }
+    })
   }
 
   sendCode(code) {
@@ -98,7 +108,7 @@ class LoginActionCreators extends ActionCreators {
     });
   }
 
-  sendPassword(password) {
+  sendPassword(password, reslove, reject) {
     dispatchAsync(ActorClient.sendPassword(password), {
       request: ActionTypes.AUTH_PASSWORD_SEND,
       success: ActionTypes.AUTH_PASSWORD_SEND_SUCCESS,
@@ -114,6 +124,7 @@ class LoginActionCreators extends ActionCreators {
           this.setLoggedIn({ redirect: true });
           break;
         default:
+          reject();
           console.error('Unsupported state', state);
       }
     });

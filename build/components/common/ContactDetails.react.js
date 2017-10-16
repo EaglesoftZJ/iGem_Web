@@ -85,6 +85,85 @@ var ContactDetails = function (_Component) {
     });
   };
 
+  ContactDetails.prototype.renderSjh = function renderSjh() {
+    var sjh = this.props.peerInfo.sjh;
+
+    if (!sjh) return null;
+    return _react2.default.createElement(
+      'li',
+      null,
+      _react2.default.createElement(
+        'i',
+        { className: 'material-icons icon icon--green' },
+        'call'
+      ),
+      _react2.default.createElement(
+        'span',
+        { className: 'title' },
+        _react2.default.createElement(
+          'a',
+          { href: 'tel:+' + sjh },
+          '+' + sjh
+        )
+      ),
+      _react2.default.createElement(
+        'span',
+        { className: 'description' },
+        _react2.default.createElement(_reactIntl.FormattedMessage, { id: 'profile.phone' })
+      )
+    );
+  };
+
+  ContactDetails.prototype.renderDwmc = function renderDwmc() {
+    var dwmc = this.props.peerInfo.dwmc;
+
+    if (!dwmc) return null;
+    return _react2.default.createElement(
+      'li',
+      null,
+      _react2.default.createElement(
+        'i',
+        { className: 'material-icons icon icon--blue' },
+        'business'
+      ),
+      _react2.default.createElement(
+        'span',
+        { className: 'title' },
+        dwmc
+      ),
+      _react2.default.createElement(
+        'span',
+        { className: 'description' },
+        _react2.default.createElement(_reactIntl.FormattedMessage, { id: 'profile.unit' })
+      )
+    );
+  };
+
+  ContactDetails.prototype.renderBmmc = function renderBmmc() {
+    var bmmc = this.props.peerInfo.bmmc;
+
+    if (!bmmc) return null;
+    return _react2.default.createElement(
+      'li',
+      null,
+      _react2.default.createElement(
+        'i',
+        { className: 'material-icons icon icon--blue' },
+        'device_hub'
+      ),
+      _react2.default.createElement(
+        'span',
+        { className: 'title' },
+        bmmc
+      ),
+      _react2.default.createElement(
+        'span',
+        { className: 'description' },
+        _react2.default.createElement(_reactIntl.FormattedMessage, { id: 'profile.dept' })
+      )
+    );
+  };
+
   ContactDetails.prototype.renderEmail = function renderEmail() {
     var emails = this.props.peerInfo.emails;
 
@@ -118,8 +197,9 @@ var ContactDetails = function (_Component) {
       'ul',
       { className: 'user_profile__contact_info__list' },
       this.renderNickname(),
-      this.renderPhone(),
-      this.renderEmail()
+      this.renderSjh(),
+      this.renderDwmc(),
+      this.renderBmmc()
     );
   };
 

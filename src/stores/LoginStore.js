@@ -19,8 +19,10 @@ let step = AuthSteps.LOGIN_WAIT,
     login = '',
     code = '',
     name = '',
+    storeName = localStorage.getItem('storeName') ? localStorage.getItem('storeName').split(',') : ['aaa','bbb','ccc'],
     isCodeRequested = false,
     isCodeSended = false,
+    isLoginRequested = false,
     isSignupStarted = false,
     myUid = null;
 
@@ -37,8 +39,10 @@ class LoginStore extends Store {
   getLogin = () => login;
   getCode = () => code;
   getName = () => name;
+  getStoreName = () => storeName;
   isCodeRequested = () => isCodeRequested;
   isCodeSended = () => isCodeSended;
+  isLoginRequested = () => isLoginRequested;
   isSignupStarted = () => isSignupStarted;
   getMyId = () => myUid;
   isLoggedIn = () => ActorClient.isLoggedIn();
@@ -57,7 +61,6 @@ class LoginStore extends Store {
 
   __onDispatch(action) {
     switch (action.type) {
-
       case ActionTypes.AUTH_CHANGE_LOGIN:
         login = action.login;
         this.__emitChange();
@@ -97,11 +100,13 @@ class LoginStore extends Store {
 
       case ActionTypes.AUTH_USER_REQUEST:
         isCodeRequested = true;
+        isLoginRequested = true;
         this.__emitChange();
         break;
       case ActionTypes.AUTH_USER_REQUEST_SUCCESS:
         step = AuthSteps.CODE_WAIT;
         errors.login = null;
+        isLoginRequested = false;
         this.__emitChange();
         break;
       case ActionTypes.AUTH_USER_REQUEST_FAILURE:
@@ -116,11 +121,13 @@ class LoginStore extends Store {
             errors.login = action.error;
         }
         isCodeRequested = false;
+        isLoginRequested = false;
         this.__emitChange();
         break;
 
       case ActionTypes.AUTH_CODE_SEND:
         isCodeSended = true;
+        isLoginRequested = true;
         this.__emitChange();
         break;
       case ActionTypes.AUTH_CODE_SEND_SUCCESS:
@@ -140,6 +147,7 @@ class LoginStore extends Store {
             errors.code = action.error;
         }
         isCodeSended = false;
+        isLoginRequested = false;
         this.__emitChange();
         break;
 

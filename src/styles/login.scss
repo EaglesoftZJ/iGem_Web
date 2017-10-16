@@ -111,9 +111,24 @@
 
     &__form {
       display: none;
-
+      .drop-icon {
+        position: absolute;
+        z-index: 2;
+        top: 20px;
+        right: 10px;
+        cursor: pointer;
+      }
       text-align: center;
-
+      .dropdown--opened {
+        .drop-icon {
+          -webkit-transform: scale(-1);
+          transform: scaleY(-1);
+        }
+      }
+      .dropdown__menu {
+        width: 100%;
+        top: 50px;
+      }
       footer {
         margin-top: 36px;
       }

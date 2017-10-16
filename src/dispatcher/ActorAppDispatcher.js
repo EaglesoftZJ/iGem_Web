@@ -65,4 +65,4 @@ export function dispatchAsync(promise, types, action = {}) {
   ).catch(logError);
 }
 
-export default flux;
+  export default flux;

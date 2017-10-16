@@ -77,7 +77,6 @@ var ActivitySection = function (_Component) {
         peer = _state.peer,
         info = _state.info;
 
-
     switch (peer.type) {
       case _ActorAppConstants.PeerTypes.USER:
         return _react2.default.createElement(_UserProfile2.default, { user: info });

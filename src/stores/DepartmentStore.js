@@ -4,7 +4,6 @@
 import { ReduceStore } from 'flux/utils';
 import Dispatcher from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes } from '../constants/ActorAppConstants';
-import linq from 'Linq';
 
 
 class DepartmentStore extends ReduceStore {

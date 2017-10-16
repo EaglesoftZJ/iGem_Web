@@ -128,12 +128,22 @@ var LoginActionCreators = function (_ActionCreators) {
     }, { phone: phone });
   };
 
-  LoginActionCreators.prototype.requestNickName = function requestNickName(nickname) {
+  LoginActionCreators.prototype.requestNickName = function requestNickName(nickname, reslove, reject) {
     (0, _ActorAppDispatcher.dispatchAsync)(_ActorClient2.default.requestNickName(nickname), {
       request: _ActorAppConstants.ActionTypes.AUTH_USER_REQUEST,
       success: _ActorAppConstants.ActionTypes.AUTH_USER_REQUEST_SUCCESS,
       failure: _ActorAppConstants.ActionTypes.AUTH_USER_REQUEST_FAILURE
-    }, { nickname: nickname });
+    }, {
+      nickname: nickname
+    }).then(function (state) {
+      switch (state) {
+        case 'start':
+          reslove();
+          break;
+        default:
+          reject();
+      }
+    });
   };
 
   LoginActionCreators.prototype.sendCode = function sendCode(code) {
@@ -159,7 +169,7 @@ var LoginActionCreators = function (_ActionCreators) {
     });
   };
 
-  LoginActionCreators.prototype.sendPassword = function sendPassword(password) {
+  LoginActionCreators.prototype.sendPassword = function sendPassword(password, reslove, reject) {
     var _this3 = this;
 
     (0, _ActorAppDispatcher.dispatchAsync)(_ActorClient2.default.sendPassword(password), {
@@ -177,6 +187,7 @@ var LoginActionCreators = function (_ActionCreators) {
           _this3.setLoggedIn({ redirect: true });
           break;
         default:
+          reject();
           console.error('Unsupported state', state);
       }
     });

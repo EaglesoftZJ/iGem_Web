@@ -6,6 +6,7 @@ import React, { Component, PropTypes } from 'react';
 import { Container } from 'flux/utils';
 import { FormattedMessage } from 'react-intl';
 import { lightbox } from '../../utils/ImageUtils';
+import linq from 'linq';
 
 import { escapeWithEmoji } from '../../utils/EmojiUtils';
 
@@ -14,6 +15,7 @@ import NotificationsActionCreators from '../../actions/NotificationsActionCreato
 import UserStore from '../../stores/UserStore';
 import NotificationsStore from '../../stores/NotificationsStore';
 import OnlineStore from '../../stores/OnlineStore';
+import DepartmentStore from '../../stores/DepartmentStore';
 
 import AvatarItem from '../common/AvatarItem.react';
 import ContactDetails from '../common/ContactDetails.react';
@@ -40,7 +42,8 @@ class UserProfile extends Component {
       ...prevState,
       peer,
       isNotificationsEnabled: peer ? NotificationsStore.isNotificationsEnabled(peer) : true,
-      message: OnlineStore.getMessage()
+      message: OnlineStore.getMessage(),
+      department: DepartmentStore.getState()
     };
   }
 
@@ -58,6 +61,13 @@ class UserProfile extends Component {
 
   handleAvatarClick() {
     lightbox.open(this.props.user.bigAvatar)
+  }
+
+  renderInfo() {
+    const { user } = this.props;
+    const { yh_data } = this.state.department;
+    let totalInfo = linq.from(yh_data).where('parseFloat($.IGIMID) == ' + user.id).toArray()[0];
+    return <ContactDetails peerInfo={{...user, ...totalInfo}}/>;
   }
 
   renderAbout() {
@@ -127,9 +137,8 @@ class UserProfile extends Component {
 
             {/* {this.renderAbout()} */}
           </li>
-
           <li className="profile__list__item user_profile__contact_info no-p">
-            <ContactDetails peerInfo={user}/>
+            { this.renderInfo() }
           </li>
 
           <li className="profile__list__item user_profile__notifications no-p">

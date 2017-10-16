@@ -35,8 +35,10 @@ var step = _ActorAppConstants.AuthSteps.LOGIN_WAIT,
     login = '',
     code = '',
     name = '',
+    storeName = localStorage.getItem('storeName') ? localStorage.getItem('storeName').split(',') : ['aaa', 'bbb', 'ccc'],
     isCodeRequested = false,
     isCodeSended = false,
+    isLoginRequested = false,
     isSignupStarted = false,
     myUid = null;
 
@@ -69,12 +71,20 @@ var LoginStore = function (_Store) {
       return name;
     };
 
+    _this.getStoreName = function () {
+      return storeName;
+    };
+
     _this.isCodeRequested = function () {
       return isCodeRequested;
     };
 
     _this.isCodeSended = function () {
       return isCodeSended;
+    };
+
+    _this.isLoginRequested = function () {
+      return isLoginRequested;
     };
 
     _this.isSignupStarted = function () {
@@ -107,7 +117,6 @@ var LoginStore = function (_Store) {
 
   LoginStore.prototype.__onDispatch = function __onDispatch(action) {
     switch (action.type) {
-
       case _ActorAppConstants.ActionTypes.AUTH_CHANGE_LOGIN:
         login = action.login;
         this.__emitChange();
@@ -147,11 +156,13 @@ var LoginStore = function (_Store) {
 
       case _ActorAppConstants.ActionTypes.AUTH_USER_REQUEST:
         isCodeRequested = true;
+        isLoginRequested = true;
         this.__emitChange();
         break;
       case _ActorAppConstants.ActionTypes.AUTH_USER_REQUEST_SUCCESS:
         step = _ActorAppConstants.AuthSteps.CODE_WAIT;
         errors.login = null;
+        isLoginRequested = false;
         this.__emitChange();
         break;
       case _ActorAppConstants.ActionTypes.AUTH_USER_REQUEST_FAILURE:
@@ -166,11 +177,13 @@ var LoginStore = function (_Store) {
             errors.login = action.error;
         }
         isCodeRequested = false;
+        isLoginRequested = false;
         this.__emitChange();
         break;
 
       case _ActorAppConstants.ActionTypes.AUTH_CODE_SEND:
         isCodeSended = true;
+        isLoginRequested = true;
         this.__emitChange();
         break;
       case _ActorAppConstants.ActionTypes.AUTH_CODE_SEND_SUCCESS:
@@ -190,6 +203,7 @@ var LoginStore = function (_Store) {
             errors.code = action.error;
         }
         isCodeSended = false;
+        isLoginRequested = false;
         this.__emitChange();
         break;
 

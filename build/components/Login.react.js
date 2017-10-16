@@ -71,12 +71,19 @@ var Login = function (_Component) {
 
     _this.onRequestCode = function (event) {
       event.preventDefault();
-      _LoginActionCreators2.default.requestNickName(_this.state.login);
-    };
-
-    _this.onSendCode = function (event) {
-      event.preventDefault();
-      _LoginActionCreators2.default.sendPassword(_this.state.code);
+      var prmoise = new Promise(function (resolve, reject) {
+        _LoginActionCreators2.default.requestNickName(_this.state.login, resolve, reject);
+      });
+      prmoise.then(function () {
+        var prmoise = new Promise(function (resolve, reject) {
+          _LoginActionCreators2.default.sendPassword(_this.state.code, resolve, reject);
+        });
+        prmoise.then(function () {}, function () {
+          _this.handleFocus();
+        });
+      }, function () {
+        _this.handleFocus();
+      });
     };
 
     _this.onSignupRequested = function (event) {
@@ -89,16 +96,40 @@ var Login = function (_Component) {
       _LoginActionCreators2.default.restartAuth();
     };
 
+    _this.handleSelectName = function (name, event) {
+      event.preventDefault();
+      _LoginActionCreators2.default.changeLogin(name);
+    };
+
+    _this.toggleDropdown = function (event) {
+      event.preventDefault();
+      var isOpened = _this.state.isOpened;
+
+      if (!isOpened) {
+        _this.setState({ 'isOpened': true });
+        document.addEventListener('click', _this.closeDropdown);
+      } else {
+        _this.closeDropdown();
+      }
+    };
+
+    _this.closeDropdown = function () {
+      _this.setState({ 'isOpened': false });
+      document.removeEventListener('click', _this.closeDropdown);
+    };
+
     _this.handleFocus = function () {
       var step = _this.state.step;
 
 
       switch (step) {
         case _ActorAppConstants.AuthSteps.LOGIN_WAIT:
-          _this.refs.login.focus();
-          break;
         case _ActorAppConstants.AuthSteps.CODE_WAIT:
-          _this.refs.code.focus();
+          if (!_this.state.isCodeRequested) {
+            _this.refs.login.focus();
+          } else if (!_this.state.isCodeSended) {
+            _this.refs.code.focus();
+          }
           break;
         case _ActorAppConstants.AuthSteps.NAME_WAIT:
           _this.refs.name.focus();
@@ -127,7 +158,10 @@ var Login = function (_Component) {
       errors: _LoginStore2.default.getErrors(),
       isCodeRequested: _LoginStore2.default.isCodeRequested(),
       isCodeSended: _LoginStore2.default.isCodeSended(),
-      isSignupStarted: _LoginStore2.default.isSignupStarted()
+      isLoginRequested: _LoginStore2.default.isLoginRequested(),
+      isSignupStarted: _LoginStore2.default.isSignupStarted(),
+      storeName: _LoginStore2.default.getStoreName(),
+      isOpened: false
     };
   };
 
@@ -135,41 +169,71 @@ var Login = function (_Component) {
     this.handleFocus();
   };
 
-  Login.prototype.componentDidUpdate = function componentDidUpdate() {
-    this.handleFocus();
-  };
+  Login.prototype.componentDidUpdate = function componentDidUpdate() {}
+  // this.handleFocus();
+
 
   // From change handlers
-
+  ;
 
   // Form submit handlers
 
 
-  Login.prototype.render = function render() {
-    var _React$createElement;
+  Login.prototype.renderDropIcon = function renderDropIcon() {
+    var storeName = this.state.storeName;
 
+    if (storeName && storeName.length === 0) return null;
+    return _react2.default.createElement(
+      'i',
+      { className: 'drop-icon material-icons', onClick: this.toggleDropdown },
+      'arrow_drop_down'
+    );
+  };
+
+  Login.prototype.renderNameItem = function renderNameItem() {
+    var _this2 = this;
+
+    var storeName = this.state.storeName;
+
+    if (storeName && storeName.length === 0) return null;
+    return storeName.map(function (item, index) {
+      return _react2.default.createElement(
+        'li',
+        { className: 'dropdown__menu__item', onClick: _this2.handleSelectName.bind(_this2, item), key: index },
+        item
+      );
+    });
+  };
+
+  Login.prototype.render = function render() {
     var _state = this.state,
         step = _state.step,
         errors = _state.errors,
         login = _state.login,
         code = _state.code,
         name = _state.name,
+        isOpened = _state.isOpened,
         isCodeRequested = _state.isCodeRequested,
         isCodeSended = _state.isCodeSended,
-        isSignupStarted = _state.isSignupStarted;
+        isSignupStarted = _state.isSignupStarted,
+        isLoginRequested = _state.isLoginRequested;
     var intl = this.context.intl;
 
 
     var requestFormClassName = (0, _classnames2.default)('login-new__forms__form', 'login-new__forms__form--request', {
-      'login-new__forms__form--active': step === _ActorAppConstants.AuthSteps.LOGIN_WAIT,
-      'login-new__forms__form--done': step !== _ActorAppConstants.AuthSteps.LOGIN_WAIT && isCodeRequested
+      'login-new__forms__form--active': step === _ActorAppConstants.AuthSteps.LOGIN_WAIT || step === _ActorAppConstants.AuthSteps.CODE_WAIT,
+      'login-new__forms__form--done': step !== _ActorAppConstants.AuthSteps.LOGIN_WAIT && step !== _ActorAppConstants.AuthSteps.CODE_WAIT
     });
-    var checkFormClassName = (0, _classnames2.default)('login-new__forms__form', 'login-new__forms__form--check', {
-      'login-new__forms__form--active': step === _ActorAppConstants.AuthSteps.CODE_WAIT && isCodeRequested,
-      'login-new__forms__form--done': step !== _ActorAppConstants.AuthSteps.CODE_WAIT && isCodeSended
-    });
+    // let checkFormClassName = classnames('login-new__forms__form', 'login-new__forms__form--check', {
+    //   'login-new__forms__form--active': step === AuthSteps.CODE_WAIT && isCodeRequested,
+    //   'login-new__forms__form--done': step !== AuthSteps.CODE_WAIT && isCodeSended
+    // });
     var signupFormClassName = (0, _classnames2.default)('login-new__forms__form', 'login-new__forms__form--signup', {
       'login-new__forms__form--active': step === _ActorAppConstants.AuthSteps.NAME_WAIT
+    });
+
+    var dropClassName = (0, _classnames2.default)('dropdown', {
+      'dropdown--opened': isOpened
     });
 
     var spinner = _react2.default.createElement(
@@ -211,41 +275,30 @@ var Login = function (_Component) {
             'form',
             { className: requestFormClassName, onSubmit: this.onRequestCode },
             _react2.default.createElement(
-              'a',
-              { className: 'wrong', onClick: this.handleRestartAuthClick },
-              _react2.default.createElement(_reactIntl.FormattedMessage, { id: 'login.wrong' })
-            ),
-            _react2.default.createElement(_TextField2.default, { className: 'login-new__forms__form__input input__material--wide',
-              disabled: isCodeRequested || step !== _ActorAppConstants.AuthSteps.LOGIN_WAIT,
-              errorText: errors.login,
-              floatingLabel: intl.messages['login.user'],
-              onChange: this.onLoginChange,
-              ref: 'login',
-              value: login }),
-            _react2.default.createElement(
-              'footer',
-              { className: 'text-center' },
+              'div',
+              { className: dropClassName },
+              _react2.default.createElement(_TextField2.default, { className: 'login-new__forms__form__input input__material--wide',
+                disabled: isLoginRequested || step !== _ActorAppConstants.AuthSteps.LOGIN_WAIT && step !== _ActorAppConstants.AuthSteps.CODE_WAIT,
+                errorText: errors.login,
+                floatingLabel: intl.messages['login.user'],
+                onChange: this.onLoginChange,
+                ref: 'login',
+                value: login }),
               _react2.default.createElement(
-                'button',
-                { className: 'button button--rised button--wide',
-                  type: 'submit',
-                  disabled: isCodeRequested },
-                _react2.default.createElement(_reactIntl.FormattedMessage, { id: 'button.validateUsername' }),
-                isCodeRequested ? spinner : null
+                'ul',
+                { className: 'dropdown__menu' },
+                this.renderNameItem()
               )
-            )
-          ),
-          _react2.default.createElement(
-            'form',
-            { className: checkFormClassName, onSubmit: this.onSendCode },
-            _react2.default.createElement(_TextField2.default, (_React$createElement = { className: 'login-new__forms__form__input input__material--wide',
-              disabled: isCodeSended || step !== _ActorAppConstants.AuthSteps.CODE_WAIT,
+            ),
+            _react2.default.createElement('div', { style: { height: 20 + 'px' } }),
+            _react2.default.createElement(_TextField2.default, { className: 'login-new__forms__form__input input__material--wide',
+              disabled: isLoginRequested || step !== _ActorAppConstants.AuthSteps.LOGIN_WAIT && step !== _ActorAppConstants.AuthSteps.CODE_WAIT,
               errorText: errors.code,
               floatingLabel: intl.messages['login.authPassword'],
               onChange: this.onCodeChange,
               ref: 'code',
-              type: 'text'
-            }, _React$createElement['type'] = 'password', _React$createElement.value = code, _React$createElement)),
+              type: 'password',
+              value: code }),
             _react2.default.createElement(
               'footer',
               { className: 'text-center' },
@@ -253,9 +306,9 @@ var Login = function (_Component) {
                 'button',
                 { className: 'button button--rised button--wide',
                   type: 'submit',
-                  disabled: isCodeSended },
-                _react2.default.createElement(_reactIntl.FormattedMessage, { id: 'button.checkPassword' }),
-                isCodeSended ? spinner : null
+                  disabled: isLoginRequested },
+                _react2.default.createElement(_reactIntl.FormattedMessage, { id: 'button.login' }),
+                isLoginRequested ? spinner : null
               )
             )
           ),

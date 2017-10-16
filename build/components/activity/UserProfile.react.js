@@ -14,6 +14,10 @@ var _reactIntl = require('react-intl');
 
 var _ImageUtils = require('../../utils/ImageUtils');
 
+var _linq = require('linq');
+
+var _linq2 = _interopRequireDefault(_linq);
+
 var _EmojiUtils = require('../../utils/EmojiUtils');
 
 var _NotificationsActionCreators = require('../../actions/NotificationsActionCreators');
@@ -31,6 +35,10 @@ var _NotificationsStore2 = _interopRequireDefault(_NotificationsStore);
 var _OnlineStore = require('../../stores/OnlineStore');
 
 var _OnlineStore2 = _interopRequireDefault(_OnlineStore);
+
+var _DepartmentStore = require('../../stores/DepartmentStore');
+
+var _DepartmentStore2 = _interopRequireDefault(_DepartmentStore);
 
 var _AvatarItem = require('../common/AvatarItem.react');
 
@@ -68,7 +76,8 @@ var UserProfile = function (_Component) {
     return _extends({}, prevState, {
       peer: peer,
       isNotificationsEnabled: peer ? _NotificationsStore2.default.isNotificationsEnabled(peer) : true,
-      message: _OnlineStore2.default.getMessage()
+      message: _OnlineStore2.default.getMessage(),
+      department: _DepartmentStore2.default.getState()
     });
   };
 
@@ -90,6 +99,14 @@ var UserProfile = function (_Component) {
 
   UserProfile.prototype.handleAvatarClick = function handleAvatarClick() {
     _ImageUtils.lightbox.open(this.props.user.bigAvatar);
+  };
+
+  UserProfile.prototype.renderInfo = function renderInfo() {
+    var user = this.props.user;
+    var yh_data = this.state.department.yh_data;
+
+    var totalInfo = _linq2.default.from(yh_data).where('parseFloat($.IGIMID) == ' + user.id).toArray()[0];
+    return _react2.default.createElement(_ContactDetails2.default, { peerInfo: _extends({}, user, totalInfo) });
   };
 
   UserProfile.prototype.renderAbout = function renderAbout() {
@@ -172,7 +189,7 @@ var UserProfile = function (_Component) {
         _react2.default.createElement(
           'li',
           { className: 'profile__list__item user_profile__contact_info no-p' },
-          _react2.default.createElement(_ContactDetails2.default, { peerInfo: user })
+          this.renderInfo()
         ),
         _react2.default.createElement(
           'li',

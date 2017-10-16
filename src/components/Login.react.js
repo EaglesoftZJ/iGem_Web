@@ -39,7 +39,10 @@ class Login extends Component {
       errors: LoginStore.getErrors(),
       isCodeRequested: LoginStore.isCodeRequested(),
       isCodeSended: LoginStore.isCodeSended(),
-      isSignupStarted: LoginStore.isSignupStarted()
+      isLoginRequested: LoginStore.isLoginRequested(),
+      isSignupStarted: LoginStore.isSignupStarted(),
+      storeName: LoginStore.getStoreName(),
+      isOpened: false
     }
   }
 
@@ -52,7 +55,7 @@ class Login extends Component {
   }
 
   componentDidUpdate() {
-    this.handleFocus();
+    // this.handleFocus();
   }
 
   // From change handlers
@@ -72,11 +75,19 @@ class Login extends Component {
   // Form submit handlers
   onRequestCode = event => {
     event.preventDefault();
-    LoginActionCreators.requestNickName(this.state.login);
-  };
-  onSendCode = event => {
-    event.preventDefault();
-    LoginActionCreators.sendPassword(this.state.code);
+    let prmoise = new Promise((resolve, reject) => {
+      LoginActionCreators.requestNickName(this.state.login, resolve, reject);
+    });
+    prmoise.then(() => {
+      let prmoise = new Promise((resolve, reject) => {
+        LoginActionCreators.sendPassword(this.state.code, resolve, reject);
+      });
+      prmoise.then(() => {}, () => {
+        this.handleFocus();
+      });
+    }, () => {
+      this.handleFocus();
+    });
   };
   onSignupRequested = event => {
     event.preventDefault();
@@ -88,15 +99,37 @@ class Login extends Component {
     LoginActionCreators.restartAuth();
   };
 
+  handleSelectName = (name, event) => {
+    event.preventDefault();
+    LoginActionCreators.changeLogin(name);
+  }
+
+  toggleDropdown = event => {
+    event.preventDefault();
+    const { isOpened } = this.state;
+    if (!isOpened) {
+      this.setState({'isOpened': true});
+      document.addEventListener('click', this.closeDropdown);
+    } else {
+      this.closeDropdown();
+    }
+  }
+  closeDropdown = () => {
+    this.setState({'isOpened': false});
+    document.removeEventListener('click', this.closeDropdown);
+  }
+
   handleFocus = () => {
     const { step } = this.state;
 
     switch (step) {
       case AuthSteps.LOGIN_WAIT:
-        this.refs.login.focus();
-        break;
       case AuthSteps.CODE_WAIT:
-        this.refs.code.focus();
+        if (!this.state.isCodeRequested) {
+          this.refs.login.focus();
+        } else if (!this.state.isCodeSended) {
+          this.refs.code.focus();
+        }
         break;
       case AuthSteps.NAME_WAIT:
         this.refs.name.focus();
@@ -104,21 +137,38 @@ class Login extends Component {
       default:
     }
   };
+  renderDropIcon() {
+    const { storeName } = this.state;
+    if (storeName && storeName.length === 0) return null;
+    return <i className="drop-icon material-icons" onClick={this.toggleDropdown}>arrow_drop_down</i>;
+  }
+
+  renderNameItem() {
+    const { storeName } = this.state;
+    if (storeName && storeName.length === 0) return null;
+    return storeName.map((item, index) => {
+      return <li className="dropdown__menu__item" onClick={this.handleSelectName.bind(this, item)} key={ index }>{ item }</li>
+    });
+  }
 
   render() {
-    const { step, errors, login, code, name, isCodeRequested, isCodeSended, isSignupStarted } = this.state;
+    const { step, errors, login, code, name, isOpened, isCodeRequested, isCodeSended, isSignupStarted, isLoginRequested } = this.state;
     const { intl } = this.context;
 
     let requestFormClassName = classnames('login-new__forms__form', 'login-new__forms__form--request', {
-      'login-new__forms__form--active': step === AuthSteps.LOGIN_WAIT,
-      'login-new__forms__form--done': step !== AuthSteps.LOGIN_WAIT && isCodeRequested
+      'login-new__forms__form--active': step === AuthSteps.LOGIN_WAIT || step === AuthSteps.CODE_WAIT,
+      'login-new__forms__form--done': step !== AuthSteps.LOGIN_WAIT && step !== AuthSteps.CODE_WAIT
     });
-    let checkFormClassName = classnames('login-new__forms__form', 'login-new__forms__form--check', {
-      'login-new__forms__form--active': step === AuthSteps.CODE_WAIT && isCodeRequested,
-      'login-new__forms__form--done': step !== AuthSteps.CODE_WAIT && isCodeSended
-    });
+    // let checkFormClassName = classnames('login-new__forms__form', 'login-new__forms__form--check', {
+    //   'login-new__forms__form--active': step === AuthSteps.CODE_WAIT && isCodeRequested,
+    //   'login-new__forms__form--done': step !== AuthSteps.CODE_WAIT && isCodeSended
+    // });
     let signupFormClassName = classnames('login-new__forms__form', 'login-new__forms__form--signup', {
       'login-new__forms__form--active': step === AuthSteps.NAME_WAIT
+    });
+
+    let dropClassName = classnames('dropdown', {
+      'dropdown--opened': isOpened
     });
 
     const spinner = (
@@ -130,7 +180,7 @@ class Login extends Component {
 
     return (
       <section className="login-new row center-xs middle-xs">
-       
+
         {/* <div className="login-new__welcome col-xs row center-xs middle-xs">
           <img alt={`${this.appName} messenger`}
                className="logo"
@@ -164,40 +214,35 @@ class Login extends Component {
             <h1 className="login-new__heading"><FormattedMessage id="login.signIn"/></h1>
 
             <form className={requestFormClassName} onSubmit={this.onRequestCode}>
-              <a className="wrong" onClick={this.handleRestartAuthClick}><FormattedMessage id="login.wrong"/></a>
+              {/* <a className="wrong" onClick={this.handleRestartAuthClick}><FormattedMessage id="login.wrong"/></a>*/}
+              <div className={ dropClassName }>
+              { /* this.renderDropIcon()*/ }
               <TextField className="login-new__forms__form__input input__material--wide"
-                         disabled={isCodeRequested || step !== AuthSteps.LOGIN_WAIT}
+                         disabled={isLoginRequested || step !== AuthSteps.LOGIN_WAIT && step !== AuthSteps.CODE_WAIT}
                          errorText={errors.login}
                          floatingLabel={intl.messages['login.user']}
                          onChange={this.onLoginChange}
                          ref="login"
-                         value={login}/> 
-              <footer className="text-center">
-                <button className="button button--rised button--wide"
-                        type="submit"
-                        disabled={isCodeRequested}>
-                  <FormattedMessage id="button.validateUsername"/>
-                  {isCodeRequested ? spinner : null}
-                </button>
-              </footer>
-            </form>
-
-            <form className={checkFormClassName} onSubmit={this.onSendCode}>
+                         value={login}/>
+                <ul className="dropdown__menu">
+                  { this.renderNameItem() }
+                </ul>
+              </div>
+              <div style={{height: 20 +'px'}}></div>
               <TextField className="login-new__forms__form__input input__material--wide"
-                         disabled={isCodeSended || step !== AuthSteps.CODE_WAIT}
+                         disabled={isLoginRequested || step !== AuthSteps.LOGIN_WAIT && step !== AuthSteps.CODE_WAIT}
                          errorText={errors.code}
                          floatingLabel={intl.messages['login.authPassword']}
                          onChange={this.onCodeChange}
                          ref="code"
-                         type="text"
                          type="password"
                          value={code}/>
               <footer className="text-center">
                 <button className="button button--rised button--wide"
                         type="submit"
-                        disabled={isCodeSended}>
-                  <FormattedMessage id="button.checkPassword"/>
-                  {isCodeSended ? spinner : null}
+                        disabled={isLoginRequested}>
+                  <FormattedMessage id="button.login"/>
+                  {isLoginRequested ? spinner : null}
                 </button>
               </footer>
             </form>

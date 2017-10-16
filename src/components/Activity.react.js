@@ -41,7 +41,6 @@ class ActivitySection extends Component {
 
   renderBody() {
     const { peer, info } = this.state;
-
     switch (peer.type) {
       case PeerTypes.USER:
         return <UserProfile user={info} />;

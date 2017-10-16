@@ -52,6 +52,7 @@ export default {
       'validateUsername': '验证账号',
       'checkCode': '验证',
       'checkPassword': '验证密码',
+      'login': '登录',
       'signUp': '注册',
       'add': '添加',
       'send': '发送',
@@ -222,6 +223,8 @@ export default {
       'email': '邮箱',
       'phone': '手机号',
       'nickname': '昵称',
+      'unit': '单位名称',
+      'dept': '部门名称',
       'about': '简介'
     },
     'createdBy': '创建者',
