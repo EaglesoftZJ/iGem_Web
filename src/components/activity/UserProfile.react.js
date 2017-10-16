@@ -6,7 +6,7 @@ import React, { Component, PropTypes } from 'react';
 import { Container } from 'flux/utils';
 import { FormattedMessage } from 'react-intl';
 import { lightbox } from '../../utils/ImageUtils';
-import linq from 'linq';
+import linq from 'Linq';
 
 import { escapeWithEmoji } from '../../utils/EmojiUtils';
 
