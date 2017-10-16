@@ -34,7 +34,7 @@ class Department extends Component {
   static calculateState() {
     let res = DepartmentStore.getState();
     return {
-      dw_data: linq.from(res.dw_data).where('$.id!=="dw017"').toArray(),
+      dw_data: linq.from(res.dw_data).where('$.id!=="dw017"').orderBy('$.wzh').toArray(),
       bm_data: res.bm_data,
       yh_data: res.yh_data,
       selectedIndex: 0,
@@ -192,7 +192,7 @@ class Department extends Component {
       });
 
       return (
-        <div key={result.id} style={{ paddingLeft: '10px' }}>
+        <div key={result.id} style={{ paddingLeft: '20px' }}>
           <div
             className={resultClassName} key={`r${index}`}
             onClick={() => this.bmSelect(result.id, result.mc)}
