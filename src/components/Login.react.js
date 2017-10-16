@@ -41,7 +41,6 @@ class Login extends Component {
       isCodeSended: LoginStore.isCodeSended(),
       isLoginRequested: LoginStore.isLoginRequested(),
       isSignupStarted: LoginStore.isSignupStarted(),
-      storeName: LoginStore.getStoreName(),
       isOpened: false
     }
   }
@@ -137,20 +136,19 @@ class Login extends Component {
       default:
     }
   };
-  renderDropIcon() {
-    const { storeName } = this.state;
+  renderDropDown() {
+    let storeName = localStorage.getItem('storeName') ? localStorage.getItem('storeName').split(',') : [];
     if (storeName && storeName.length === 0) return null;
-    return <i className="drop-icon material-icons" onClick={this.toggleDropdown}>arrow_drop_down</i>;
+    return (
+      <div>
+      <i className="drop-icon material-icons" onClick={this.toggleDropdown}>arrow_drop_down</i>
+      <ul className="dropdown__menu">
+        {storeName.map((item, index) => {
+          return <li className="dropdown__menu__item" onClick={this.handleSelectName.bind(this, item)} key={ index }>{ item }</li>})}
+      </ul>
+      </div>
+    );
   }
-
-  renderNameItem() {
-    const { storeName } = this.state;
-    if (storeName && storeName.length === 0) return null;
-    return storeName.map((item, index) => {
-      return <li className="dropdown__menu__item" onClick={this.handleSelectName.bind(this, item)} key={ index }>{ item }</li>
-    });
-  }
-
   render() {
     const { step, errors, login, code, name, isOpened, isCodeRequested, isCodeSended, isSignupStarted, isLoginRequested } = this.state;
     const { intl } = this.context;
@@ -216,7 +214,6 @@ class Login extends Component {
             <form className={requestFormClassName} onSubmit={this.onRequestCode}>
               {/* <a className="wrong" onClick={this.handleRestartAuthClick}><FormattedMessage id="login.wrong"/></a>*/}
               <div className={ dropClassName }>
-              { /* this.renderDropIcon()*/ }
               <TextField className="login-new__forms__form__input input__material--wide"
                          disabled={isLoginRequested || step !== AuthSteps.LOGIN_WAIT && step !== AuthSteps.CODE_WAIT}
                          errorText={errors.login}
@@ -224,9 +221,7 @@ class Login extends Component {
                          onChange={this.onLoginChange}
                          ref="login"
                          value={login}/>
-                <ul className="dropdown__menu">
-                  { this.renderNameItem() }
-                </ul>
+                { this.renderDropDown() }
               </div>
               <div style={{height: 20 +'px'}}></div>
               <TextField className="login-new__forms__form__input input__material--wide"

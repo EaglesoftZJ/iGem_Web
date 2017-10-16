@@ -56,6 +56,8 @@ class UserMenu extends Component {
     this.openCreateGroup = this.openCreateGroup.bind(this);
     this.openAddContactModal = this.openAddContactModal.bind(this);
     this.onSettingsOpen = this.onSettingsOpen.bind(this);
+    // console.log('profile', this.state.profile);
+    // localStorage.getItem('storeName').indexOf(this.state.profile)
   }
 
   toggleHeaderMenu() {
