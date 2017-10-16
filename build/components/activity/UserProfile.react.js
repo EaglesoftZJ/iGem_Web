@@ -14,9 +14,9 @@ var _reactIntl = require('react-intl');
 
 var _ImageUtils = require('../../utils/ImageUtils');
 
-var _linq = require('linq');
+var _Linq = require('Linq');
 
-var _linq2 = _interopRequireDefault(_linq);
+var _Linq2 = _interopRequireDefault(_Linq);
 
 var _EmojiUtils = require('../../utils/EmojiUtils');
 
@@ -105,7 +105,7 @@ var UserProfile = function (_Component) {
     var user = this.props.user;
     var yh_data = this.state.department.yh_data;
 
-    var totalInfo = _linq2.default.from(yh_data).where('parseFloat($.IGIMID) == ' + user.id).toArray()[0];
+    var totalInfo = _Linq2.default.from(yh_data).where('parseFloat($.IGIMID) == ' + user.id).toArray()[0];
     return _react2.default.createElement(_ContactDetails2.default, { peerInfo: _extends({}, user, totalInfo) });
   };
 

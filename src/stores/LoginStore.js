@@ -38,7 +38,6 @@ class LoginStore extends Store {
   getLogin = () => login;
   getCode = () => code;
   getName = () => name;
-  getStoreName = () => storeName;
   isCodeRequested = () => isCodeRequested;
   isCodeSended = () => isCodeSended;
   isLoginRequested = () => isLoginRequested;
@@ -152,6 +151,7 @@ class LoginStore extends Store {
 
       case ActionTypes.AUTH_PASSWORD_SEND:
         isCodeSended = true;
+        isLoginRequested = true;
         this.__emitChange();
         break;
       case ActionTypes.AUTH_PASSWORD_SEND_SUCCESS:
@@ -171,6 +171,7 @@ class LoginStore extends Store {
             errors.code = action.error;
         }
         isCodeSended = false;
+        isLoginRequested = false;
         this.__emitChange();
         break;
 

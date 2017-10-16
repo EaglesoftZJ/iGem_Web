@@ -227,6 +227,7 @@ exports.default = {
       'nickname': '昵称',
       'unit': '所在单位',
       'dept': '所在部门',
+      'post': '所属职务',
       'about': '简介'
     },
     'createdBy': '创建者',

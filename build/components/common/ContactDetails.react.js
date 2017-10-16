@@ -164,6 +164,31 @@ var ContactDetails = function (_Component) {
     );
   };
 
+  ContactDetails.prototype.renderZwmc = function renderZwmc() {
+    var zwmc = this.props.peerInfo.zwmc;
+
+    if (!zwmc) return null;
+    return _react2.default.createElement(
+      'li',
+      null,
+      _react2.default.createElement(
+        'i',
+        { className: 'material-icons icon icon--blue' },
+        'work'
+      ),
+      _react2.default.createElement(
+        'span',
+        { className: 'title' },
+        zwmc
+      ),
+      _react2.default.createElement(
+        'span',
+        { className: 'description' },
+        _react2.default.createElement(_reactIntl.FormattedMessage, { id: 'profile.post' })
+      )
+    );
+  };
+
   ContactDetails.prototype.renderEmail = function renderEmail() {
     var emails = this.props.peerInfo.emails;
 
@@ -199,7 +224,8 @@ var ContactDetails = function (_Component) {
       this.renderNickname(),
       this.renderSjh(),
       this.renderDwmc(),
-      this.renderBmmc()
+      this.renderBmmc(),
+      this.renderZwmc()
     );
   };
 

@@ -72,6 +72,18 @@ renderNickname() {
             </li>
         );
     }
+    renderZwmc() {
+        const { zwmc } = this.props.peerInfo;
+        if (!zwmc) return null;
+        return (
+            <li>
+                <i className="material-icons icon icon--blue">work</i>
+                <span className="title">{zwmc}</span>
+                <span className="description"><FormattedMessage id="profile.post"/></span>
+
+            </li>
+        );
+    }
 
   renderEmail() {
     const { emails } = this.props.peerInfo;
@@ -95,6 +107,7 @@ renderNickname() {
         {this.renderSjh()}
         {this.renderDwmc()}
         {this.renderBmmc()}
+        {this.renderZwmc()}
         {/*this.renderEmail()*/}
       </ul>
     );

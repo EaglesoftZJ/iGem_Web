@@ -70,10 +70,6 @@ var LoginStore = function (_Store) {
       return name;
     };
 
-    _this.getStoreName = function () {
-      return storeName;
-    };
-
     _this.isCodeRequested = function () {
       return isCodeRequested;
     };
@@ -208,6 +204,7 @@ var LoginStore = function (_Store) {
 
       case _ActorAppConstants.ActionTypes.AUTH_PASSWORD_SEND:
         isCodeSended = true;
+        isLoginRequested = true;
         this.__emitChange();
         break;
       case _ActorAppConstants.ActionTypes.AUTH_PASSWORD_SEND_SUCCESS:
@@ -227,6 +224,7 @@ var LoginStore = function (_Store) {
             errors.code = action.error;
         }
         isCodeSended = false;
+        isLoginRequested = false;
         this.__emitChange();
         break;
 

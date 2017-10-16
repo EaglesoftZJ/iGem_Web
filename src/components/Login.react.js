@@ -153,6 +153,7 @@ class Login extends Component {
     const { step, errors, login, code, name, isOpened, isCodeRequested, isCodeSended, isSignupStarted, isLoginRequested } = this.state;
     const { intl } = this.context;
 
+
     let requestFormClassName = classnames('login-new__forms__form', 'login-new__forms__form--request', {
       'login-new__forms__form--active': step === AuthSteps.LOGIN_WAIT || step === AuthSteps.CODE_WAIT,
       'login-new__forms__form--done': step !== AuthSteps.LOGIN_WAIT && step !== AuthSteps.CODE_WAIT
@@ -238,6 +239,7 @@ class Login extends Component {
                         disabled={isLoginRequested}>
                   <FormattedMessage id="button.login"/>
                   {isLoginRequested ? spinner : null}
+
                 </button>
               </footer>
             </form>
