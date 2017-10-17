@@ -3,7 +3,7 @@ export default {
   'messages': {
     // Login
     'login': {
-      'signIn': '登陆',
+      'signIn': '登录',
       'wrong': '切换',
       'phone': '手机号码',
       'email': 'mail地址',
@@ -188,7 +188,8 @@ export default {
         'toClose': ':关闭  ',
         'openDialog': '打开聊天窗口',
         'startDialog': '打开新的聊天传功库',
-        'notFound': '没有与<strong>{query}</strong>匹配的联系人.<br/>请重新输入'
+        'notFound': '没有与<strong>{query}</strong>匹配的联系人.<br/>请重新输入',
+        'notHaveData': '该分类没有联系人',
       },
       'department': {
         'title': '组织架构',

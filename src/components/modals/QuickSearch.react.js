@@ -15,9 +15,9 @@ import PeerUtils from '../../utils/PeerUtils';
 
 import { KeyCodes } from '../../constants/ActorAppConstants';
 
-import QuickSearchActionCreators from '../../actions/QuickSearchActionCreators';
+import PingyinSearchActionCreators from '../../actions/PingyinSearchActionCreators';
 
-import QuickSearchStore from '../../stores/QuickSearchStore';
+import PingyinSearchStore from '../../stores/PingyinSearchStore';
 
 import AvatarItem from '../common/AvatarItem.react';
 
@@ -26,12 +26,13 @@ let scrollIndex = 0;
 
 class QuickSearch extends Component {
   static getStores() {
-    return [QuickSearchStore];
+    return [PingyinSearchStore];
   }
 
   static calculateState() {
     return {
-      list: QuickSearchStore.getState(),
+      obj: PingyinSearchStore.getState(),
+      selectedLetter: 'a',
       selectedIndex: 0
     }
   }
@@ -52,12 +53,12 @@ class QuickSearch extends Component {
   }
 
   componentDidMount() {
-    this.setFocus();
-    this.setListeners();
+    // this.setFocus();
+    // this.setListeners();
   }
 
   componentWillUnmount() {
-    this.cleanListeners();
+    // this.cleanListeners();
   }
 
   setListeners() {
@@ -79,7 +80,7 @@ class QuickSearch extends Component {
   }
 
   handleClose() {
-    QuickSearchActionCreators.hide();
+    PingyinSearchActionCreators.hide();
   }
 
   handleSearch(event) {
@@ -152,11 +153,16 @@ class QuickSearch extends Component {
   handleScroll(top) {
     findDOMNode(this.refs.results).scrollTop = top;
 
-    Console.log('scroll--------');
+    // Console.log('scroll--------');
+  }
+
+  handleLetterClick(letter) {
+    this.setState({'selectedLetter': letter});
+    this.handleScroll(0);
   }
 
   getResults() {
-    const { list, query } = this.state;
+    const { list } = this.state;
     if (!query || query === '') return list;
 
     return list.filter((result) => {
@@ -166,14 +172,14 @@ class QuickSearch extends Component {
   }
 
   renderResults() {
-    const { selectedIndex, query } = this.state;
-    const results = this.getResults();
+    const { selectedIndex, selectedLetter, obj } = this.state;
+    const results = obj[selectedLetter];
 
-    if (!results.length) {
+    if (!results || !results.length) {
       return (
         <li className="results__item results__item--suggestion row">
-          <FormattedHTMLMessage id="modal.quickSearch.notFound" values={{ query }}/>
-          <button className="button button--rised hide">Create new dialog {query}</button>
+          <FormattedHTMLMessage id="modal.quickSearch.notHaveData"/>
+          <button className="button button--rised hide">Create new dialog</button>
         </li>
       )
     }
@@ -229,6 +235,22 @@ class QuickSearch extends Component {
       </div>
     );
   }
+  renderSearchLetter() {
+    const { selectedLetter } = this.state;
+    let items = [];
+    for (let i = 0; i < 27; i++) {
+      let letter = i < 26 ? String.fromCharCode(97 + i) : '其他';
+      let itemClassName = classnames('search-letter-item', {'selected': selectedLetter === letter, 'flex3': i === 26});
+      items.push(<a href="javascript:;" key={i} target="self" onClick={this.handleLetterClick.bind(this, letter)} className={itemClassName}>{letter}</a>);
+    }
+    
+    return (
+      <div className="search-letter">
+        { items }
+      </div>
+    )
+ 
+  }
 
   render() {
     return (
@@ -243,7 +265,9 @@ class QuickSearch extends Component {
 
             {this.renderHeader()}
 
-            {this.renderSearchInput()}
+            {/*this.renderSearchInput()*/}
+            { this.renderSearchLetter() }
+            
 
             <ul className="results" ref="results">
               {this.renderResults()}

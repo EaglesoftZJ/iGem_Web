@@ -6,7 +6,7 @@ exports.default = {
   'messages': {
     // Login
     'login': {
-      'signIn': '登陆',
+      'signIn': '登录',
       'wrong': '切换',
       'phone': '手机号码',
       'email': 'mail地址',
