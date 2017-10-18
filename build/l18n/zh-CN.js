@@ -190,7 +190,8 @@ exports.default = {
         'toClose': ':关闭  ',
         'openDialog': '打开聊天窗口',
         'startDialog': '打开新的聊天传功库',
-        'notFound': '没有与<strong>{query}</strong>匹配的联系人.<br/>请重新输入'
+        'notFound': '没有与<strong>{query}</strong>匹配的联系人.<br/>请重新输入',
+        'notHaveData': '该分类没有联系人'
       },
       'department': {
         'title': '组织架构',

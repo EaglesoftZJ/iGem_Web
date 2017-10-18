@@ -36,19 +36,35 @@ var _PeerUtils = require('../../utils/PeerUtils');
 
 var _PeerUtils2 = _interopRequireDefault(_PeerUtils);
 
+var _Linq = require('Linq');
+
+var _Linq2 = _interopRequireDefault(_Linq);
+
 var _ActorAppConstants = require('../../constants/ActorAppConstants');
 
-var _QuickSearchActionCreators = require('../../actions/QuickSearchActionCreators');
+var _PingyinSearchActionCreators = require('../../actions/PingyinSearchActionCreators');
 
-var _QuickSearchActionCreators2 = _interopRequireDefault(_QuickSearchActionCreators);
+var _PingyinSearchActionCreators2 = _interopRequireDefault(_PingyinSearchActionCreators);
 
-var _QuickSearchStore = require('../../stores/QuickSearchStore');
+var _PingyinSearchStore = require('../../stores/PingyinSearchStore');
 
-var _QuickSearchStore2 = _interopRequireDefault(_QuickSearchStore);
+var _PingyinSearchStore2 = _interopRequireDefault(_PingyinSearchStore);
+
+var _DepartmentStore = require('../../stores/DepartmentStore');
+
+var _DepartmentStore2 = _interopRequireDefault(_DepartmentStore);
 
 var _AvatarItem = require('../common/AvatarItem.react');
 
 var _AvatarItem2 = _interopRequireDefault(_AvatarItem);
+
+var _Popover = require('../common/Popover.react');
+
+var _Popover2 = _interopRequireDefault(_Popover);
+
+var _ContactDetails = require('../common/ContactDetails.react');
+
+var _ContactDetails2 = _interopRequireDefault(_ContactDetails);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -67,13 +83,18 @@ var QuickSearch = function (_Component) {
   _inherits(QuickSearch, _Component);
 
   QuickSearch.getStores = function getStores() {
-    return [_QuickSearchStore2.default];
+    return [_PingyinSearchStore2.default];
   };
 
   QuickSearch.calculateState = function calculateState() {
     return {
-      list: _QuickSearchStore2.default.getState(),
-      selectedIndex: 0
+      obj: _PingyinSearchStore2.default.getState(),
+      department: _DepartmentStore2.default.getState(),
+      selectedLetter: 'a',
+      selectedIndex: 0,
+      selectedUserId: -1,
+      node: null,
+      isShow: false
     };
   };
 
@@ -81,6 +102,23 @@ var QuickSearch = function (_Component) {
     _classCallCheck(this, QuickSearch);
 
     var _this = _possibleConstructorReturn(this, _Component.call(this, props, context));
+
+    _this.handleMouseEnter = function (id, event) {
+      event.stopPropagation();
+      _this.setState({ 'isShow': true, 'node': event.target, 'selectedUserId': id });
+    };
+
+    _this.handleMouseMove = function (event) {
+      event.nativeEvent.stopImmediatePropagation();
+    };
+
+    _this.popoverHide = function (event) {
+      var isShow = _this.state.isShow;
+
+      if (isShow) {
+        _this.setState({ 'isShow': false });
+      }
+    };
 
     _this.setFocus = _this.setFocus.bind(_this);
     _this.handleClose = _this.handleClose.bind(_this);
@@ -92,7 +130,7 @@ var QuickSearch = function (_Component) {
   }
 
   QuickSearch.prototype.componentDidMount = function componentDidMount() {
-    this.setFocus();
+    // this.setFocus();
     this.setListeners();
   };
 
@@ -102,7 +140,9 @@ var QuickSearch = function (_Component) {
 
   QuickSearch.prototype.setListeners = function setListeners() {
     this.cleanListeners();
-    this.listeners = [_EventListener2.default.listen(document, 'keydown', this.handleKeyDown)];
+    this.listeners = [
+    // EventListener.listen(document, 'keydown', this.handleKeyDown),
+    _EventListener2.default.listen(document, 'mousemove', this.popoverHide)];
   };
 
   QuickSearch.prototype.cleanListeners = function cleanListeners() {
@@ -123,7 +163,7 @@ var QuickSearch = function (_Component) {
   };
 
   QuickSearch.prototype.handleClose = function handleClose() {
-    _QuickSearchActionCreators2.default.hide();
+    _PingyinSearchActionCreators2.default.hide();
   };
 
   QuickSearch.prototype.handleSearch = function handleSearch(event) {
@@ -197,13 +237,16 @@ var QuickSearch = function (_Component) {
   QuickSearch.prototype.handleScroll = function handleScroll(top) {
     (0, _reactDom.findDOMNode)(this.refs.results).scrollTop = top;
 
-    Console.log('scroll--------');
+    // Console.log('scroll--------');
+  };
+
+  QuickSearch.prototype.handleLetterClick = function handleLetterClick(letter) {
+    this.setState({ 'selectedLetter': letter });
+    this.handleScroll(0);
   };
 
   QuickSearch.prototype.getResults = function getResults() {
-    var _state = this.state,
-        list = _state.list,
-        query = _state.query;
+    var list = this.state.list;
 
     if (!query || query === '') return list;
 
@@ -215,22 +258,22 @@ var QuickSearch = function (_Component) {
   QuickSearch.prototype.renderResults = function renderResults() {
     var _this3 = this;
 
-    var _state2 = this.state,
-        selectedIndex = _state2.selectedIndex,
-        query = _state2.query;
+    var _state = this.state,
+        selectedIndex = _state.selectedIndex,
+        selectedLetter = _state.selectedLetter,
+        obj = _state.obj;
 
-    var results = this.getResults();
+    var results = obj[selectedLetter];
 
-    if (!results.length) {
+    if (!results || !results.length) {
       return _react2.default.createElement(
         'li',
         { className: 'results__item results__item--suggestion row' },
-        _react2.default.createElement(_reactIntl.FormattedHTMLMessage, { id: 'modal.quickSearch.notFound', values: { query: query } }),
+        _react2.default.createElement(_reactIntl.FormattedHTMLMessage, { id: 'modal.quickSearch.notHaveData' }),
         _react2.default.createElement(
           'button',
           { className: 'button button--rised hide' },
-          'Create new dialog ',
-          query
+          'Create new dialog'
         )
       );
     }
@@ -265,13 +308,35 @@ var QuickSearch = function (_Component) {
             { className: 'hint pull-right' },
             _react2.default.createElement(_reactIntl.FormattedMessage, { id: 'modal.quickSearch.openDialog' })
           ),
-          result.peerInfo.title
+          result.peerInfo.title,
+          _react2.default.createElement(
+            'a',
+            { href: 'javascript:;', target: '_self', className: 'results__item__info', onMouseMove: _this3.handleMouseMove, onMouseEnter: _this3.handleMouseEnter.bind(_this3, result.peerInfo.peer.id) },
+            _react2.default.createElement(
+              'i',
+              { className: 'account-icon material-icons' },
+              'account_circle'
+            )
+          )
         )
       );
     });
   };
 
+  QuickSearch.prototype.renderInfo = function renderInfo() {
+    var _state2 = this.state,
+        department = _state2.department,
+        selectedUserId = _state2.selectedUserId;
+    var yh_data = department.yh_data;
+
+    var info = _Linq2.default.from(yh_data).where('parseFloat($.IGIMID) ==' + selectedUserId).toArray()[0];
+    if (!info) return null;
+    return _react2.default.createElement(_ContactDetails2.default, { peerInfo: info });
+  };
+
   QuickSearch.prototype.renderHeader = function renderHeader() {
+    var _this4 = this;
+
     return _react2.default.createElement(
       'header',
       { className: 'header' },
@@ -282,47 +347,14 @@ var QuickSearch = function (_Component) {
       ),
       _react2.default.createElement(
         'div',
-        { className: 'pull-right' },
+        { className: 'pull-right', style: { cursor: 'Pointer' } },
         _react2.default.createElement(
           'strong',
-          null,
-          'esc'
-        ),
-        '\xA0 ',
-        _react2.default.createElement(_reactIntl.FormattedMessage, { id: 'modal.quickSearch.toClose' })
-      ),
-      _react2.default.createElement(
-        'div',
-        { className: 'pull-right' },
-        _react2.default.createElement(
-          'strong',
-          null,
-          '\u21B5'
-        ),
-        '\xA0 ',
-        _react2.default.createElement(_reactIntl.FormattedMessage, { id: 'modal.quickSearch.toSelect' })
-      ),
-      _react2.default.createElement(
-        'div',
-        { className: 'pull-right' },
-        _react2.default.createElement(
-          'strong',
-          null,
-          'tab'
-        ),
-        '\xA0 or \xA0',
-        _react2.default.createElement(
-          'strong',
-          null,
-          '\u2191'
-        ),
-        _react2.default.createElement(
-          'strong',
-          null,
-          '\u2193'
-        ),
-        '\xA0 ',
-        _react2.default.createElement(_reactIntl.FormattedMessage, { id: 'modal.quickSearch.toNavigate' })
+          { onClick: function onClick() {
+              return _this4.handleClose();
+            } },
+          '\u5173\u95ED'
+        )
       )
     );
   };
@@ -345,7 +377,32 @@ var QuickSearch = function (_Component) {
     );
   };
 
+  QuickSearch.prototype.renderSearchLetter = function renderSearchLetter() {
+    var selectedLetter = this.state.selectedLetter;
+
+    var items = [];
+    for (var i = 0; i < 27; i++) {
+      var letter = i < 26 ? String.fromCharCode(97 + i) : '其他';
+      var itemClassName = (0, _classnames2.default)('search-letter-item', { 'selected': selectedLetter === letter, 'flex3': i === 26 });
+      items.push(_react2.default.createElement(
+        'a',
+        { href: 'javascript:;', key: i, target: 'self', onClick: this.handleLetterClick.bind(this, letter), className: itemClassName },
+        letter
+      ));
+    }
+
+    return _react2.default.createElement(
+      'div',
+      { className: 'search-letter' },
+      items
+    );
+  };
+
   QuickSearch.prototype.render = function render() {
+    var _state3 = this.state,
+        isShow = _state3.isShow,
+        node = _state3.node;
+
     return _react2.default.createElement(
       _reactModal2.default,
       {
@@ -355,16 +412,25 @@ var QuickSearch = function (_Component) {
         isOpen: true },
       _react2.default.createElement(
         'div',
-        { className: 'quick-search' },
+        { className: 'popover-outer' },
+        _react2.default.createElement(
+          _Popover2.default,
+          { node: node, isShow: isShow },
+          this.renderInfo()
+        ),
         _react2.default.createElement(
           'div',
-          { className: 'modal__content' },
-          this.renderHeader(),
-          this.renderSearchInput(),
+          { className: 'quick-search' },
           _react2.default.createElement(
-            'ul',
-            { className: 'results', ref: 'results' },
-            this.renderResults()
+            'div',
+            { className: 'modal__content' },
+            this.renderHeader(),
+            this.renderSearchLetter(),
+            _react2.default.createElement(
+              'ul',
+              { className: 'results', ref: 'results' },
+              this.renderResults()
+            )
           )
         )
       )

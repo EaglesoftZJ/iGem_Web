@@ -34,7 +34,8 @@ var DepartmentStore = function (_ReduceStore) {
     return {
       dw_data: [],
       bm_data: [],
-      yh_data: []
+      yh_data: [],
+      yh_pinyin: {}
     };
   };
 

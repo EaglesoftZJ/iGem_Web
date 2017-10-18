@@ -77,7 +77,7 @@ var Department = function (_Component) {
   Department.calculateState = function calculateState() {
     var res = _DepartmentStore2.default.getState();
     return {
-      dw_data: _Linq2.default.from(res.dw_data).where('$.id!=="dw017"').toArray(),
+      dw_data: _Linq2.default.from(res.dw_data).where('$.id!=="dw017"').orderBy('$.wzh').toArray(),
       bm_data: res.bm_data,
       yh_data: res.yh_data,
       selectedIndex: 0,
@@ -272,7 +272,7 @@ var Department = function (_Component) {
 
       return _react2.default.createElement(
         'div',
-        { key: result.id, style: { paddingLeft: '10px' } },
+        { key: result.id, style: { paddingLeft: '20px' } },
         _react2.default.createElement(
           'div',
           {
