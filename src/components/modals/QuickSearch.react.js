@@ -12,14 +12,18 @@ import Modal from 'react-modal';
 import classnames from 'classnames';
 import history from '../../utils/history';
 import PeerUtils from '../../utils/PeerUtils';
+import linq from 'Linq';
 
 import { KeyCodes } from '../../constants/ActorAppConstants';
 
 import PingyinSearchActionCreators from '../../actions/PingyinSearchActionCreators';
 
 import PingyinSearchStore from '../../stores/PingyinSearchStore';
+import DepartmentStore from '../../stores/DepartmentStore';
 
 import AvatarItem from '../common/AvatarItem.react';
+import Popover from '../common/Popover.react';
+import ContactDetails from '../common/ContactDetails.react';
 
 const RESULT_ITEM_HEIGHT = 44;
 let scrollIndex = 0;
@@ -32,8 +36,12 @@ class QuickSearch extends Component {
   static calculateState() {
     return {
       obj: PingyinSearchStore.getState(),
+      department: DepartmentStore.getState(),
       selectedLetter: 'a',
-      selectedIndex: 0
+      selectedIndex: 0,
+      selectedUserId: -1,
+      node: null,
+      isShow: false
     }
   }
 
@@ -54,17 +62,18 @@ class QuickSearch extends Component {
 
   componentDidMount() {
     // this.setFocus();
-    // this.setListeners();
+    this.setListeners();
   }
 
   componentWillUnmount() {
-    // this.cleanListeners();
+    this.cleanListeners();
   }
 
   setListeners() {
     this.cleanListeners();
     this.listeners = [
-      EventListener.listen(document, 'keydown', this.handleKeyDown)
+      // EventListener.listen(document, 'keydown', this.handleKeyDown),
+      EventListener.listen(document, 'mousemove', this.popoverHide)
     ];
   }
 
@@ -161,6 +170,22 @@ class QuickSearch extends Component {
     this.handleScroll(0);
   }
 
+  handleMouseEnter = (id, event) => {
+    event.stopPropagation();
+    this.setState({'isShow': true, 'node': event.target, 'selectedUserId': id });
+  }
+
+  handleMouseMove = event => {
+    event.nativeEvent.stopImmediatePropagation();
+  }
+
+  popoverHide = event => {
+    const { isShow } = this.state;
+    if (isShow) {
+      this.setState({'isShow': false});
+    }
+  }
+
   getResults() {
     const { list } = this.state;
     if (!query || query === '') return list;
@@ -193,7 +218,7 @@ class QuickSearch extends Component {
         <li
           className={resultClassName} key={`r${index}`}
           onClick={() => this.handleDialogSelect(result.peerInfo.peer)}
-          onMouseOver={() => this.setState({ selectedIndex: index })}>
+          onMouseOver={() => this.setState({ selectedIndex: index})}>
           <AvatarItem
             className="quick-search__avatar"
             size="small"
@@ -204,10 +229,21 @@ class QuickSearch extends Component {
           <div className="title col-xs">
             <div className="hint pull-right"><FormattedMessage id="modal.quickSearch.openDialog"/></div>
             {result.peerInfo.title}
+            <a href="javascript:;" target="_self" className="results__item__info" onMouseMove={this.handleMouseMove} onMouseEnter={this.handleMouseEnter.bind(this, result.peerInfo.peer.id)}><i className="account-icon material-icons">account_circle</i></a>
           </div>
         </li>
       );
     });
+  }
+
+  renderInfo() {
+    const { department, selectedUserId } = this.state;
+    const { yh_data } = department;
+    let info = linq.from(yh_data).where('parseFloat($.IGIMID) ==' + selectedUserId).toArray()[0];
+    if (!info) return null;
+    return (
+      <ContactDetails peerInfo={info}></ContactDetails>
+    )
   }
 
   renderHeader() {
@@ -253,26 +289,33 @@ class QuickSearch extends Component {
   }
 
   render() {
+    const { isShow, node } = this.state;
     return (
       <Modal
         overlayClassName="modal-overlay"
         className="modal"
         onRequestClose={this.handleClose}
         isOpen>
+        <div className="popover-outer">
 
-        <div className="quick-search">
-          <div className="modal__content">
+          <Popover node={node} isShow={isShow}>
+            { this.renderInfo() }
+          </Popover>
 
-            {this.renderHeader()}
+          <div className="quick-search">
+            <div className="modal__content">
 
-            {/*this.renderSearchInput()*/}
-            { this.renderSearchLetter() }
-            
+              {this.renderHeader()}
 
-            <ul className="results" ref="results">
-              {this.renderResults()}
-            </ul>
+              {/*this.renderSearchInput()*/}
+              { this.renderSearchLetter() }
+              
 
+              <ul className="results" ref="results">
+                {this.renderResults()}
+              </ul>
+
+            </div>
           </div>
         </div>
 
