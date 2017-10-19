@@ -272,6 +272,8 @@ var QuickSearch = function (_Component) {
   };
 
   QuickSearch.prototype.renderHeader = function renderHeader() {
+    var _this4 = this;
+
     return _react2.default.createElement(
       'header',
       { className: 'header' },
@@ -282,47 +284,14 @@ var QuickSearch = function (_Component) {
       ),
       _react2.default.createElement(
         'div',
-        { className: 'pull-right' },
+        { className: 'pull-right', style: { cursor: 'Pointer' } },
         _react2.default.createElement(
           'strong',
-          null,
-          'esc'
-        ),
-        '\xA0 ',
-        _react2.default.createElement(_reactIntl.FormattedMessage, { id: 'modal.quickSearch.toClose' })
-      ),
-      _react2.default.createElement(
-        'div',
-        { className: 'pull-right' },
-        _react2.default.createElement(
-          'strong',
-          null,
-          '\u21B5'
-        ),
-        '\xA0 ',
-        _react2.default.createElement(_reactIntl.FormattedMessage, { id: 'modal.quickSearch.toSelect' })
-      ),
-      _react2.default.createElement(
-        'div',
-        { className: 'pull-right' },
-        _react2.default.createElement(
-          'strong',
-          null,
-          'tab'
-        ),
-        '\xA0 or \xA0',
-        _react2.default.createElement(
-          'strong',
-          null,
-          '\u2191'
-        ),
-        _react2.default.createElement(
-          'strong',
-          null,
-          '\u2193'
-        ),
-        '\xA0 ',
-        _react2.default.createElement(_reactIntl.FormattedMessage, { id: 'modal.quickSearch.toNavigate' })
+          { onClick: function onClick() {
+              return _this4.handleClose();
+            } },
+          '\u5173\u95ED'
+        )
       )
     );
   };
