@@ -73,7 +73,8 @@ class QuickSearch extends Component {
     this.cleanListeners();
     this.listeners = [
       // EventListener.listen(document, 'keydown', this.handleKeyDown),
-      EventListener.listen(document, 'mousemove', this.popoverHide)
+      EventListener.listen(document, 'mousemove', this.popoverHide),
+      EventListener.listen(this.refs.results, 'scroll', this.popoverHide)
     ];
   }
 

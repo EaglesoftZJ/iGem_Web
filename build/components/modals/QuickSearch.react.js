@@ -142,7 +142,7 @@ var QuickSearch = function (_Component) {
     this.cleanListeners();
     this.listeners = [
     // EventListener.listen(document, 'keydown', this.handleKeyDown),
-    _EventListener2.default.listen(document, 'mousemove', this.popoverHide)];
+    _EventListener2.default.listen(document, 'mousemove', this.popoverHide), _EventListener2.default.listen(this.refs.results, 'scroll', this.popoverHide)];
   };
 
   QuickSearch.prototype.cleanListeners = function cleanListeners() {

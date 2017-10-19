@@ -6,6 +6,8 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _reactIntl = require('react-intl');
+
 var _utils = require('flux/utils');
 
 var _jquery = require('jquery');
@@ -100,10 +102,17 @@ var Popover = function (_Component) {
     return _react2.default.createElement('div', { className: 'arrow', style: style });
   };
 
+  Popover.prototype.renderInfo = function renderInfo() {
+    var children = this.props.children;
+
+    if (!children) {
+      return _react2.default.createElement(_reactIntl.FormattedHTMLMessage, { id: 'modal.quickSearch.notHaveInfo' });
+    }
+    return children;
+  };
+
   Popover.prototype.render = function render() {
-    var _props = this.props,
-        isShow = _props.isShow,
-        children = _props.children;
+    var isShow = this.props.isShow;
     var _state2 = this.state,
         left = _state2.left,
         top = _state2.top;
@@ -112,7 +121,7 @@ var Popover = function (_Component) {
     return _react2.default.createElement(
       'div',
       { ref: 'popover', onMouseMove: this.handleMouseMove, className: popoverClassName, style: { left: left + 'px', top: top + 'px' } },
-      children,
+      this.renderInfo(),
       this.renderArrow()
     );
   };

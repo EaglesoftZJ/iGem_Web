@@ -3,6 +3,7 @@
  */
 
 import React, { Component, PropTypes, Children } from 'react';
+import { FormattedHTMLMessage } from 'react-intl';
 import { Container } from 'flux/utils';
 import $ from 'jquery';
 
@@ -75,14 +76,21 @@ class Popover extends Component {
       <div className="arrow" style={style}></div>
     )
   }
+  renderInfo() {
+    const { children } = this.props;
+    if (!children) {
+      return <FormattedHTMLMessage id="modal.quickSearch.notHaveInfo"/>
+    }
+    return children;
+  }
 
   render() {
-    const { isShow, children} = this.props;
+    const { isShow } = this.props;
     const { left, top } = this.state;
     let popoverClassName = classnames('popover-con', {'hide': !isShow});
    return (
       <div ref="popover" onMouseMove={this.handleMouseMove} className={popoverClassName} style={{left: left + 'px', top: top + 'px'}}>
-        { children }
+        { this.renderInfo() }
         { this.renderArrow() }
       </div>
     );
