@@ -62,9 +62,12 @@
     "highlight.js": "9.4.0",
     "immutable": "3.8.1",
     "intl": "1.2.4",
+    "jquery": "^3.2.1",
     "jsonlylightbox": "github:actorapp/jsOnlyLightbox#develop",
     "keymirror": "0.1.1",
+    "linq": "3.0.9",
     "lodash": "4.13.1",
+    "makepy": "^1.1.0",
     "normalize.css": "4.1.1",
     "object-assign": "4.1.0",
     "opus-recorder": "github:actorapp/Recorderjs",
@@ -80,8 +83,7 @@
     "react-modal": "1.3.0",
     "react-router": "2.4.1",
     "setimmediate": "1.0.4",
-    "simple-scrollbar": "github:actorapp/simple-scrollbar",
-    "linq": "3.0.9"
+    "simple-scrollbar": "github:actorapp/simple-scrollbar"
   },
   "devDependencies": {
     "autoprefixer": "^6.3.6",

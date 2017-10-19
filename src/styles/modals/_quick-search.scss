@@ -47,6 +47,16 @@
       cursor: pointer;
 
       color: $mine-shaft;
+      &__info {
+        margin-left: 10px;
+        color: rgba(0, 0, 0, 0.5);
+        text-decoration: none;
+        .account-icon {
+          font-size: 20px;
+          vertical-align: text-bottom;
+          transition: all 0.3s ease-out;
+        }
+      }
       .title {
         font-size: 15px;
         line-height: 32px;
@@ -69,10 +79,14 @@
       }
       &--active {
         font-weight: 500;
-
         color: white;
         background-color: $dark-sky-blue;
         text-shadow: 0 1px 1px darken($dark-sky-blue, 10);
+        .account-icon {
+          &:hover {
+            color: rgba(255, 255, 255, 1);
+          }
+        }
         .hint {
           display: inline-block;
 

@@ -176,7 +176,6 @@ class LoginActionCreators extends ActionCreators {
       data: 'k=eagleSoftWebService',
       success: res => {
         DepartmentActionCreators.setRes({res});
-      
       }
     });
 

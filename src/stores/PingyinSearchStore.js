@@ -1,29 +1,25 @@
 /*
  * Copyright (C) 2015 Actor LLC. <https://actor.im>
  */
+
 import { ReduceStore } from 'flux/utils';
 import Dispatcher from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes } from '../constants/ActorAppConstants';
+import linq from 'Linq';
 
-
-class DepartmentStore extends ReduceStore {
+class PingyinSearchStore extends ReduceStore {
   getInitialState() {
-    return {
-      dw_data: [],
-      bm_data: [],
-      yh_data: [],
-      yh_pinyin: {}
-    }
+    return {}
   }
 
   reduce(state, action) {
     switch (action.type) {
-      case ActionTypes.DEPARTMENT_CHANGED:
-        return action.res;
+      case ActionTypes.PINGYIN_SEARCH_CHANGED:
+        return action.obj;
       default:
         return state;
     }
   }
 }
 
-export default new DepartmentStore(Dispatcher);
+export default new PingyinSearchStore(Dispatcher);

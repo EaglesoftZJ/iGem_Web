@@ -10,6 +10,10 @@ var _ActorAppDispatcher2 = _interopRequireDefault(_ActorAppDispatcher);
 
 var _ActorAppConstants = require('../constants/ActorAppConstants');
 
+var _Linq = require('Linq');
+
+var _Linq2 = _interopRequireDefault(_Linq);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -20,36 +24,30 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 * Copyright (C) 2015 Actor LLC. <https://actor.im>
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 */
 
+var PingyinSearchStore = function (_ReduceStore) {
+  _inherits(PingyinSearchStore, _ReduceStore);
 
-var DepartmentStore = function (_ReduceStore) {
-  _inherits(DepartmentStore, _ReduceStore);
-
-  function DepartmentStore() {
-    _classCallCheck(this, DepartmentStore);
+  function PingyinSearchStore() {
+    _classCallCheck(this, PingyinSearchStore);
 
     return _possibleConstructorReturn(this, _ReduceStore.apply(this, arguments));
   }
 
-  DepartmentStore.prototype.getInitialState = function getInitialState() {
-    return {
-      dw_data: [],
-      bm_data: [],
-      yh_data: [],
-      yh_pinyin: {}
-    };
+  PingyinSearchStore.prototype.getInitialState = function getInitialState() {
+    return {};
   };
 
-  DepartmentStore.prototype.reduce = function reduce(state, action) {
+  PingyinSearchStore.prototype.reduce = function reduce(state, action) {
     switch (action.type) {
-      case _ActorAppConstants.ActionTypes.DEPARTMENT_CHANGED:
-        return action.res;
+      case _ActorAppConstants.ActionTypes.PINGYIN_SEARCH_CHANGED:
+        return action.obj;
       default:
         return state;
     }
   };
 
-  return DepartmentStore;
+  return PingyinSearchStore;
 }(_utils.ReduceStore);
 
-exports.default = new DepartmentStore(_ActorAppDispatcher2.default);
-//# sourceMappingURL=DepartmentStore.js.map
+exports.default = new PingyinSearchStore(_ActorAppDispatcher2.default);
+//# sourceMappingURL=PingyinSearchStore.js.map

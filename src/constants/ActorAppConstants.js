@@ -196,6 +196,8 @@ export const ActionTypes = keymirror({
   QUICK_SEARCH_CHANGED: null,
   QUICK_SEARCH: null,
 
+  PINGYIN_SEARCH_CHANGED: null,
+
   DEPARTMENT_SHOW: null,
   DEPARTMENT_HIDE: null,
   DEPARTMENT_CHANGED: null,

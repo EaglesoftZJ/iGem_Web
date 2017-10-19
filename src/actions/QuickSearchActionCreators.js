@@ -5,6 +5,7 @@
 import { dispatch } from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes } from '../constants/ActorAppConstants';
 import ComposeActionCreators from '../actions/ComposeActionCreators';
+import PingyinSearchActionCreators from './PingyinSearchActionCreators';
 
 export default {
   show() {
@@ -19,5 +20,6 @@ export default {
 
   setQuickSearchList(list) {
     dispatch(ActionTypes.QUICK_SEARCH_CHANGED, { list });
+    PingyinSearchActionCreators.setPingyinSearchList(list);
   }
 };
