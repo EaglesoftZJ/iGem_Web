@@ -182,10 +182,10 @@ class Recent extends Component {
 
   renderHistoryButton() {
     // actually this is hack, but it's ok while we haven't real flag
-    const isArchiveEmpty = this.props.dialogs.some((group) => !group.shorts.length);
-    if (isArchiveEmpty) {
-      return null;
-    }
+    // const isArchiveEmpty = this.props.dialogs.some((group) => !group.shorts.length);
+    // if (isArchiveEmpty) {
+    //   return null;
+    // }
 
     return (
       <SidebarLink
