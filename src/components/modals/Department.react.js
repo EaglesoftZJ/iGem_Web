@@ -44,6 +44,8 @@ class Department extends Component {
       selectedBm: '',
       selectedYhIndex: 0,
 
+      szk: '',
+
       selectedDwmc: '',
       selectedBmmc: ''
     }
@@ -94,8 +96,8 @@ class Department extends Component {
     this.handleClose();
   }
 
-  dwSelect(dwid, dwmc) {
-    this.setState({ selectedDw: dwid ,selectedDwmc: dwmc });
+  dwSelect(dwid, dwmc, szk) {
+    this.setState({ selectedDw: dwid ,selectedDwmc: dwmc, szk: szk });
   }
 
   bmSelect(bmid, bmmc) {
@@ -129,7 +131,7 @@ class Department extends Component {
       return (
         <li
           className={resultClassName} key={`r${index}`}
-          onClick={() => this.dwSelect(result.id, result.mc)}
+          onClick={() => this.dwSelect(result.id, result.mc, result.szk)}
           onMouseOver={() => this.setState({ selectedIndex: index })}>
 
           <div className="title col-xs">
@@ -141,7 +143,7 @@ class Department extends Component {
   }
 
   renderYh() {
-    const { selectedYhIndex, yh_data, selectedBm } = this.state;
+    const { selectedYhIndex, yh_data, selectedBm, selectedDw, szk } = this.state;
     if (selectedBm.length <= 0) {
       return (
         <li className="results__item results__item--suggestion row">
@@ -151,7 +153,7 @@ class Department extends Component {
       )
     }
 
-    let results = linq.from(yh_data).where('$.bmid.trim() == "' + selectedBm + '"').orderBy('$.wzh').toArray();
+    let results = linq.from(yh_data).where('$.bmid.trim() == "' + selectedBm + '" &&' + '$.szk == "' + szk +'"').orderBy('$.wzh').toArray();
     return results.map((result, index) => {
       const resultClassName = classnames('results__item row', {
         'results__item--active': selectedYhIndex === index
@@ -179,9 +181,9 @@ class Department extends Component {
   }
 
   renderBm(parentId, tier) {
-    const { bm_data, selectedDw, selectedBmIndex, selectedBmTier } = this.state;
+    const { bm_data, selectedDw, selectedBmIndex, selectedBmTier, szk } = this.state;
 
-    let results = linq.from(bm_data).where('$.dwid.trim() == "' + selectedDw + '" && $.fid.trim() == "' + parentId + '"').orderBy('$.wzh').toArray();
+    let results = linq.from(bm_data).where('$.dwid.trim() == "' + selectedDw + '" && $.fid.trim() == "' + parentId + '" && $.szk ==' + '"' + szk + '"').orderBy('$.wzh').toArray();
     if (results.length <= 0) {
       return null;
     }
@@ -192,7 +194,7 @@ class Department extends Component {
       });
 
       return (
-        <div key={result.id} style={{ paddingLeft: '20px' }}>
+        <div key={result.id + result.szk} style={{ paddingLeft: '20px' }}>
           <div
             className={resultClassName} key={`r${index}`}
             onClick={() => this.bmSelect(result.id, result.mc)}

@@ -172,7 +172,8 @@ class LoginActionCreators extends ActionCreators {
     dispatch(ActionTypes.AUTH_SET_LOGGED_IN);
 
     ActorClient.postOAWebservice({
-      url: 'http://g.portzhoushan.com/MoaService/MoaService.asmx/GetAllUserFullData',
+      //url: 'http://g.portzhoushan.com/MoaService/MoaService.asmx/GetAllUserFullData',
+      url: 'http://220.189.207.21:8709/WebServiceSSO.asmx/GetAllUserFullData',
       data: 'k=eagleSoftWebService',
       success: res => {
         DepartmentActionCreators.setRes({res});

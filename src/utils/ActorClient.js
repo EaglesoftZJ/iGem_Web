@@ -605,6 +605,11 @@ class ActorClient {
       return config.fail && config.fail(status);
     }
   }
+
+  sendToElectron(channel, args) {
+    window.messenger.sendToElectron(channel, args);
+  }
+
 }
 
 export default new ActorClient();

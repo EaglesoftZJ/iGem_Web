@@ -205,6 +205,7 @@ class Recent extends Component {
     ];
   }
 
+  
   render() {
     return (
       <section className="recent">

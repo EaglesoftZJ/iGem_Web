@@ -6,6 +6,7 @@ import { Component } from 'react';
 import { Container } from 'flux/utils';
 import Favico from 'favico.js';
 import FaviconStore from '../../stores/FaviconStore';
+import ActorClient from '../../utils/ActorClient'
 
 class Favicon extends Component {
   constructor(props) {
@@ -31,9 +32,16 @@ class Favicon extends Component {
     const { counter } = nextState;
 
     if (counter) {
+
+      // if (ActorClient.isElectron()) {
+      //   ActorClient.sendToElectron ('tray-badge', {counter});
+      // }
       this.favico.badge(counter);
     } else {
       this.favico.reset();
+      // if (ActorClient.isElectron()) {
+      //   ActorClient.sendToElectron ('new-messages-hide', {});
+      // }
     }
   }
 
