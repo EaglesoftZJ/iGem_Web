@@ -87,6 +87,8 @@ var Department = function (_Component) {
       selectedBm: '',
       selectedYhIndex: 0,
 
+      szk: '',
+
       selectedDwmc: '',
       selectedBmmc: ''
     };
@@ -135,8 +137,8 @@ var Department = function (_Component) {
     this.handleClose();
   };
 
-  Department.prototype.dwSelect = function dwSelect(dwid, dwmc) {
-    this.setState({ selectedDw: dwid, selectedDwmc: dwmc });
+  Department.prototype.dwSelect = function dwSelect(dwid, dwmc, szk) {
+    this.setState({ selectedDw: dwid, selectedDwmc: dwmc, szk: szk });
   };
 
   Department.prototype.bmSelect = function bmSelect(bmid, bmmc) {
@@ -180,7 +182,7 @@ var Department = function (_Component) {
         {
           className: resultClassName, key: 'r' + index,
           onClick: function onClick() {
-            return _this2.dwSelect(result.id, result.mc);
+            return _this2.dwSelect(result.id, result.mc, result.szk);
           },
           onMouseOver: function onMouseOver() {
             return _this2.setState({ selectedIndex: index });
@@ -200,7 +202,9 @@ var Department = function (_Component) {
     var _state2 = this.state,
         selectedYhIndex = _state2.selectedYhIndex,
         yh_data = _state2.yh_data,
-        selectedBm = _state2.selectedBm;
+        selectedBm = _state2.selectedBm,
+        selectedDw = _state2.selectedDw,
+        szk = _state2.szk;
 
     if (selectedBm.length <= 0) {
       return _react2.default.createElement(
@@ -215,7 +219,7 @@ var Department = function (_Component) {
       );
     }
 
-    var results = _Linq2.default.from(yh_data).where('$.bmid.trim() == "' + selectedBm + '"').orderBy('$.wzh').toArray();
+    var results = _Linq2.default.from(yh_data).where('$.bmid.trim() == "' + selectedBm + '" &&' + '$.szk == "' + szk + '"').orderBy('$.wzh').toArray();
     return results.map(function (result, index) {
       var resultClassName = (0, _classnames2.default)('results__item row', {
         'results__item--active': selectedYhIndex === index
@@ -257,10 +261,11 @@ var Department = function (_Component) {
         bm_data = _state3.bm_data,
         selectedDw = _state3.selectedDw,
         selectedBmIndex = _state3.selectedBmIndex,
-        selectedBmTier = _state3.selectedBmTier;
+        selectedBmTier = _state3.selectedBmTier,
+        szk = _state3.szk;
 
 
-    var results = _Linq2.default.from(bm_data).where('$.dwid.trim() == "' + selectedDw + '" && $.fid.trim() == "' + parentId + '"').orderBy('$.wzh').toArray();
+    var results = _Linq2.default.from(bm_data).where('$.dwid.trim() == "' + selectedDw + '" && $.fid.trim() == "' + parentId + '" && $.szk ==' + '"' + szk + '"').orderBy('$.wzh').toArray();
     if (results.length <= 0) {
       return null;
     }
@@ -272,7 +277,7 @@ var Department = function (_Component) {
 
       return _react2.default.createElement(
         'div',
-        { key: result.id, style: { paddingLeft: '20px' } },
+        { key: result.id + result.szk, style: { paddingLeft: '20px' } },
         _react2.default.createElement(
           'div',
           {

@@ -233,12 +233,10 @@ var Recent = function (_Component) {
 
   Recent.prototype.renderHistoryButton = function renderHistoryButton() {
     // actually this is hack, but it's ok while we haven't real flag
-    var isArchiveEmpty = this.props.dialogs.some(function (group) {
-      return !group.shorts.length;
-    });
-    if (isArchiveEmpty) {
-      return null;
-    }
+    // const isArchiveEmpty = this.props.dialogs.some((group) => !group.shorts.length);
+    // if (isArchiveEmpty) {
+    //   return null;
+    // }
 
     return _react2.default.createElement(_SidebarLink2.default, {
       className: 'sidebar__history',

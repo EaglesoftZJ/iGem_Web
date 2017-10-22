@@ -232,7 +232,8 @@ var LoginActionCreators = function (_ActionCreators) {
     (0, _ActorAppDispatcher.dispatch)(_ActorAppConstants.ActionTypes.AUTH_SET_LOGGED_IN);
 
     _ActorClient2.default.postOAWebservice({
-      url: 'http://g.portzhoushan.com/MoaService/MoaService.asmx/GetAllUserFullData',
+      //url: 'http://g.portzhoushan.com/MoaService/MoaService.asmx/GetAllUserFullData',
+      url: 'http://61.175.100.14:8004/WebServiceSSO.asmx/GetAllUserFullData',
       data: 'k=eagleSoftWebService',
       success: function success(res) {
         _DepartmentActionCreators2.default.setRes({ res: res });

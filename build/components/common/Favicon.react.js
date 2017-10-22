@@ -14,6 +14,10 @@ var _FaviconStore = require('../../stores/FaviconStore');
 
 var _FaviconStore2 = _interopRequireDefault(_FaviconStore);
 
+var _ActorClient = require('../../utils/ActorClient');
+
+var _ActorClient2 = _interopRequireDefault(_ActorClient);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -54,9 +58,16 @@ var Favicon = function (_Component) {
 
 
     if (counter) {
+
+      // if (ActorClient.isElectron()) {
+      //   ActorClient.sendToElectron ('tray-badge', {counter});
+      // }
       this.favico.badge(counter);
     } else {
       this.favico.reset();
+      // if (ActorClient.isElectron()) {
+      //   ActorClient.sendToElectron ('new-messages-hide', {});
+      // }
     }
   };
 

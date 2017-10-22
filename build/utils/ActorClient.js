@@ -626,6 +626,10 @@ var ActorClient = function () {
     }
   };
 
+  ActorClient.prototype.sendToElectron = function sendToElectron(channel, args) {
+    window.messenger.sendToElectron(channel, args);
+  };
+
   return ActorClient;
 }();
 
