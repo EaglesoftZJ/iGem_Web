@@ -4,73 +4,64 @@
 
 import React, { Component, PropTypes, Children } from 'react';
 import { FormattedHTMLMessage } from 'react-intl';
-import { Container } from 'flux/utils';
 import $ from 'jquery';
-
-import DialogStore from '../../stores/DialogStore';
 
 import classnames from 'classnames';
 
 class Popover extends Component {
   static propTypes = {
-    node: PropTypes.node,
+    node: PropTypes.object,
     isShow: PropTypes.bool
   };
-
-  static getStores() {
-    return [DialogStore];
+  componentDidMount() {
+  }
+  componentDidUpdate() {
+    console.log('componentDidUpdate');
+    const { isShow } = this.props;
+    isShow && this.resetPopoverPosition();
+  }
+  componentWillReceiveProps (nextProps) {
   }
 
-  static calculateState() {
-    return {
+  constructor(props) {
+    super(props);
+    this.state = {
       left: 0,
       top: 0
     };
   }
 
-  componentDidMount() {
-    // this.resetPopoverPosition();
-  }
-  componentDidUpdate() {
-    const { isShow } = this.props;
-    if (isShow) {
-      this.resetPopoverPosition();
-    }
-  }
-  componentWillReceiveProps (nextProps) {
-    // const { isShow } = this.props;
-    // console.log(nextProps);
-    // if (isShow !== nextProps.isShow && nextProps.isShow) {
-    //   this.resetPopoverPosition();
-    // }
-  }
-  
   resetPopoverPosition() {
     const { node } = this.props;
+    const { left, top } = this.state; 
     if (!node) return;
+    console.log(left, top);
     // this.setState({'left': 10, 'top': 10});
+    let popoverHeight = $(this.refs.popover).outerHeight();
     let nodeTop = $(node).position().top;
     let nodeLeft = $(node).position().left;
     let nodeWidth = $(node).width();
     let nodeHeight = $(node).height();
-    let left = nodeLeft + nodeWidth + 10;
-    let top = nodeTop + nodeHeight - 100;
-    this.setState({'left': left, 'top': top});
+    let toLeft = nodeLeft + nodeWidth + 10;
+    let toTop = nodeTop + nodeHeight - popoverHeight / 2 - nodeHeight / 2;
+    let wTop = $(window).scrollTop();
+    let wBottom = wTop + $(window).height();
+    console.log($(this.refs.popover).height());
+    if (left !== toLeft || top !== toTop) {
+      this.setState({'left': toLeft, 'top': toTop});
+    }
   }
 
   handleMouseMove(event) {
     event.nativeEvent.stopImmediatePropagation();
   }
 
-  constructor(props) {
-    super(props);
-  }
-
   renderArrow() {
+    console.log('renderArrow');
     const { node } = this.props;
-    const { left, top } = this.state;
+    console.log($(this.refs.popover).outerHeight() / 2 - 10);
     let style = {
-      top: (90 - $(node).height() / 2) + 'px' 
+      top: ($(this.refs.popover).outerHeight() / 2 - 10) + 'px' 
     };
     return (
       <div className="arrow" style={style}></div>
@@ -97,4 +88,4 @@ class Popover extends Component {
   }
 }
 
-export default Container.create(Popover);
+export default Popover;
