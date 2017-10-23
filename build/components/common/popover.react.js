@@ -8,15 +8,9 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactIntl = require('react-intl');
 
-var _utils = require('flux/utils');
-
 var _jquery = require('jquery');
 
 var _jquery2 = _interopRequireDefault(_jquery);
-
-var _DialogStore = require('../../stores/DialogStore');
-
-var _DialogStore2 = _interopRequireDefault(_DialogStore);
 
 var _classnames = require('classnames');
 
@@ -35,69 +29,59 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var Popover = function (_Component) {
   _inherits(Popover, _Component);
 
-  Popover.getStores = function getStores() {
-    return [_DialogStore2.default];
-  };
-
-  Popover.calculateState = function calculateState() {
-    return {
-      left: 0,
-      top: 0
-    };
-  };
-
-  Popover.prototype.componentDidMount = function componentDidMount() {
-    // this.resetPopoverPosition();
-  };
+  Popover.prototype.componentDidMount = function componentDidMount() {};
 
   Popover.prototype.componentDidUpdate = function componentDidUpdate() {
     var isShow = this.props.isShow;
 
-    if (isShow) {
-      this.resetPopoverPosition();
-    }
+    isShow && this.resetPopoverPosition();
   };
 
-  Popover.prototype.componentWillReceiveProps = function componentWillReceiveProps(nextProps) {
-    // const { isShow } = this.props;
-    // console.log(nextProps);
-    // if (isShow !== nextProps.isShow && nextProps.isShow) {
-    //   this.resetPopoverPosition();
-    // }
-  };
+  Popover.prototype.componentWillReceiveProps = function componentWillReceiveProps(nextProps) {};
+
+  function Popover(props) {
+    _classCallCheck(this, Popover);
+
+    var _this = _possibleConstructorReturn(this, _Component.call(this, props));
+
+    _this.state = {
+      left: 0,
+      top: 0
+    };
+    return _this;
+  }
 
   Popover.prototype.resetPopoverPosition = function resetPopoverPosition() {
     var node = this.props.node;
+    var _state = this.state,
+        left = _state.left,
+        top = _state.top;
 
     if (!node) return;
     // this.setState({'left': 10, 'top': 10});
+    var popoverHeight = (0, _jquery2.default)(this.refs.popover).outerHeight();
     var nodeTop = (0, _jquery2.default)(node).position().top;
     var nodeLeft = (0, _jquery2.default)(node).position().left;
     var nodeWidth = (0, _jquery2.default)(node).width();
     var nodeHeight = (0, _jquery2.default)(node).height();
-    var left = nodeLeft + nodeWidth + 10;
-    var top = nodeTop + nodeHeight - 100;
-    this.setState({ 'left': left, 'top': top });
+    var toLeft = nodeLeft + nodeWidth + 10;
+    var toTop = nodeTop + nodeHeight - popoverHeight / 2 - nodeHeight / 2;
+    var wTop = (0, _jquery2.default)(window).scrollTop();
+    var wBottom = wTop + (0, _jquery2.default)(window).height();
+    if (left !== toLeft || top !== toTop) {
+      this.setState({ 'left': toLeft, 'top': toTop });
+    }
   };
 
   Popover.prototype.handleMouseMove = function handleMouseMove(event) {
     event.nativeEvent.stopImmediatePropagation();
   };
 
-  function Popover(props) {
-    _classCallCheck(this, Popover);
-
-    return _possibleConstructorReturn(this, _Component.call(this, props));
-  }
-
   Popover.prototype.renderArrow = function renderArrow() {
     var node = this.props.node;
-    var _state = this.state,
-        left = _state.left,
-        top = _state.top;
 
     var style = {
-      top: 90 - (0, _jquery2.default)(node).height() / 2 + 'px'
+      top: (0, _jquery2.default)(this.refs.popover).outerHeight() / 2 - 10 + 'px'
     };
     return _react2.default.createElement('div', { className: 'arrow', style: style });
   };
@@ -130,8 +114,8 @@ var Popover = function (_Component) {
 }(_react.Component);
 
 Popover.propTypes = {
-  node: _react.PropTypes.node,
+  node: _react.PropTypes.object,
   isShow: _react.PropTypes.bool
 };
-exports.default = _utils.Container.create(Popover);
+exports.default = Popover;
 //# sourceMappingURL=popover.react.js.map

@@ -12,6 +12,10 @@ var _utils = require('flux/utils');
 
 var _reactIntl = require('react-intl');
 
+var _jquery = require('jquery');
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
 var _EventListener = require('fbjs/lib/EventListener');
 
 var _EventListener2 = _interopRequireDefault(_EventListener);
@@ -84,13 +88,15 @@ var Department = function (_Component) {
       selectedDw: '',
       selectedBmIndex: 0,
       selectedBmTier: 0,
+      hoverId: '',
       selectedBm: '',
       selectedYhIndex: 0,
 
       szk: '',
 
       selectedDwmc: '',
-      selectedBmmc: ''
+      selectedBmmc: '',
+      scrollTo: -1
     };
   };
 
@@ -111,6 +117,20 @@ var Department = function (_Component) {
 
   Department.prototype.componentWillUnmount = function componentWillUnmount() {
     this.cleanListeners();
+  };
+
+  Department.prototype.componentDidUpdate = function componentDidUpdate() {
+    // this.scrollTo();
+  };
+
+  Department.prototype.scrollTo = function scrollTo() {
+    var scrollTo = this.state.scrollTo;
+
+    if (scrollTo > -1) {
+      (0, _jquery2.default)(this.refs.bms).scrollTop(scrollTo);
+      this.setState({ scrollTo: -1 });
+      debugger;
+    }
   };
 
   Department.prototype.setListeners = function setListeners() {
@@ -137,8 +157,19 @@ var Department = function (_Component) {
     this.handleClose();
   };
 
-  Department.prototype.dwSelect = function dwSelect(dwid, dwmc, szk) {
-    this.setState({ selectedDw: dwid, selectedDwmc: dwmc, szk: szk });
+  Department.prototype.dwSelect = function dwSelect(dwid, dwmc, szk, event) {
+    var _state = this.state,
+        selectedDw = _state.selectedDw,
+        selectedDwmc = _state.selectedDwmc;
+
+    var scrollTop = (0, _jquery2.default)(event.target).parents('li').position().top;
+    var scrollTo = (0, _jquery2.default)(this.refs.bms).scrollTop() + scrollTop;
+    if (selectedDw === dwid && selectedDwmc === dwmc) {
+      dwid = '';
+      dwmc = '';
+      szk = '';
+    }
+    this.setState({ selectedDw: dwid, selectedBm: '', selectedDwmc: dwmc, selectedBmmc: '', szk: szk, scrollTo: scrollTo });
   };
 
   Department.prototype.bmSelect = function bmSelect(bmid, bmmc) {
@@ -154,43 +185,57 @@ var Department = function (_Component) {
   Department.prototype.renderDw = function renderDw() {
     var _this2 = this;
 
-    var _state = this.state,
-        selectedIndex = _state.selectedIndex,
-        dw_data = _state.dw_data;
+    var _state2 = this.state,
+        selectedIndex = _state2.selectedIndex,
+        dw_data = _state2.dw_data,
+        selectedDw = _state2.selectedDw,
+        hoverId = _state2.hoverId;
 
     if (dw_data.length <= 0) {
       return _react2.default.createElement(
         'li',
         { className: 'results__item results__item--suggestion row' },
-        _react2.default.createElement(_reactIntl.FormattedHTMLMessage, { id: 'modal.department.notFound', values: { query: query } }),
+        _react2.default.createElement(_reactIntl.FormattedHTMLMessage, { id: 'modal.department.notFound' }),
         _react2.default.createElement(
           'button',
           { className: 'button button--rised hide' },
-          'Create new dialog ',
-          query
+          'Create new dialog'
         )
       );
     }
 
     return dw_data.map(function (result, index) {
       var resultClassName = (0, _classnames2.default)('results__item row', {
-        'results__item--active': selectedIndex === index
+        'results__item--active': hoverId === result.id,
+        'results__item--open': selectedDw === result.id
       });
+      var childrenStyle = { display: selectedDw === result.id ? 'block' : 'none' };
 
       return _react2.default.createElement(
         'li',
         {
-          className: resultClassName, key: 'r' + index,
-          onClick: function onClick() {
-            return _this2.dwSelect(result.id, result.mc, result.szk);
-          },
-          onMouseOver: function onMouseOver() {
-            return _this2.setState({ selectedIndex: index });
-          } },
+          style: { 'position': 'relative' },
+          key: 'r' + index },
         _react2.default.createElement(
           'div',
-          { className: 'title col-xs' },
-          result.mc
+          { className: resultClassName,
+            onClick: function onClick(event) {
+              return _this2.dwSelect(result.id, result.mc, result.szk, event);
+            },
+            onMouseEnter: function onMouseEnter() {
+              return _this2.setState({ hoverId: result.id });
+            } },
+          _react2.default.createElement(
+            'div',
+            { className: 'title col-xs' },
+            result.mc
+          ),
+          _react2.default.createElement('div', { className: 'arrow' })
+        ),
+        _react2.default.createElement(
+          'div',
+          { className: 'children-box' },
+          selectedDw === result.id ? _this2.renderBm(result.id, result.szk, -1) : null
         )
       );
     });
@@ -199,14 +244,15 @@ var Department = function (_Component) {
   Department.prototype.renderYh = function renderYh() {
     var _this3 = this;
 
-    var _state2 = this.state,
-        selectedYhIndex = _state2.selectedYhIndex,
-        yh_data = _state2.yh_data,
-        selectedBm = _state2.selectedBm,
-        selectedDw = _state2.selectedDw,
-        szk = _state2.szk;
+    var _state3 = this.state,
+        selectedYhIndex = _state3.selectedYhIndex,
+        yh_data = _state3.yh_data,
+        selectedBm = _state3.selectedBm,
+        selectedDw = _state3.selectedDw,
+        szk = _state3.szk;
 
-    if (selectedBm.length <= 0) {
+    var results = _Linq2.default.from(yh_data).where('$.bmid.trim() == "' + selectedBm + '" && $.dwid.trim() == "' + selectedDw + '"&&$.szk == "' + szk + '"').orderBy('$.wzh').toArray();
+    if (results.length <= 0) {
       return _react2.default.createElement(
         'li',
         { className: 'results__item results__item--suggestion row' },
@@ -218,8 +264,6 @@ var Department = function (_Component) {
         )
       );
     }
-
-    var results = _Linq2.default.from(yh_data).where('$.bmid.trim() == "' + selectedBm + '" &&' + '$.szk == "' + szk + '"').orderBy('$.wzh').toArray();
     return results.map(function (result, index) {
       var resultClassName = (0, _classnames2.default)('results__item row', {
         'results__item--active': selectedYhIndex === index
@@ -254,30 +298,30 @@ var Department = function (_Component) {
     });
   };
 
-  Department.prototype.renderBm = function renderBm(parentId, tier) {
+  Department.prototype.renderBm = function renderBm(dwId, szk, parentId) {
     var _this4 = this;
 
-    var _state3 = this.state,
-        bm_data = _state3.bm_data,
-        selectedDw = _state3.selectedDw,
-        selectedBmIndex = _state3.selectedBmIndex,
-        selectedBmTier = _state3.selectedBmTier,
-        szk = _state3.szk;
+    var _state4 = this.state,
+        bm_data = _state4.bm_data,
+        selectedBm = _state4.selectedBm,
+        hoverId = _state4.hoverId;
 
 
-    var results = _Linq2.default.from(bm_data).where('$.dwid.trim() == "' + selectedDw + '" && $.fid.trim() == "' + parentId + '" && $.szk ==' + '"' + szk + '"').orderBy('$.wzh').toArray();
+    var results = _Linq2.default.from(bm_data).where('$.dwid.trim() == "' + dwId + '" && $.fid.trim() == "' + parentId + '" && $.szk ==' + '"' + szk + '"').orderBy('$.wzh').toArray();
+
     if (results.length <= 0) {
       return null;
     }
 
     return results.map(function (result, index) {
       var resultClassName = (0, _classnames2.default)('results__item row', {
-        'results__item--active': selectedBmIndex === tier + index
+        'results__item--active': hoverId === result.id,
+        'results__item--selected': selectedBm === result.id
       });
 
       return _react2.default.createElement(
         'div',
-        { key: result.id + result.szk, style: { paddingLeft: '20px' } },
+        { key: result.id + result.szk, className: 'results__item__bm', style: { paddingLeft: '20px' } },
         _react2.default.createElement(
           'div',
           {
@@ -285,16 +329,15 @@ var Department = function (_Component) {
             onClick: function onClick() {
               return _this4.bmSelect(result.id, result.mc);
             },
-            onMouseOver: function onMouseOver() {
-              return _this4.setState({ selectedBmIndex: tier + index, selectedBmTier: tier });
+            onMouseEnter: function onMouseEnter() {
+              return _this4.setState({ hoverId: result.id });
             } },
           _react2.default.createElement(
             'div',
             { className: 'title col-xs' },
             result.mc
           )
-        ),
-        _this4.renderBm(result.id, (tier + index + 1) * 20)
+        )
       );
     });
   };
@@ -302,34 +345,11 @@ var Department = function (_Component) {
   Department.prototype.renderHeader = function renderHeader() {
     var _this5 = this;
 
-    var _state4 = this.state,
-        selectedDw = _state4.selectedDw,
-        selectedDwmc = _state4.selectedDwmc,
-        selectedBmmc = _state4.selectedBmmc;
+    var _state5 = this.state,
+        selectedDw = _state5.selectedDw,
+        selectedDwmc = _state5.selectedDwmc,
+        selectedBmmc = _state5.selectedBmmc;
 
-
-    if (selectedDw.length <= 0) {
-      return _react2.default.createElement(
-        'header',
-        { className: 'header' },
-        _react2.default.createElement(
-          'div',
-          { className: 'pull-left' },
-          _react2.default.createElement(_reactIntl.FormattedMessage, { id: 'modal.department.title' })
-        ),
-        _react2.default.createElement(
-          'div',
-          { className: 'pull-right', style: { cursor: 'Pointer' } },
-          _react2.default.createElement(
-            'strong',
-            { onClick: function onClick() {
-                return _this5.handleClose();
-              } },
-            '\u5173\u95ED'
-          )
-        )
-      );
-    }
 
     return _react2.default.createElement(
       'header',
@@ -341,8 +361,7 @@ var Department = function (_Component) {
           'strong',
           null,
           selectedDwmc,
-          '-',
-          selectedBmmc
+          selectedDw.length <= 0 ? _react2.default.createElement(_reactIntl.FormattedMessage, { id: 'modal.department.title' }) : selectedBmmc && '-' + selectedBmmc
         )
       ),
       _react2.default.createElement(
@@ -355,17 +374,6 @@ var Department = function (_Component) {
             } },
           '\u5173\u95ED'
         )
-      ),
-      _react2.default.createElement(
-        'div',
-        { className: 'pull-right', style: { cursor: 'Pointer' } },
-        _react2.default.createElement(
-          'strong',
-          { onClick: function onClick() {
-              return _this5.setState({ selectedDw: '', selectedBm: '', selectedDwmc: '', selectedBmmc: '' });
-            } },
-          '\u8FD4\u56DE'
-        )
       )
     );
   };
@@ -373,63 +381,37 @@ var Department = function (_Component) {
   Department.prototype.render = function render() {
     var selectedDw = this.state.selectedDw;
 
-
-    if (selectedDw.length <= 0) {
-      return _react2.default.createElement(
-        _reactModal2.default,
-        {
-          overlayClassName: 'modal-overlay',
-          className: 'modal',
-          onRequestClose: this.handleClose,
-          isOpen: true },
+    return _react2.default.createElement(
+      _reactModal2.default,
+      {
+        overlayClassName: 'modal-overlay',
+        className: 'modal',
+        onRequestClose: this.handleClose,
+        isOpen: true },
+      _react2.default.createElement(
+        'div',
+        { className: 'department' },
         _react2.default.createElement(
           'div',
-          { className: 'department' },
+          { className: 'modal__content' },
+          this.renderHeader(),
           _react2.default.createElement(
             'div',
-            { className: 'modal__content' },
-            this.renderHeader(),
+            { className: 'results' },
             _react2.default.createElement(
               'ul',
-              { className: 'dwResults', ref: 'results' },
+              { className: 'dw_bm_Results', ref: 'bms', style: { position: 'relative' } },
               this.renderDw()
-            )
-          )
-        )
-      );
-    } else {
-      return _react2.default.createElement(
-        _reactModal2.default,
-        {
-          overlayClassName: 'modal-overlay',
-          className: 'modal',
-          onRequestClose: this.handleClose,
-          isOpen: true },
-        _react2.default.createElement(
-          'div',
-          { className: 'department' },
-          _react2.default.createElement(
-            'div',
-            { className: 'modal__content' },
-            this.renderHeader(),
+            ),
             _react2.default.createElement(
               'div',
-              { className: 'results' },
-              _react2.default.createElement(
-                'div',
-                { className: 'bmResults', ref: 'bms' },
-                this.renderBm('-1', 0)
-              ),
-              _react2.default.createElement(
-                'div',
-                { className: 'yhResults', ref: 'yhs' },
-                this.renderYh()
-              )
+              { className: 'yhResults', ref: 'yhs' },
+              this.renderYh()
             )
           )
         )
-      );
-    }
+      )
+    );
   };
 
   return Department;

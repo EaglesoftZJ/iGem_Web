@@ -10,6 +10,10 @@ var _ActorAppDispatcher2 = _interopRequireDefault(_ActorAppDispatcher);
 
 var _ActorAppConstants = require('../constants/ActorAppConstants');
 
+var _linq = require('linq');
+
+var _linq2 = _interopRequireDefault(_linq);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -92,8 +96,12 @@ var ArchiveStore = function (_Store) {
 
       case _ActorAppConstants.ActionTypes.ARCHIVE_LOAD_MORE_SUCCESS:
         this.isLoading = false;
-        this._isAllLoaded = action.response.length === 0;
-        this.dialogs.push.apply(this.dialogs, action.response);
+        var id = action.response[0].peer.peer.id;
+        var results = _linq2.default.from(this.dialogs).where('$.peer.peer.id ==' + id).toArray();
+        if (results.length > 0 || action.response.length === 0) {
+          this._isAllLoaded = true;
+        }
+        !this._isAllLoaded && this.dialogs.push.apply(this.dialogs, action.response);
         this.__emitChange();
         break;
 
