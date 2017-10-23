@@ -5,6 +5,7 @@
 import { Store } from 'flux/utils';
 import Dispatcher from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes, AsyncActionStates } from '../constants/ActorAppConstants';
+import linq from 'linq';
 
 class ArchiveStore extends Store {
   constructor(dispatcher) {
@@ -74,9 +75,13 @@ class ArchiveStore extends Store {
 
       case ActionTypes.ARCHIVE_LOAD_MORE_SUCCESS:
         this.isLoading = false;
-        this._isAllLoaded = action.response.length === 0;
-        this.dialogs.push.apply(this.dialogs, action.response);
-        this.__emitChange();
+        var id = action.response[0].peer.peer.id;
+        var results = linq.from(this.dialogs).where('$.peer.peer.id ==' + id).toArray();
+        if (results.length > 0 || action.response.length === 0) {
+          this._isAllLoaded = true;
+        }
+        !this._isAllLoaded && this.dialogs.push.apply(this.dialogs, action.response);
+        this.__emitChange();  
         break;
 
       default:

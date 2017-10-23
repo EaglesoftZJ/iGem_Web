@@ -16,7 +16,6 @@ class Popover extends Component {
   componentDidMount() {
   }
   componentDidUpdate() {
-    console.log('componentDidUpdate');
     const { isShow } = this.props;
     isShow && this.resetPopoverPosition();
   }
@@ -35,7 +34,6 @@ class Popover extends Component {
     const { node } = this.props;
     const { left, top } = this.state; 
     if (!node) return;
-    console.log(left, top);
     // this.setState({'left': 10, 'top': 10});
     let popoverHeight = $(this.refs.popover).outerHeight();
     let nodeTop = $(node).position().top;
@@ -46,7 +44,6 @@ class Popover extends Component {
     let toTop = nodeTop + nodeHeight - popoverHeight / 2 - nodeHeight / 2;
     let wTop = $(window).scrollTop();
     let wBottom = wTop + $(window).height();
-    console.log($(this.refs.popover).height());
     if (left !== toLeft || top !== toTop) {
       this.setState({'left': toLeft, 'top': toTop});
     }
@@ -57,9 +54,7 @@ class Popover extends Component {
   }
 
   renderArrow() {
-    console.log('renderArrow');
     const { node } = this.props;
-    console.log($(this.refs.popover).outerHeight() / 2 - 10);
     let style = {
       top: ($(this.refs.popover).outerHeight() / 2 - 10) + 'px' 
     };

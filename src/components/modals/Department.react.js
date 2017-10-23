@@ -6,6 +6,7 @@ import React, { Component, PropTypes } from 'react';
 import { findDOMNode } from 'react-dom';
 import { Container } from 'flux/utils';
 import { FormattedMessage, FormattedHTMLMessage } from 'react-intl';
+import $ from 'jquery';
 import EventListener from 'fbjs/lib/EventListener';
 import fuzzaldrin from 'fuzzaldrin';
 import Modal from 'react-modal';
@@ -41,13 +42,15 @@ class Department extends Component {
       selectedDw: '',
       selectedBmIndex: 0,
       selectedBmTier: 0,
+      hoverId: '',
       selectedBm: '',
       selectedYhIndex: 0,
 
       szk: '',
 
       selectedDwmc: '',
-      selectedBmmc: ''
+      selectedBmmc: '',
+      scrollTo: -1
     }
   }
 
@@ -68,6 +71,17 @@ class Department extends Component {
 
   componentWillUnmount() {
     this.cleanListeners();
+  }
+  componentDidUpdate() {
+    // this.scrollTo();
+  }
+  scrollTo()  {
+   const { scrollTo } = this.state;
+    if (scrollTo > -1) {
+      $(this.refs.bms).scrollTop(scrollTo);
+      this.setState({scrollTo: -1})
+      debugger;
+    }
   }
 
   setListeners() {
@@ -96,8 +110,16 @@ class Department extends Component {
     this.handleClose();
   }
 
-  dwSelect(dwid, dwmc, szk) {
-    this.setState({ selectedDw: dwid ,selectedDwmc: dwmc, szk: szk });
+  dwSelect(dwid, dwmc, szk, event) {
+    const {selectedDw, selectedDwmc} = this.state;
+    var scrollTop = $(event.target).parents('li').position().top;
+    var scrollTo = $(this.refs.bms).scrollTop() + scrollTop;
+    if (selectedDw === dwid && selectedDwmc === dwmc) {
+      dwid = '';
+      dwmc = '';
+      szk = '';
+    }
+    this.setState({ selectedDw: dwid ,selectedBm: '', selectedDwmc: dwmc, selectedBmmc: '', szk: szk, scrollTo });
   }
 
   bmSelect(bmid, bmmc) {
@@ -113,29 +135,37 @@ class Department extends Component {
 
 
   renderDw() {
-    const { selectedIndex, dw_data } = this.state;
+    const { selectedIndex, dw_data, selectedDw, hoverId } = this.state;
     if (dw_data.length <= 0) {
       return (
         <li className="results__item results__item--suggestion row">
-          <FormattedHTMLMessage id="modal.department.notFound" values={{ query }} />
-          <button className="button button--rised hide">Create new dialog {query}</button>
+          <FormattedHTMLMessage id="modal.department.notFound" />
+          <button className="button button--rised hide">Create new dialog</button>
         </li>
       )
     }
 
     return dw_data.map((result, index) => {
       const resultClassName = classnames('results__item row', {
-        'results__item--active': selectedIndex === index
+        'results__item--active': hoverId === result.id,
+        'results__item--open': selectedDw === result.id
       });
+      const childrenStyle = {display: selectedDw === result.id ? 'block' : 'none'};
 
       return (
         <li
-          className={resultClassName} key={`r${index}`}
-          onClick={() => this.dwSelect(result.id, result.mc, result.szk)}
-          onMouseOver={() => this.setState({ selectedIndex: index })}>
-
-          <div className="title col-xs">
-            {result.mc}
+          style={{'position': 'relative'}}
+          key={`r${index}`}>
+          <div className={resultClassName} 
+          onClick={(event) => this.dwSelect(result.id, result.mc, result.szk, event)}
+          onMouseEnter={() => this.setState({ hoverId: result.id })}>
+            <div className="title col-xs">
+              {result.mc}
+            </div>
+            <div className="arrow"></div>
+          </div>
+          <div className="children-box">
+          { selectedDw === result.id ? this.renderBm(result.id, result.szk, -1) : null }
           </div>
         </li>
       );
@@ -144,7 +174,8 @@ class Department extends Component {
 
   renderYh() {
     const { selectedYhIndex, yh_data, selectedBm, selectedDw, szk } = this.state;
-    if (selectedBm.length <= 0) {
+    let results = linq.from(yh_data).where('$.bmid.trim() == "' + selectedBm + '" && $.dwid.trim() == "' + selectedDw + '"&&$.szk == "' + szk +'"').orderBy('$.wzh').toArray();
+    if (results.length <= 0) {
       return (
         <li className="results__item results__item--suggestion row">
           <FormattedHTMLMessage id="modal.department.notFound" />
@@ -152,8 +183,6 @@ class Department extends Component {
         </li>
       )
     }
-
-    let results = linq.from(yh_data).where('$.bmid.trim() == "' + selectedBm + '" &&' + '$.szk == "' + szk +'"').orderBy('$.wzh').toArray();
     return results.map((result, index) => {
       const resultClassName = classnames('results__item row', {
         'results__item--active': selectedYhIndex === index
@@ -170,7 +199,6 @@ class Department extends Component {
             }
           )}
           onMouseOver={() => this.setState({ selectedYhIndex: index })}>
-
           <div className="title col-xs">
             <div className="hint pull-right"><FormattedMessage id="modal.department.openDialog" /></div>
             {result.xm}{result.zwmc ? '(' + result.zwmc +')' : ''}
@@ -180,32 +208,33 @@ class Department extends Component {
     });
   }
 
-  renderBm(parentId, tier) {
-    const { bm_data, selectedDw, selectedBmIndex, selectedBmTier, szk } = this.state;
+  renderBm(dwId, szk, parentId) {
+    const { bm_data, selectedBm, hoverId } = this.state;
 
-    let results = linq.from(bm_data).where('$.dwid.trim() == "' + selectedDw + '" && $.fid.trim() == "' + parentId + '" && $.szk ==' + '"' + szk + '"').orderBy('$.wzh').toArray();
+    let results = linq.from(bm_data).where('$.dwid.trim() == "' + dwId + '" && $.fid.trim() == "' + parentId + '" && $.szk ==' + '"' + szk + '"').orderBy('$.wzh').toArray();
+    
     if (results.length <= 0) {
       return null;
     }
+    
 
     return results.map((result, index) => {
       const resultClassName = classnames('results__item row', {
-        'results__item--active': selectedBmIndex === tier + index
+        'results__item--active': hoverId === result.id,
+        'results__item--selected': selectedBm === result.id
       });
 
       return (
-        <div key={result.id + result.szk} style={{ paddingLeft: '20px' }}>
+        <div key={result.id + result.szk} className="results__item__bm" style={{ paddingLeft: '20px' }}>
           <div
             className={resultClassName} key={`r${index}`}
             onClick={() => this.bmSelect(result.id, result.mc)}
-            onMouseOver={() => this.setState({ selectedBmIndex: (tier + index ), selectedBmTier: tier })}>
-
+            onMouseEnter={() => this.setState({ hoverId: result.id})}>
             <div className="title col-xs">
               {result.mc}
             </div>
-
           </div>
-          {this.renderBm(result.id, (tier + index + 1) * 20)}
+          {/* {this.renderBm(dwId, szk, result.id)} */}
         </div>
 
       );
@@ -218,20 +247,10 @@ class Department extends Component {
   renderHeader() {
     const { selectedDw, selectedDwmc, selectedBmmc } = this.state;
 
-    if (selectedDw.length <= 0) {
-      return (
-        <header className="header">
-          <div className="pull-left"><FormattedMessage id="modal.department.title" /></div>
-          <div className="pull-right" style={{cursor: 'Pointer'}}><strong onClick={() => this.handleClose()}>关闭</strong></div>
-        </header>
-      );
-    }
-    
     return (
       <header className="header">
-        <div className="pull-left"><strong>{selectedDwmc}-{selectedBmmc}</strong></div>
+        <div className="pull-left"><strong>{selectedDwmc}{selectedDw.length <= 0 ? <FormattedMessage id="modal.department.title" /> : selectedBmmc && '-' + selectedBmmc}</strong></div>
         <div className="pull-right" style={{cursor: 'Pointer'}}><strong onClick={() => this.handleClose()}>关闭</strong></div>
-        <div className="pull-right" style={{cursor: 'Pointer'}}><strong onClick={() => this.setState({ selectedDw: '', selectedBm: '', selectedDwmc: '', selectedBmmc: '' })}>返回</strong></div>
       </header>
     );
   }
@@ -241,30 +260,6 @@ class Department extends Component {
   render() {
 
     const { selectedDw } = this.state;
-
-    if (selectedDw.length <= 0) {
-      return (
-        <Modal
-          overlayClassName="modal-overlay"
-          className="modal"
-          onRequestClose={this.handleClose}
-          isOpen>
-
-          <div className="department">
-            <div className="modal__content">
-
-              {this.renderHeader()}
-
-              <ul className="dwResults" ref="results">
-                {this.renderDw()}
-              </ul>
-
-            </div>
-          </div>
-
-        </Modal>
-      );
-    } else {
       return (
         <Modal
           overlayClassName="modal-overlay"
@@ -278,9 +273,9 @@ class Department extends Component {
               {this.renderHeader()}
 
               <div className="results">
-                <div className="bmResults" ref="bms">
-                  {this.renderBm('-1', 0)}
-                </div>
+                <ul className="dw_bm_Results" ref="bms" style={{position: 'relative'}}>
+                  {this.renderDw()}
+                </ul>
 
                 <div className="yhResults" ref="yhs">
                   {this.renderYh()}
@@ -294,7 +289,6 @@ class Department extends Component {
 
         </Modal>
       );
-    }
   }
 }
 
