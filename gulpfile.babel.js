@@ -48,9 +48,9 @@ gulp.task('workers', ['sdk'], () => {
     .pipe(gulp.dest('./dist/'));
 });
 
-gulp.task('lib:build', shell.task('./gradlew :actor-sdk:sdk-core:core:core-js:buildPackage', { cwd: '../..' }));
+gulp.task('lib:build', shell.task('./gradlew :actor-sdk:sdk-core:core:core-js:buildPackage', { cwd: '../iGem' }));
 gulp.task('lib:copy', ['lib:build'], () => {
-  return gulp.src(['../sdk-core/core/core-js/build/package/actor.nocache.js'])
+  return gulp.src(['../iGem/sdk-core/core/core-js/build/package/actor.nocache.js'])
     .pipe(rename('actor.js'))
     .pipe(gulp.dest('./node_modules/actor-js/'));
 });
