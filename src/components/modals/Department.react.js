@@ -38,19 +38,15 @@ class Department extends Component {
       dw_data: linq.from(res.dw_data).where('$.id!=="dw017"').orderBy('$.wzh').toArray(),
       bm_data: res.bm_data,
       yh_data: res.yh_data,
-      selectedIndex: 0,
-      selectedDw: '',
-      selectedBmIndex: 0,
-      selectedBmTier: 0,
       hoverId: '',
+      selectedDw: '',
       selectedBm: '',
       selectedYhIndex: 0,
-
       szk: '',
-
       selectedDwmc: '',
       selectedBmmc: '',
-      scrollTo: -1
+      hoverable: true,
+      scrollTo: null,
     }
   }
 
@@ -73,21 +69,23 @@ class Department extends Component {
     this.cleanListeners();
   }
   componentDidUpdate() {
-    // this.scrollTo();
+    this.scrollTo();
   }
   scrollTo()  {
    const { scrollTo } = this.state;
-    if (scrollTo > -1) {
-      $(this.refs.bms).scrollTop(scrollTo);
-      this.setState({scrollTo: -1})
-      debugger;
+    if (scrollTo) {
+      setTimeout(() => {
+        var scrollTop = $(this.refs.bms).scrollTop() + $(scrollTo).position().top;
+        $(this.refs.bms).scrollTop(scrollTop);
+        this.setState({scrollTo: null});
+      }, 10);  
     }
   }
 
   setListeners() {
     this.cleanListeners();
     this.listeners = [
-      EventListener.listen(document, 'keydown', this.handleKeyDown)
+      EventListener.listen(document, 'mousemove', this.handleMouseMove.bind(this))
     ];
   }
 
@@ -97,7 +95,9 @@ class Department extends Component {
       this.listeners = null;
     }
   }
-
+  handleMouseMove() {
+    this.setState({'hoverable': true});
+  }
 
   handleClose() {
     DepartmentActionCreators.hide();
@@ -111,19 +111,33 @@ class Department extends Component {
   }
 
   dwSelect(dwid, dwmc, szk, event) {
-    const {selectedDw, selectedDwmc} = this.state;
-    var scrollTop = $(event.target).parents('li').position().top;
-    var scrollTo = $(this.refs.bms).scrollTop() + scrollTop;
+    const { selectedDw, selectedDwmc } = this.state;
+    var hoverable = false;
+    var scrollTo = $(event.target).parents('li');
     if (selectedDw === dwid && selectedDwmc === dwmc) {
       dwid = '';
       dwmc = '';
       szk = '';
+      hoverable = true;
+      scrollTo = null;
     }
-    this.setState({ selectedDw: dwid ,selectedBm: '', selectedDwmc: dwmc, selectedBmmc: '', szk: szk, scrollTo });
+    this.setState({ 
+      selectedDw: dwid,
+      selectedDwmc: dwmc, 
+      selectedBm: '',
+      selectedBmmc: '',
+      scrollTo,
+      szk,
+      hoverable
+    });
   }
 
-  bmSelect(bmid, bmmc) {
-    this.setState({ selectedBm: bmid, selectedBmmc: bmmc, selectedYhIndex: 0});
+  bmSelect(bmid, szk, bmmc) {
+    this.setState({ 
+      selectedBm: bmid, 
+      selectedBmmc: bmmc, 
+      selectedYhIndex: 0}
+    );
   }
 
   
@@ -135,7 +149,7 @@ class Department extends Component {
 
 
   renderDw() {
-    const { selectedIndex, dw_data, selectedDw, hoverId } = this.state;
+    const { dw_data, selectedDw, hoverId, szk, hoverable } = this.state;
     if (dw_data.length <= 0) {
       return (
         <li className="results__item results__item--suggestion row">
@@ -146,11 +160,14 @@ class Department extends Component {
     }
 
     return dw_data.map((result, index) => {
+      const itemId = result.id + result.szk;
+      const selected = (selectedDw + szk) === itemId;
+      const hover = hoverId === itemId;
       const resultClassName = classnames('results__item row', {
-        'results__item--active': hoverId === result.id,
-        'results__item--open': selectedDw === result.id
+        'results__item--active': hover,
+        'results__item--open': selected
       });
-      const childrenStyle = {display: selectedDw === result.id ? 'block' : 'none'};
+      const iconClassName = classnames('material-icons icon', hover ? 'icon--white' : 'icon--blue');
 
       return (
         <li
@@ -158,14 +175,14 @@ class Department extends Component {
           key={`r${index}`}>
           <div className={resultClassName} 
           onClick={(event) => this.dwSelect(result.id, result.mc, result.szk, event)}
-          onMouseEnter={() => this.setState({ hoverId: result.id })}>
+          onMouseOver={() => { hoverable && this.setState({ hoverId: result.id + result.szk })}}>
             <div className="title col-xs">
-              {result.mc}
+              {result.mc} <i className={ iconClassName }>business</i>
             </div>
             <div className="arrow"></div>
           </div>
           <div className="children-box">
-          { selectedDw === result.id ? this.renderBm(result.id, result.szk, -1) : null }
+          { selected ? this.renderBm(result.id, result.szk, -1) : null }
           </div>
         </li>
       );
@@ -174,7 +191,7 @@ class Department extends Component {
 
   renderYh() {
     const { selectedYhIndex, yh_data, selectedBm, selectedDw, szk } = this.state;
-    let results = linq.from(yh_data).where('$.bmid.trim() == "' + selectedBm + '" && $.dwid.trim() == "' + selectedDw + '"&&$.szk == "' + szk +'"').orderBy('$.wzh').toArray();
+    let results = linq.from(yh_data).where('$.bmid.trim() == "' + selectedBm + '" && $.dwid.trim() == "' + selectedDw + '"&& $.szk == "' + szk +'"').orderBy('$.wzh').toArray();
     if (results.length <= 0) {
       return (
         <li className="results__item results__item--suggestion row">
@@ -208,10 +225,10 @@ class Department extends Component {
     });
   }
 
-  renderBm(dwId, szk, parentId) {
-    const { bm_data, selectedBm, hoverId } = this.state;
+  renderBm(dwId, szk1, parentId) {
+    const { bm_data, selectedBm, hoverId, szk, hoverable } = this.state;
 
-    let results = linq.from(bm_data).where('$.dwid.trim() == "' + dwId + '" && $.fid.trim() == "' + parentId + '" && $.szk ==' + '"' + szk + '"').orderBy('$.wzh').toArray();
+    let results = linq.from(bm_data).where('$.dwid.trim() == "' + dwId + '" && $.fid.trim() == "' + parentId + '" && $.szk ==' + '"' + szk1 + '"').orderBy('$.wzh').toArray();
     
     if (results.length <= 0) {
       return null;
@@ -219,30 +236,31 @@ class Department extends Component {
     
 
     return results.map((result, index) => {
+      const itemId = result.id + result.szk;
+      const selected = (selectedBm + szk) === itemId;
+      const hover = hoverId === itemId;
       const resultClassName = classnames('results__item row', {
-        'results__item--active': hoverId === result.id,
-        'results__item--selected': selectedBm === result.id
+        'results__item--active': hover,
+        'results__item--selected': selected
       });
 
       return (
         <div key={result.id + result.szk} className="results__item__bm" style={{ paddingLeft: '20px' }}>
           <div
             className={resultClassName} key={`r${index}`}
-            onClick={() => this.bmSelect(result.id, result.mc)}
-            onMouseEnter={() => this.setState({ hoverId: result.id})}>
+            onClick={() => this.bmSelect(result.id, result.szk, result.mc)}
+            onMouseOver={() => {hoverable && this.setState({ hoverId: result.id + result.szk})}}>
             <div className="title col-xs">
               {result.mc}
             </div>
           </div>
-          {/* {this.renderBm(dwId, szk, result.id)} */}
+          {this.renderBm(dwId, szk1, result.id)}
         </div>
 
       );
     });
 
   }
-
-  
 
   renderHeader() {
     const { selectedDw, selectedDwmc, selectedBmmc } = this.state;
@@ -259,13 +277,14 @@ class Department extends Component {
 
   render() {
 
-    const { selectedDw } = this.state;
+    const { selectedDw, a } = this.state;
       return (
         <Modal
           overlayClassName="modal-overlay"
           className="modal"
           onRequestClose={this.handleClose}
           isOpen>
+          <div>{a}</div>
 
           <div className="department">
             <div className="modal__content">
