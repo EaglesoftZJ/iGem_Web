@@ -8,11 +8,14 @@
     text-align: center;
     text-decoration: none;
     color: #656565;
+    transition: 0.1s all ease-out;
     &.flex3 {
       flex: 3;
     }
     &.selected {
-      color: #468ee5
+      font-weight: bold;
+      color: #468ee5;
+      transform: scale(1.3);
     }
   }
 }
