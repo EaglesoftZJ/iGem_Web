@@ -49,12 +49,19 @@ gulp.task('workers', ['sdk'], () => {
 });
 
 gulp.task('lib:build', shell.task('./gradlew :actor-sdk:sdk-core:core:core-js:buildPackage', { cwd: '../iGem' }));
+
+gulp.task('lib:copy2', ['lib:build'], () => {
+  return gulp.src(['../iGem/actor-sdk/sdk-core/core/core-js/build/package/actor.nocache.js'])
+    .pipe(rename('actor.js'))
+    .pipe(gulp.dest('./'));
+});
+
 gulp.task('lib:copy', ['lib:build'], () => {
-  return gulp.src(['../iGem/sdk-core/core/core-js/build/package/actor.nocache.js'])
+  return gulp.src(['../iGem/actor-sdk/sdk-core/core/core-js/build/package/actor.nocache.js'])
     .pipe(rename('actor.js'))
     .pipe(gulp.dest('./node_modules/actor-js/'));
 });
-gulp.task('lib', ['lib:build', 'lib:copy']);
+gulp.task('lib', ['lib:build', 'lib:copy', 'lib:copy2']);
 
 gulp.task('sdk', shell.task('npm run build'));
 
