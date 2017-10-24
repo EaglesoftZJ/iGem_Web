@@ -6,6 +6,7 @@ import { dispatch } from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes } from '../constants/ActorAppConstants';
 import ComposeActionCreators from '../actions/ComposeActionCreators';
 import makepy from 'makepy';
+import linq from 'linq';
 
 export default {
   show() {
@@ -20,12 +21,13 @@ export default {
   
   setPingyinSearchList(list) {
     let obj = {};
+    // 过滤系统管理员
+    list = linq.from(list).where('$.peerInfo.title.indexOf("系统管理员") == -1').toArray();
     for (let item of list) {
       if (!item.peerInfo.title) continue;
       let letterStore = [];
       for (let pingyin of makepy.make.pingYing(item.peerInfo.title)) {
         let letter = pingyin.substring(0, 1).toLowerCase();
-        // console.log(letterStore, 111);
         if (letterStore.indexOf(letter) !== -1) {
           continue;
         } else {
@@ -35,8 +37,7 @@ export default {
         key = /[a-z]/.test(letter) ? letter : '其他';
         if (!obj[key]) {
           obj[key] = [];
-        }
-        // console.log(obj[key], 111111111);
+        } 
         obj[key].push(item);
       }
     }
