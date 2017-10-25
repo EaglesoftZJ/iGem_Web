@@ -230,7 +230,7 @@ class QuickSearch extends Component {
           <div className="title col-xs">
             <div className="hint pull-right"><FormattedMessage id="modal.quickSearch.openDialog"/></div>
             {result.peerInfo.title}
-            <a href="javascript:;" target="_self" className="results__item__info" onMouseMove={this.handleMouseMove} onMouseEnter={this.handleMouseEnter.bind(this, result.peerInfo.peer.id)}><i className="account-icon material-icons">account_circle</i></a>
+            {result.peerInfo.peer.type !== 'group' ? <a href="javascript:;" target="_self" className="results__item__info" onMouseMove={this.handleMouseMove} onMouseEnter={this.handleMouseEnter.bind(this, result.peerInfo.peer.id)}><i className="account-icon material-icons">account_circle</i></a> : null}
           </div>
         </li>
       );
@@ -274,11 +274,20 @@ class QuickSearch extends Component {
   }
   renderSearchLetter() {
     const { selectedLetter } = this.state;
-    let items = [];
-    for (let i = 0; i < 27; i++) {
-      let letter = i < 26 ? String.fromCharCode(97 + i) : '其他';
-      let itemClassName = classnames('search-letter-item', {'selected': selectedLetter === letter, 'flex3': i === 26});
-      items.push(<a href="javascript:;" key={i} target="self" onClick={this.handleLetterClick.bind(this, letter)} className={itemClassName}>{letter}</a>);
+    let items = [],
+        letter = '',
+        title = '';
+    for (let i = 0; i < 28; i++) {
+      if  (i < 26) {
+        title = letter = String.fromCharCode(97 + i);
+      } else if(i === 26) {
+        letter = '#';
+        title = '其他';
+      } else {
+        title = letter = '群组';
+      }
+      let itemClassName = classnames('search-letter-item', {'selected': selectedLetter === letter, 'flex3': i === 27});
+      items.push(<a href="javascript:;" key={i} target="self" title={title} onClick={this.handleLetterClick.bind(this, letter)} className={itemClassName}><span>{letter}</span></a>);
     }
     
     return (

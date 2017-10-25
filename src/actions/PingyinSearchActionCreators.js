@@ -20,11 +20,15 @@ export default {
   },
   
   setPingyinSearchList(list) {
-    let obj = {};
+    let obj = {'群组': []};
     // 过滤系统管理员
     list = linq.from(list).where('$.peerInfo.title.indexOf("系统管理员") == -1').toArray();
     for (let item of list) {
       if (!item.peerInfo.title) continue;
+      if (item.peerInfo.peer.type === 'group') {
+        obj['群组'].push(item);
+        continue;
+      }
       let letterStore = [];
       for (let pingyin of makepy.make.pingYing(item.peerInfo.title)) {
         let letter = pingyin.substring(0, 1).toLowerCase();
@@ -34,7 +38,7 @@ export default {
           letterStore.push(letter);
         }
         let key = '';
-        key = /[a-z]/.test(letter) ? letter : '其他';
+        key = /[a-z]/.test(letter) ? letter : '#';
         if (!obj[key]) {
           obj[key] = [];
         } 

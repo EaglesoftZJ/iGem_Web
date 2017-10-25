@@ -4,18 +4,22 @@
   flex-flow: row wrap;
   &-item{
     flex: 1;
-    width: 20px;
     text-align: center;
     text-decoration: none;
     color: #656565;
-    transition: 0.1s all ease-out;
+    span{
+      display: inline-block;
+      transition: 0.1s all ease-out;
+    }
     &.flex3 {
       flex: 3;
     }
     &.selected {
       font-weight: bold;
       color: #468ee5;
-      transform: scale(1.3);
+      span{
+        transform: scale(1.3);
+      }
     }
   }
 }
