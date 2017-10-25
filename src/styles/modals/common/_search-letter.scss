@@ -1,5 +1,7 @@
 .search-letter {
   display: flex;
+  height: 22px;
+  line-height: 22px;
   padding: 0 16px;
   flex-flow: row wrap;
   &-item{
@@ -11,14 +13,15 @@
       display: inline-block;
       transition: 0.1s all ease-out;
     }
-    &.flex3 {
-      flex: 3;
+    &.flex2 {
+      font-size: 14px;
+      flex: 2;
     }
     &.selected {
       font-weight: bold;
       color: #468ee5;
       span{
-        transform: scale(1.3);
+        transform: scale(1.2);
       }
     }
   }

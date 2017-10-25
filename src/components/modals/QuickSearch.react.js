@@ -286,7 +286,7 @@ class QuickSearch extends Component {
       } else {
         title = letter = '群组';
       }
-      let itemClassName = classnames('search-letter-item', {'selected': selectedLetter === letter, 'flex3': i === 27});
+      let itemClassName = classnames('search-letter-item', {'selected': selectedLetter === letter, 'flex2': i === 27});
       items.push(<a href="javascript:;" key={i} target="self" title={title} onClick={this.handleLetterClick.bind(this, letter)} className={itemClassName}><span>{letter}</span></a>);
     }
     
