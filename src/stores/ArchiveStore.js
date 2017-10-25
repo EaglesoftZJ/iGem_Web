@@ -80,8 +80,8 @@ class ArchiveStore extends Store {
         } else {
           var id = action.response[0].peer.peer.id;
           var results = linq.from(this.dialogs).where('$.peer.peer.id ==' + id).toArray();
-          if (results.length > 0 || action.response.length === 0) {
-            
+          if (results.length > 0) {
+            this._isAllLoaded = true;
           }
         }
         
