@@ -309,7 +309,7 @@ var QuickSearch = function (_Component) {
             _react2.default.createElement(_reactIntl.FormattedMessage, { id: 'modal.quickSearch.openDialog' })
           ),
           result.peerInfo.title,
-          _react2.default.createElement(
+          result.peerInfo.peer.type !== 'group' ? _react2.default.createElement(
             'a',
             { href: 'javascript:;', target: '_self', className: 'results__item__info', onMouseMove: _this3.handleMouseMove, onMouseEnter: _this3.handleMouseEnter.bind(_this3, result.peerInfo.peer.id) },
             _react2.default.createElement(
@@ -317,7 +317,7 @@ var QuickSearch = function (_Component) {
               { className: 'account-icon material-icons' },
               'account_circle'
             )
-          )
+          ) : null
         )
       );
     });
@@ -380,14 +380,27 @@ var QuickSearch = function (_Component) {
   QuickSearch.prototype.renderSearchLetter = function renderSearchLetter() {
     var selectedLetter = this.state.selectedLetter;
 
-    var items = [];
-    for (var i = 0; i < 27; i++) {
-      var letter = i < 26 ? String.fromCharCode(97 + i) : '其他';
-      var itemClassName = (0, _classnames2.default)('search-letter-item', { 'selected': selectedLetter === letter, 'flex3': i === 26 });
+    var items = [],
+        letter = '',
+        title = '';
+    for (var i = 0; i < 28; i++) {
+      if (i < 26) {
+        title = letter = String.fromCharCode(97 + i);
+      } else if (i === 26) {
+        letter = '#';
+        title = '其他';
+      } else {
+        title = letter = '群组';
+      }
+      var itemClassName = (0, _classnames2.default)('search-letter-item', { 'selected': selectedLetter === letter, 'flex3': i === 27 });
       items.push(_react2.default.createElement(
         'a',
-        { href: 'javascript:;', key: i, target: 'self', onClick: this.handleLetterClick.bind(this, letter), className: itemClassName },
-        letter
+        { href: 'javascript:;', key: i, target: 'self', title: title, onClick: this.handleLetterClick.bind(this, letter), className: itemClassName },
+        _react2.default.createElement(
+          'span',
+          null,
+          letter
+        )
       ));
     }
 
