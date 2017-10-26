@@ -71,9 +71,9 @@ class DepartementItem extends Component {
     renderDw() {
         const { dw_data, hoverId } = this.props;
         const { selectedDw, szk } = this.state;
-        if (dw_data.length <= 0) {
+        if (dw_data && dw_data.length <= 0) {
           return (
-            <li className="results__item results__item--suggestion row">
+            <li className="results__item--suggestion row">
               <FormattedHTMLMessage id="modal.department.notFound" />
               <button className="button button--rised hide">Create new dialog</button>
             </li>
@@ -92,7 +92,7 @@ class DepartementItem extends Component {
     
           return (
             <li
-              className="results__item__dw"
+              className="results__dw"
               style={{'position': 'relative'}}
               key={`r${index}`}>
               <div className={resultClassName} 
@@ -133,7 +133,7 @@ class DepartementItem extends Component {
             });
 
             return (
-                <div key={result.id + result.szk} className="results__item__bm">
+                <div key={result.id + result.szk} className="results__bm">
                     <div
                     className={resultClassName} key={`r${index}`}
                     onClick={() => this.bmSelect(result.id, result.mc)}
@@ -151,26 +151,42 @@ class DepartementItem extends Component {
     }
     dwSelect(dwid, dwmc, szk, event) {
         const { selectedDw, selectedDwmc } = this.state;
-        const { onSelectDw } = this.props;
-        var hoverable = false;
-        var scrollTo = $(event.target).parents('li');
-        if (selectedDw === dwid && selectedDwmc === dwmc) {
-          dwid = '';
-          dwmc = '';
-          szk = '';
-          hoverable = true;
-          scrollTo = null;
+        const { onSelectDw, bm_data } = this.props;
+        var hoverable = false,
+            _dwid = '',
+            _dwmc = '',
+            _szk = '',
+            _bmid = '',
+            _bmmc = '',
+            _hoverable = true,
+            _scrollTo = null; 
+        if (selectedDw !== dwid || selectedDwmc !== dwmc) {
+            console.log('open');
+            var results = linq.from(bm_data).where('$.dwid.trim() == "' + dwid + '" && $.fid.trim() == "-1" && $.szk ==' + '"' + szk + '"').orderBy('$.wzh').toArray();
+            _dwid = dwid;
+            _dwmc = dwmc;
+            _szk = szk;
+            _bmid = results.length > 0 ? results[0].id : '';
+            _bmmc = results.length > 0 ? results[0].title : '';
+            _hoverable = false;
+            _scrollTo = $(event.target).parents('li');
         }
         this.setState({ 
-          selectedDw: dwid,
-          selectedDwmc: dwmc, 
-          selectedBm: '',
-          selectedBmmc: '',
-          scrollTo,
-          szk,
-          hoverable
+          selectedDw: _dwid,
+          selectedDwmc: _dwmc, 
+          selectedBm: _bmid,
+          selectedBmmc: _bmmc,
+          scrollTo: _scrollTo,
+          szk: _szk,
+          hoverable: _hoverable
         });
-        onSelectDw && onSelectDw({selectedDwmc: dwmc});
+        onSelectDw && onSelectDw({
+            selectedDw: _dwid,
+            selectedDwmc: _dwmc, 
+            selectedBm: _bmid,
+            selectedBmmc: _bmmc,
+            szk: _szk
+        });
     }
 
     bmSelect(bmid, bmmc) {

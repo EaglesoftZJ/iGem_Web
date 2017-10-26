@@ -69,7 +69,6 @@ class Department extends Component {
     this.cleanListeners();
   }
   componentDidUpdate() {
-    console.log('parent update');
     this.scrollTo();
   }
   scrollTo()  {
@@ -170,7 +169,7 @@ class Department extends Component {
 
       return (
         <li
-          className="results__item__dw"
+          className="results__dw"
           style={{'position': 'relative'}}
           key={`r${index}`}>
           <div className={resultClassName} 
@@ -276,7 +275,7 @@ class Department extends Component {
   }
 
   handleSelectDw(obj) {
-    this.setState({selectedDwmc: obj.selectedDwmc, selectedDw: ''});
+    this.setState({...obj});
   }
 
   handleSelectBm(obj) {
