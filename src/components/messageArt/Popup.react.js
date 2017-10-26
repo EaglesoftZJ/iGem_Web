@@ -12,7 +12,7 @@ import Emojis from './Emojis.react';
 import Stickers from './Stickers.react';
 
 class Popup extends Component {
-  static propTypes = {
+  static PropTypes = {
     className: PropTypes.string,
     stickers: PropTypes.array.isRequired,
     onSelect: PropTypes.func.isRequired,

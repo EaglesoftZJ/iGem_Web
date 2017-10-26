@@ -6,7 +6,6 @@ import React, { Component, PropTypes } from 'react';
 import { findDOMNode } from 'react-dom';
 import { Container } from 'flux/utils';
 import { FormattedMessage, FormattedHTMLMessage } from 'react-intl';
-import $ from 'jquery';
 import EventListener from 'fbjs/lib/EventListener';
 import fuzzaldrin from 'fuzzaldrin';
 import Modal from 'react-modal';
@@ -20,6 +19,7 @@ import DepartmentActionCreators from '../../actions/DepartmentActionCreators';
 
 import DepartmentStore from '../../stores/DepartmentStore';
 
+import DepartmentMenu from './departmentMenu/DepartmentMenu.react';
 import AvatarItem from '../common/AvatarItem.react';
 
 import linq from 'Linq';
@@ -41,7 +41,7 @@ class Department extends Component {
       hoverId: '',
       selectedDw: '',
       selectedBm: '',
-      selectedYhIndex: 0,
+      selectedYhIndex: -1,
       szk: '',
       selectedDwmc: '',
       selectedBmmc: '',
@@ -69,6 +69,7 @@ class Department extends Component {
     this.cleanListeners();
   }
   componentDidUpdate() {
+    console.log('parent update');
     this.scrollTo();
   }
   scrollTo()  {
@@ -136,15 +137,13 @@ class Department extends Component {
     this.setState({ 
       selectedBm: bmid, 
       selectedBmmc: bmmc, 
-      selectedYhIndex: 0}
+      selectedYhIndex: -1}
     );
   }
 
   
   handleScroll(top) {
     findDOMNode(this.refs.results).scrollTop = top;
-
-    Console.log('scroll--------');
   }
 
 
@@ -167,10 +166,11 @@ class Department extends Component {
         'results__item--active': hover,
         'results__item--open': selected
       });
-      const iconClassName = classnames('material-icons icon', hover ? 'icon--white' : 'icon--blue');
+      const iconClassName = classnames('material-icons icon', hover ? 'icon--blue' : 'icon--blue');
 
       return (
         <li
+          className="results__item__dw"
           style={{'position': 'relative'}}
           key={`r${index}`}>
           <div className={resultClassName} 
@@ -190,7 +190,7 @@ class Department extends Component {
   }
 
   renderYh() {
-    const { selectedYhIndex, yh_data, selectedBm, selectedDw, szk } = this.state;
+    const { selectedYhIndex, yh_data, hoverId, selectedBm, selectedDw, szk } = this.state;
     let results = linq.from(yh_data).where('$.bmid.trim() == "' + selectedBm + '" && $.dwid.trim() == "' + selectedDw + '"&& $.szk == "' + szk +'"').orderBy('$.wzh').toArray();
     if (results.length <= 0) {
       return (
@@ -202,7 +202,7 @@ class Department extends Component {
     }
     return results.map((result, index) => {
       const resultClassName = classnames('results__item row', {
-        'results__item--active': selectedYhIndex === index
+        'results__item--active': hoverId === (result.IGIMID + result.szk)
       });
 
       return (
@@ -210,12 +210,12 @@ class Department extends Component {
           className={resultClassName} key={`r${index}`}
           onClick={() => this.handleDialogSelect(
             {
-              id: result.IGIMID,
+              id: parseFloat(result.IGIMID),
               type: 'user',
               key: 'u' + result.IGIMID
             }
           )}
-          onMouseOver={() => this.setState({ selectedYhIndex: index })}>
+          onMouseOver={() => this.setState({ hoverId: (result.IGIMID + result.szk) })}>
           <div className="title col-xs">
             <div className="hint pull-right"><FormattedMessage id="modal.department.openDialog" /></div>
             {result.xm}{result.zwmc ? '(' + result.zwmc +')' : ''}
@@ -245,7 +245,7 @@ class Department extends Component {
       });
 
       return (
-        <div key={result.id + result.szk} className="results__item__bm" style={{ paddingLeft: '20px' }}>
+        <div key={result.id + result.szk} className="results__item__bm">
           <div
             className={resultClassName} key={`r${index}`}
             onClick={() => this.bmSelect(result.id, result.szk, result.mc)}
@@ -254,7 +254,9 @@ class Department extends Component {
               {result.mc}
             </div>
           </div>
-          {this.renderBm(dwId, szk1, result.id)}
+          <div className="children-box">
+           {this.renderBm(dwId, szk1, result.id)}
+          </div>
         </div>
 
       );
@@ -273,18 +275,37 @@ class Department extends Component {
     );
   }
 
+  handleSelectDw(obj) {
+    this.setState({selectedDwmc: obj.selectedDwmc, selectedDw: ''});
+  }
+
+  handleSelectBm(obj) {
+    this.setState({...obj});
+  }
+
+  handleItemHover(hoverId) {
+    this.setState({hoverId});
+  }
+
  
 
   render() {
-
-    const { selectedDw, a } = this.state;
+      const { dw_data, bm_data, hoverId} = this.state;
+      var props = {
+        dw_data,
+        bm_data,
+        hoverId,
+        onSelectDw: this.handleSelectDw.bind(this),
+        onSelectBm: this.handleSelectBm.bind(this),
+        onItemHover: this.handleItemHover.bind(this),
+        scrollBox: this.refs.bms
+      }
       return (
         <Modal
           overlayClassName="modal-overlay"
           className="modal"
           onRequestClose={this.handleClose}
           isOpen>
-          <div>{a}</div>
 
           <div className="department">
             <div className="modal__content">
@@ -292,9 +313,9 @@ class Department extends Component {
               {this.renderHeader()}
 
               <div className="results">
-                <ul className="dw_bm_Results" ref="bms" style={{position: 'relative'}}>
-                  {this.renderDw()}
-                </ul>
+                <div className="dw_bm_Results" ref="bms" style={{position: 'relative'}}>
+                  <DepartmentMenu {...props}></DepartmentMenu>
+                </div>
 
                 <div className="yhResults" ref="yhs">
                   {this.renderYh()}
