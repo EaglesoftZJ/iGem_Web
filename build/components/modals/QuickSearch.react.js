@@ -392,7 +392,7 @@ var QuickSearch = function (_Component) {
       } else {
         title = letter = '群组';
       }
-      var itemClassName = (0, _classnames2.default)('search-letter-item', { 'selected': selectedLetter === letter, 'flex3': i === 27 });
+      var itemClassName = (0, _classnames2.default)('search-letter-item', { 'selected': selectedLetter === letter, 'flex2': i === 27 });
       items.push(_react2.default.createElement(
         'a',
         { href: 'javascript:;', key: i, target: 'self', title: title, onClick: this.handleLetterClick.bind(this, letter), className: itemClassName },

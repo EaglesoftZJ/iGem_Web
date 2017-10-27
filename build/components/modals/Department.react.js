@@ -2,6 +2,8 @@
 
 exports.__esModule = true;
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
@@ -11,10 +13,6 @@ var _reactDom = require('react-dom');
 var _utils = require('flux/utils');
 
 var _reactIntl = require('react-intl');
-
-var _jquery = require('jquery');
-
-var _jquery2 = _interopRequireDefault(_jquery);
 
 var _EventListener = require('fbjs/lib/EventListener');
 
@@ -49,6 +47,10 @@ var _DepartmentActionCreators2 = _interopRequireDefault(_DepartmentActionCreator
 var _DepartmentStore = require('../../stores/DepartmentStore');
 
 var _DepartmentStore2 = _interopRequireDefault(_DepartmentStore);
+
+var _DepartmentMenu = require('./departmentMenu/DepartmentMenu.react');
+
+var _DepartmentMenu2 = _interopRequireDefault(_DepartmentMenu);
 
 var _AvatarItem = require('../common/AvatarItem.react');
 
@@ -87,7 +89,7 @@ var Department = function (_Component) {
       hoverId: '',
       selectedDw: '',
       selectedBm: '',
-      selectedYhIndex: 0,
+      selectedYhIndex: -1,
       szk: '',
       selectedDwmc: '',
       selectedBmmc: '',
@@ -126,8 +128,8 @@ var Department = function (_Component) {
 
     if (scrollTo) {
       setTimeout(function () {
-        var scrollTop = (0, _jquery2.default)(_this2.refs.bms).scrollTop() + (0, _jquery2.default)(scrollTo).position().top;
-        (0, _jquery2.default)(_this2.refs.bms).scrollTop(scrollTop);
+        var scrollTop = $(_this2.refs.bms).scrollTop() + $(scrollTo).position().top;
+        $(_this2.refs.bms).scrollTop(scrollTop);
         _this2.setState({ scrollTo: null });
       }, 10);
     }
@@ -167,7 +169,7 @@ var Department = function (_Component) {
         selectedDwmc = _state.selectedDwmc;
 
     var hoverable = false;
-    var scrollTo = (0, _jquery2.default)(event.target).parents('li');
+    var scrollTo = $(event.target).parents('li');
     if (selectedDw === dwid && selectedDwmc === dwmc) {
       dwid = '';
       dwmc = '';
@@ -190,13 +192,11 @@ var Department = function (_Component) {
     this.setState({
       selectedBm: bmid,
       selectedBmmc: bmmc,
-      selectedYhIndex: 0 });
+      selectedYhIndex: -1 });
   };
 
   Department.prototype.handleScroll = function handleScroll(top) {
     (0, _reactDom.findDOMNode)(this.refs.results).scrollTop = top;
-
-    Console.log('scroll--------');
   };
 
   Department.prototype.renderDw = function renderDw() {
@@ -230,11 +230,12 @@ var Department = function (_Component) {
         'results__item--active': hover,
         'results__item--open': selected
       });
-      var iconClassName = (0, _classnames2.default)('material-icons icon', hover ? 'icon--white' : 'icon--blue');
+      var iconClassName = (0, _classnames2.default)('material-icons icon', hover ? 'icon--blue' : 'icon--blue');
 
       return _react2.default.createElement(
         'li',
         {
+          className: 'results__dw',
           style: { 'position': 'relative' },
           key: 'r' + index },
         _react2.default.createElement(
@@ -274,6 +275,7 @@ var Department = function (_Component) {
     var _state3 = this.state,
         selectedYhIndex = _state3.selectedYhIndex,
         yh_data = _state3.yh_data,
+        hoverId = _state3.hoverId,
         selectedBm = _state3.selectedBm,
         selectedDw = _state3.selectedDw,
         szk = _state3.szk;
@@ -293,7 +295,7 @@ var Department = function (_Component) {
     }
     return results.map(function (result, index) {
       var resultClassName = (0, _classnames2.default)('results__item row', {
-        'results__item--active': selectedYhIndex === index
+        'results__item--active': hoverId === result.IGIMID + result.szk
       });
 
       return _react2.default.createElement(
@@ -302,13 +304,13 @@ var Department = function (_Component) {
           className: resultClassName, key: 'r' + index,
           onClick: function onClick() {
             return _this4.handleDialogSelect({
-              id: result.IGIMID,
+              id: parseFloat(result.IGIMID),
               type: 'user',
               key: 'u' + result.IGIMID
             });
           },
           onMouseOver: function onMouseOver() {
-            return _this4.setState({ selectedYhIndex: index });
+            return _this4.setState({ hoverId: result.IGIMID + result.szk });
           } },
         _react2.default.createElement(
           'div',
@@ -353,7 +355,7 @@ var Department = function (_Component) {
 
       return _react2.default.createElement(
         'div',
-        { key: result.id + result.szk, className: 'results__item__bm', style: { paddingLeft: '20px' } },
+        { key: result.id + result.szk, className: 'results__item__bm' },
         _react2.default.createElement(
           'div',
           {
@@ -370,7 +372,11 @@ var Department = function (_Component) {
             result.mc
           )
         ),
-        _this5.renderBm(dwId, szk1, result.id)
+        _react2.default.createElement(
+          'div',
+          { className: 'children-box' },
+          _this5.renderBm(dwId, szk1, result.id)
+        )
       );
     });
   };
@@ -411,11 +417,33 @@ var Department = function (_Component) {
     );
   };
 
+  Department.prototype.handleSelectDw = function handleSelectDw(obj) {
+    this.setState(_extends({}, obj));
+  };
+
+  Department.prototype.handleSelectBm = function handleSelectBm(obj) {
+    this.setState(_extends({}, obj));
+  };
+
+  Department.prototype.handleItemHover = function handleItemHover(hoverId) {
+    this.setState({ hoverId: hoverId });
+  };
+
   Department.prototype.render = function render() {
     var _state6 = this.state,
-        selectedDw = _state6.selectedDw,
-        a = _state6.a;
+        dw_data = _state6.dw_data,
+        bm_data = _state6.bm_data,
+        hoverId = _state6.hoverId;
 
+    var props = {
+      dw_data: dw_data,
+      bm_data: bm_data,
+      hoverId: hoverId,
+      onSelectDw: this.handleSelectDw.bind(this),
+      onSelectBm: this.handleSelectBm.bind(this),
+      onItemHover: this.handleItemHover.bind(this),
+      scrollBox: this.refs.bms
+    };
     return _react2.default.createElement(
       _reactModal2.default,
       {
@@ -423,11 +451,6 @@ var Department = function (_Component) {
         className: 'modal',
         onRequestClose: this.handleClose,
         isOpen: true },
-      _react2.default.createElement(
-        'div',
-        null,
-        a
-      ),
       _react2.default.createElement(
         'div',
         { className: 'department' },
@@ -439,9 +462,9 @@ var Department = function (_Component) {
             'div',
             { className: 'results' },
             _react2.default.createElement(
-              'ul',
+              'div',
               { className: 'dw_bm_Results', ref: 'bms', style: { position: 'relative' } },
-              this.renderDw()
+              _react2.default.createElement(_DepartmentMenu2.default, props)
             ),
             _react2.default.createElement(
               'div',

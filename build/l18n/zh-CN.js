@@ -195,7 +195,7 @@ exports.default = {
         'notHaveInfo': '没有查找到该联系人信息'
       },
       'department': {
-        'title': '组织架构',
+        'title': '组织结构',
         'openDialog': '打开聊天窗口',
         'notFound': '无可选人员'
       },

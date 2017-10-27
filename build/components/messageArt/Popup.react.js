@@ -145,7 +145,7 @@ var Popup = function (_Component) {
   return Popup;
 }(_react.Component);
 
-Popup.propTypes = {
+Popup.PropTypes = {
   className: _react.PropTypes.string,
   stickers: _react.PropTypes.array.isRequired,
   onSelect: _react.PropTypes.func.isRequired,
