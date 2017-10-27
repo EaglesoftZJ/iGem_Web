@@ -173,8 +173,8 @@ class LoginActionCreators extends ActionCreators {
 
     ActorClient.postOAWebservice({
       //url: 'http://g.portzhoushan.com/MoaService/MoaService.asmx/GetAllUserFullData',
-      // url: 'http://61.175.100.14:8004/WebServiceSSO.asmx/GetAllUserFullData',
-      url: 'http://172.16.18.29:8004/WebServiceSSO.asmx/GetAllUserFullData',
+      url: 'http://61.175.100.14:8004/WebServiceSSO.asmx/GetAllUserFullData',
+      // url: 'http://220.189.207.21:8709/WebServiceSSO.asmx/GetAllUserFullData',
       data: 'k=eagleSoftWebService',
       success: res => {
         DepartmentActionCreators.setRes({res});
