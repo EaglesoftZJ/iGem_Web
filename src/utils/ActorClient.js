@@ -186,6 +186,11 @@ class ActorClient {
     return window.messenger.getGroup(gid);
   }
 
+  deleteGroup(gid) {
+    return window.messenger.deleteGroup(gid);
+  }
+
+
   getInviteUrl(gid) {
     return window.messenger.getInviteLink(gid);
   }
