@@ -73,13 +73,14 @@ class EditGroup extends Component {
   }
 
   renderTitle() {
-    const { title } = this.state;
+    const { title, isAdmin } = this.state;
 
     return (
       <TextField
         className="input__material--wide"
         floatingLabel={<FormattedMessage id="modal.group.name"/>}
         onChange={this.handleTitleChange}
+        disabled={!isAdmin}
         ref="name"
         value={title}/>
     );

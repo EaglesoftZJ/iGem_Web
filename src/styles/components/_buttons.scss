@@ -222,6 +222,32 @@
     width: 100%;
   }
 
+  &--border {
+    color: #5a5e66;
+    border: 1px solid #d8dce5;
+  }
+
+  &--plain--primary {
+    color: #409eff;
+    background: #ecf5ff;
+    border: 1px solid #b3d8ff;
+  }
+  &--plain--primary:hover {
+    color: #fff;
+    background: #409eff;
+  }
+
+  &--plain--cancel {
+    color: #fa5555;
+    background: #fee;
+    border: 1px solid #fdbbbb;
+  }
+
+  &--plain--cancel:hover {
+    color: #fff;
+    background: #fa5555;
+  }
+
   &[disabled] {
     cursor: default;
 

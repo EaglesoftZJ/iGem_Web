@@ -10,6 +10,8 @@ import PeerUtils from '../utils/PeerUtils';
 import { ActionTypes } from '../constants/ActorAppConstants';
 import ComposeActionCreators from '../actions/ComposeActionCreators';
 
+
+
 const CreateGroupActionCreators = {
   open() {
     dispatch(ActionTypes.GROUP_CREATE_MODAL_SHOW);
@@ -21,8 +23,18 @@ const CreateGroupActionCreators = {
     ComposeActionCreators.toggleAutoFocus(true);
   },
 
+  openInDialog() {
+    dispatch(ActionTypes.GROUP_CREATE_MODAL_SHOW);
+    dispatch(ActionTypes.GROUP_CREATE_OPEN_IN_DIALOG);
+    ComposeActionCreators.toggleAutoFocus(false);
+  },
+
   setGroupName(name) {
     dispatch(ActionTypes.GROUP_CREATE_SET_NAME, { name });
+  },
+
+  setGroupSearch(search) {
+    dispatch(ActionTypes.GROUP_CREATE_SET_SEARCH, { search });
   },
 
   setSelectedUserIds(selectedUserIds) {

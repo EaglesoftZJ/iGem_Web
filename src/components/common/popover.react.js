@@ -38,8 +38,8 @@ class Popover extends Component {
     let popoverHeight = $(this.refs.popover).outerHeight();
     let nodeTop = $(node).position().top;
     let nodeLeft = $(node).position().left;
-    let nodeWidth = $(node).width();
-    let nodeHeight = $(node).height();
+    let nodeWidth = $(node).outerWidth(true);
+    let nodeHeight = $(node).outerHeight(true);
     let toLeft = nodeLeft + nodeWidth + 10;
     let toTop = nodeTop + nodeHeight - popoverHeight / 2 - nodeHeight / 2;
     let wTop = $(window).scrollTop();

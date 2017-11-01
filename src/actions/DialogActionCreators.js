@@ -84,33 +84,42 @@ class DialogActionCreators extends ActionCreators {
   }
 
   leaveGroup(gid) {
-    dispatchAsync(ActorClient.leaveGroup(gid), {
+    return dispatchAsync(ActorClient.leaveGroup(gid), {
       request: ActionTypes.GROUP_LEAVE,
       success: ActionTypes.GROUP_LEAVE_SUCCESS,
       failure: ActionTypes.GROUP_LEAVE_ERROR
     }, { gid });
   }
 
-  deleteChat(peer) {
-    const gid = peer.id;
-    const leaveGroup = () => dispatchAsync(ActorClient.leaveGroup(gid), {
-      request: ActionTypes.GROUP_LEAVE,
-      success: ActionTypes.GROUP_LEAVE_SUCCESS,
-      failure: ActionTypes.GROUP_LEAVE_ERROR
-    }, { gid });
-    const deleteChat = () => dispatchAsync(ActorClient.deleteChat(peer), {
+  deleteGroup(gid) {
+    return dispatchAsync(ActorClient.deleteGroup(gid), {
       request: ActionTypes.GROUP_DELETE,
       success: ActionTypes.GROUP_DELETE_SUCCESS,
       failure: ActionTypes.GROUP_DELETE_ERROR
-    }, { peer });
+    }, { gid });
+  }
 
+  deleteChat(peer) {
+    return dispatchAsync(ActorClient.deleteChat(peer), {
+      request: ActionTypes.CHAT_DELETE,
+      success: ActionTypes.CHAT_DELETE_SUCCESS,
+      failure: ActionTypes.CHAT_DELETE_ERROR
+    }, { peer });
+  }
+  toLeaveGroup(peer) {
+    const gid = peer.id;
+    this.leaveGroup(gid).then(
+      this.deleteChat.bind(this, peer)
+    );
+  }
+  toDeleteChat(peer) {
+    const gid = peer.id;
     switch (peer.type) {
       case PeerTypes.USER:
-        deleteChat();
+        this.deleteChat(peer);
         break;
       case PeerTypes.GROUP:
-        leaveGroup()
-          .then(deleteChat);
+        this.deleteGroup(gid);
         break;
       default:
     }

@@ -9,6 +9,7 @@ import DelegateContainer from '../utils/DelegateContainer';
 
 import PeerUtils from '../utils/PeerUtils';
 import history from '../utils/history';
+import alert from '../utils/alert';
 
 import DefaultMessages from './dialog/MessagesSection.react';
 import DefaultDialogHeader from './dialog/DialogHeader.react';
@@ -181,6 +182,11 @@ class Dialog extends Component {
   renderContent() {
     const { uid, peer, isMember, dialogInfo, search } = this.state;
     const { MessagesSection, DialogFooter } = this.components;
+    // if (!isMember) {
+    //   alert('您不是该群组成员').then(() => {
+    //     history.replace('/im');
+    //   });
+    // }
 
     if (search.isOpen) {
       return (

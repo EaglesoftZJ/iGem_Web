@@ -4,9 +4,12 @@
 
 import React, { Component, PropTypes } from 'react';
 import { FormattedMessage, FormattedHTMLMessage } from 'react-intl';
+import { Container } from 'flux/utils';
 import EventListener from 'fbjs/lib/EventListener';
 import { PeerTypes, KeyCodes } from '../../../constants/ActorAppConstants';
 import confirm from '../../../utils/confirm';
+
+import DialogStore from '../../../stores/DialogStore';
 
 import ContactActionCreators from '../../../actions/ContactActionCreators';
 import DialogActionCreators from '../../../actions/DialogActionCreators';
@@ -14,7 +17,11 @@ import BlockedUsersActionCreators from '../../../actions/BlockedUsersActionCreat
 import EditGroupActionCreators from '../../../actions/EditGroupActionCreators';
 import InviteUserActions from '../../../actions/InviteUserActions';
 
+
 class MoreDropdown extends Component {
+  static getStores() {
+    return [DialogStore];
+  }
   static contextTypes = {
     delegate: PropTypes.object.isRequired
   }
@@ -23,6 +30,11 @@ class MoreDropdown extends Component {
     peer: PropTypes.object.isRequired,
     info: PropTypes.object.isRequired,
     onClose: PropTypes.func.isRequired
+  }
+  static calculateState() {
+    return {
+      isAdmin: DialogStore.isAdmin(),
+    }
   }
 
   constructor(props, context) {
@@ -105,7 +117,7 @@ class MoreDropdown extends Component {
 
     confirm(message)
       .then(
-        () => DialogActionCreators.deleteChat(peer),
+        () => DialogActionCreators.toDeleteChat(peer),
         () => {}
       );
   }
@@ -116,7 +128,7 @@ class MoreDropdown extends Component {
 
     confirm(<FormattedHTMLMessage id="modal.confirm.group.leave" values={{ name: info.name }} />)
       .then(
-        () => DialogActionCreators.leaveGroup(peer.id),
+        () => DialogActionCreators.toLeaveGroup(peer),
         () => {}
       );
   }
@@ -220,6 +232,8 @@ class MoreDropdown extends Component {
   }
 
   renderGroupMenuItems() {
+    const { isAdmin } = this.state;
+    console.log(isAdmin, 12312312);
     return (
       <div>
         <li className="dropdown__menu__item" onClick={this.handleEditGroup}>
@@ -230,15 +244,15 @@ class MoreDropdown extends Component {
           <i className="material-icons">group_add</i>
           <FormattedMessage id="addPeople"/>
         </li>*/}
-        <li className="dropdown__menu__item" onClick={this.handleChatLeave}>
-          <FormattedMessage id="leaveGroup"/>
-        </li>
         <li className="dropdown__menu__item" onClick={this.handleChatClear}>
           <FormattedMessage id="clearGroup"/>
         </li>
-        <li className="dropdown__menu__item" onClick={this.handleChatDelete}>
-          <FormattedMessage id="deleteGroup"/>
-        </li>
+        { !isAdmin ? <li className="dropdown__menu__item" onClick={this.handleChatLeave}>
+          <FormattedMessage id="leaveGroup"/>
+        </li> : null}
+        { isAdmin ? <li className="dropdown__menu__item" onClick={this.handleChatDelete}>
+          <FormattedMessage id="deleteGroup"/> 
+        </li> : null}
       </div>
     );
   }
@@ -285,4 +299,4 @@ class MoreDropdown extends Component {
   }
 }
 
-export default MoreDropdown;
+export default Container.create(MoreDropdown, { pure: false });

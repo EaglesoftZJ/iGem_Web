@@ -43,7 +43,7 @@ export default {
       facebook: 'Like us on Facebook'
     },
 
-    // Buttons
+    // Buttons 
     'button': {
       'ok': '确定',
       'cancel': '取消',
@@ -178,7 +178,9 @@ export default {
       },
       'createGroup': {
         'title': '创建群组',
-        'groupName': '群组名称'
+        'groupName': '群组名称',
+        'groupName_error': '请输入群组名称',
+        'search': '人员搜索'
       },
       'quickSearch': {
         'title': '通讯录',
@@ -348,7 +350,7 @@ export default {
 
     invite: {
       title: '邀请更多人',
-      search: '搜索',
+      search: '人员搜索',
       notFound: '抱歉,没有找到指定用户.',
       inviteByLink: '邀请链接',
       byLink: {
@@ -381,6 +383,8 @@ export default {
     tooltip: {
       toolbar: {
         info: '当前会话的相关信息',
+        addUser: '添加群组成员',
+        createGroup: '创建群组',
         favorite: '置顶'
       },
       recent: {

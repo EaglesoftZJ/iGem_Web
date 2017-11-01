@@ -230,7 +230,7 @@ class QuickSearch extends Component {
           <div className="title col-xs">
             <div className="hint pull-right"><FormattedMessage id="modal.quickSearch.openDialog"/></div>
             {result.peerInfo.title}
-            {result.peerInfo.peer.type !== 'group' ? <a href="javascript:;" target="_self" className="results__item__info" onMouseMove={this.handleMouseMove} onMouseEnter={this.handleMouseEnter.bind(this, result.peerInfo.peer.id)}><i className="account-icon material-icons">account_circle</i></a> : null}
+            {result.peerInfo.peer.type !== 'group' ? <i className="account-icon material-icons" onMouseMove={this.handleMouseMove} onMouseEnter={this.handleMouseEnter.bind(this, result.peerInfo.peer.id)}>account_circle</i> : null}
           </div>
         </li>
       );

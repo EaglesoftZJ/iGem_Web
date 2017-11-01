@@ -47,15 +47,13 @@
       cursor: pointer;
 
       color: $mine-shaft;
-      &__info {
+      .account-icon {
         margin-left: 10px;
         color: rgba(0, 0, 0, 0.5);
-        text-decoration: none;
-        .account-icon {
-          font-size: 20px;
-          vertical-align: text-bottom;
-          transition: all 0.3s ease-out;
-        }
+        font-size: 21px;
+        vertical-align: text-bottom;
+        transition: all 0.3s ease-out;
+        cursor: pointer;
       }
       .title {
         font-size: 15px;

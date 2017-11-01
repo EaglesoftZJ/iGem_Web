@@ -10,7 +10,7 @@ import ActorClient from '../utils/ActorClient';
 class GroupStore extends ReduceStore {
   getInitialState() {
     return {
-      token: null
+      token: null,
     };
   }
 
@@ -26,7 +26,6 @@ class GroupStore extends ReduceStore {
         }
       case ActionTypes.GROUP_GET_TOKEN_ERROR:
         return this.getInitialState()
-
       case ActionTypes.GROUP_CLEAR:
       case ActionTypes.GROUP_CLEAR_SUCCESS:
       case ActionTypes.GROUP_CLEAR_ERROR:
@@ -36,6 +35,9 @@ class GroupStore extends ReduceStore {
       case ActionTypes.GROUP_DELETE:
       case ActionTypes.GROUP_DELETE_SUCCESS:
       case ActionTypes.GROUP_DELETE_ERROR:
+      case ActionTypes.CHAT_DELETE:
+      case ActionTypes.CHAT_DELETE_SUCCESS:
+      case ActionTypes.CHAT_DELETE_ERROR:
       default:
         return state;
     }

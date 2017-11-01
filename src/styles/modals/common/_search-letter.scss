@@ -1,8 +1,9 @@
 .search-letter {
   display: flex;
   height: 22px;
+  padding-top: 10px;
   line-height: 22px;
-  padding: 0 16px;
+  padding: 10px 16px 0;
   flex-flow: row wrap;
   &-item{
     flex: 1;

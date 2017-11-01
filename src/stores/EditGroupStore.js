@@ -6,6 +6,7 @@ import { ReduceStore } from 'flux/utils';
 import Dispatcher from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes } from '../constants/ActorAppConstants';
 import ActorClient from '../utils/ActorClient';
+import linq from 'linq';
 
 class EditGroupStore extends ReduceStore {
   getInitialState() {
@@ -45,7 +46,9 @@ class EditGroupStore extends ReduceStore {
 
   isAdmin() {
     const myID = ActorClient.getUid();
-    return this.getState().group.adminId === myID;
+    const members = this.getState().group.members;
+    var adminId = linq.from(members).where('$.isAdmin == true').select('$.peerInfo.peer.id').toArray()[0];
+    return adminId === myID;
   }
 
 }

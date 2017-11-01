@@ -4,11 +4,13 @@
 
 import React, { Component } from 'react';
 import Modal from 'react-modal';
+import { Container } from 'flux/utils'
 import { FormattedMessage } from 'react-intl';
 
 import CreateGroupActionCreators from '../../actions/CreateGroupActionCreators';
 
 import CreateGroupForm from './createGroup/Form.react';
+
 
 class CreateGroup extends Component {
   constructor(props) {
@@ -16,11 +18,18 @@ class CreateGroup extends Component {
 
     this.handleClose = this.handleClose.bind(this);
   }
-
   handleClose() {
-    CreateGroupActionCreators.close()
+    CreateGroupActionCreators.close();
   }
-
+  renderHeader() {
+    return (
+      <header className="header">
+        <div className="pull-left"><FormattedMessage id="modal.createGroup.title"/></div>
+        <div className="pull-right" style={{cursor: 'Pointer'}}><strong onClick={() => this.handleClose()}>关闭</strong></div>
+      </header>
+    );
+  }
+  
   render() {
     return (
       <Modal
@@ -31,15 +40,8 @@ class CreateGroup extends Component {
 
         <div className="create-group">
           <div className="modal__content">
-
-            <header className="modal__header">
-              <FormattedMessage id="modal.createGroup.title" tagName="h1"/>
-              <a className="modal__header__close material-icons"
-                 onClick={this.handleClose}>clear</a>
-            </header>
-
+            { this.renderHeader() }
             <CreateGroupForm/>
-
           </div>
         </div>
 

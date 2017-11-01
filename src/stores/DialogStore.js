@@ -7,6 +7,7 @@ import { ReduceStore } from 'flux/utils';
 import Dispatcher from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes, PeerTypes } from '../constants/ActorAppConstants';
 import ActorClient from '../utils/ActorClient';
+import linq from 'linq';
 
 class DialogStore extends ReduceStore {
   getInitialState() {
@@ -66,6 +67,15 @@ class DialogStore extends ReduceStore {
       default:
         return state;
     }
+  }
+  isAdmin() {
+    if (this.getState().peer.type === PeerTypes.GROUP) {
+      const myID = ActorClient.getUid();
+      const members = ActorClient.getGroup(this.getState().peer.id).members;
+      var adminId = linq.from(members).where('$.isAdmin == true').select('$.peerInfo.peer.id').toArray()[0];
+      return adminId === myID;
+    }
+    return true;
   }
 }
 

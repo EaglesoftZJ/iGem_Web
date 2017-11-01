@@ -27,7 +27,8 @@ class DepartementItem extends Component {
             selectedBmmc: '',
             szk: '',
             scrollTo: null,
-            hoverable: true
+            hoverable: true,
+            innerHoverId: ''
         }
     }
     componentDidMount() {
@@ -70,7 +71,8 @@ class DepartementItem extends Component {
 
     renderDw() {
         const { dw_data, hoverId } = this.props;
-        const { selectedDw, szk } = this.state;
+        const { selectedDw, szk, innerHoverId } = this.state;
+        var _hoverId = hoverId === undefined ? innerHoverId : hoverId;
         if (dw_data && dw_data.length <= 0) {
           return (
             <li className="results__item--suggestion row">
@@ -83,7 +85,7 @@ class DepartementItem extends Component {
         return dw_data.map((result, index) => {
           const itemId = result.id + result.szk;
           const selected = (selectedDw + szk) === itemId;
-          const hover = hoverId === itemId;
+          const hover = _hoverId === itemId;
           const resultClassName = classnames('results__item row', {
             'results__item--active': hover,
             'results__item--open': selected
@@ -114,7 +116,8 @@ class DepartementItem extends Component {
 
     renderBm(dwId, szk1, parentId) {
         const { bm_data, hoverId } = this.props;
-        const { selectedBm, szk} = this.state;
+        const { selectedBm, szk, innerHoverId} = this.state;
+        var _hoverId = hoverId === undefined ? innerHoverId : hoverId;
 
         let results = linq.from(bm_data).where('$.dwid.trim() == "' + dwId + '" && $.fid.trim() == "' + parentId + '" && $.szk ==' + '"' + szk1 + '"').orderBy('$.wzh').toArray();
     
@@ -126,7 +129,7 @@ class DepartementItem extends Component {
         return results.map((result, index) => {
             const itemId = result.id + result.szk;
             const selected = (selectedBm + szk) === itemId;
-            const hover = hoverId === itemId;
+            const hover = _hoverId === itemId;
             const resultClassName = classnames('results__item row', {
             'results__item--active': hover,
             'results__item--selected': selected
@@ -204,6 +207,9 @@ class DepartementItem extends Component {
         const { onItemHover } = this.props;
         const { hoverable } = this.state;
         var hoverId = id + szk;
+        if (onItemHover === undefined) {
+            this.setState({innerHoverId: hoverId});
+        }
         hoverable && onItemHover && onItemHover(hoverId);
     }
 

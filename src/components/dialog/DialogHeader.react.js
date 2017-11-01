@@ -15,6 +15,7 @@ import ActivityActionCreators from '../../actions/ActivityActionCreators';
 import FavoriteActionCreators from '../../actions/FavoriteActionCreators';
 import SearchMessagesActionCreators from '../../actions/SearchMessagesActionCreators';
 import InviteUserActions from '../../actions/InviteUserActions';
+import CreateGroupActionCreators from '../../actions/CreateGroupActionCreators';
 
 import AvatarItem from '../common/AvatarItem.react';
 import ToggleFavorite from '../common/ToggleFavorite.react';
@@ -50,6 +51,7 @@ class DialogHeader extends Component {
     this.handleMakeCallButtonClick = this.handleMakeCallButtonClick.bind(this);
     this.handleEndCallButtonClick = this.handleEndCallButtonClick.bind(this);
     this.handleSearchButtonClick = this.handleSearchButtonClick.bind(this);
+    this.handleCreateGroup =  this.handleCreateGroup.bind(this);
     this.toggelMoreDropdownOpen = this.toggelMoreDropdownOpen.bind(this);
     this.handleAddPeople = this.handleAddPeople.bind(this);
   }
@@ -97,6 +99,10 @@ class DialogHeader extends Component {
   handleAddPeople() {
     const { info } = this.props;
     InviteUserActions.show(info)
+  }
+
+  handleCreateGroup() {
+    CreateGroupActionCreators.openInDialog();
   }
 
   toggelMoreDropdownOpen() {
@@ -257,9 +263,36 @@ class DialogHeader extends Component {
     }
 
     return (
+      <Tooltip
+        placement="left"
+        mouseEnterDelay={0}
+        mouseLeaveDelay={0}
+        overlay={<FormattedMessage id="tooltip.toolbar.addUser"/>}
+      >
       <button className="button button--icon" onClick={this.handleAddPeople}>
         <i className="material-icons">group_add</i>
       </button>
+      </Tooltip>
+    );
+  }
+
+  renderCreateGroupButton() {
+    const { peer } = this.props;
+    if (peer.type === PeerTypes.GROUP) {
+      return null;
+    }
+
+    return (
+      <Tooltip
+      placement="left"
+      mouseEnterDelay={0}
+      mouseLeaveDelay={0}
+      overlay={<FormattedMessage id="tooltip.toolbar.createGroup"/>}
+    >
+      <button className="button button--icon" onClick={this.handleCreateGroup}>
+        <i className="material-icons">group</i>
+      </button>
+    </Tooltip>
     );
   }
 
@@ -298,6 +331,7 @@ class DialogHeader extends Component {
             {this.renderSearchButton()}
             {this.renderCallButton()}
             {this.renderAddUsersButton()}
+            {this.renderCreateGroupButton()}
             {this.renderInfoButton()}
             {this.renderMoreButton()}
           </div>
