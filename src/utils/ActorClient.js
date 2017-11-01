@@ -457,6 +457,10 @@ class ActorClient {
     return window.messenger.findGroups(query);
   }
 
+  loadMembers(gid, limit, next) {
+    return window.messenger.loadMembers(gid, limit, next);
+  }
+
   findUsers(phone) {
     return window.messenger.findUsers(phone.toString());
   }
