@@ -10,6 +10,8 @@ import PeerUtils from '../utils/PeerUtils';
 import { ActionTypes } from '../constants/ActorAppConstants';
 import ComposeActionCreators from '../actions/ComposeActionCreators';
 
+import loading from '../utils/DataLoading';
+
 
 
 const CreateGroupActionCreators = {
@@ -42,6 +44,7 @@ const CreateGroupActionCreators = {
   },
 
   createGroup(title, avatar, memberIds) {
+    loading('show');
     const createGroup = () => dispatchAsync(ActorClient.createGroup(title, avatar, memberIds), {
       request: ActionTypes.GROUP_CREATE,
       success: ActionTypes.GROUP_CREATE_SUCCESS,
@@ -52,7 +55,7 @@ const CreateGroupActionCreators = {
 
     createGroup()
       .then(openCreatedGroup)
-      .then(this.close)
+      .then(() => {this.close(); loading('hide');})
   }
 };
 

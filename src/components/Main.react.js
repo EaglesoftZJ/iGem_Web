@@ -15,6 +15,7 @@ import Favicon from './common/Favicon.react';
 import ModalsWrapper from './modals/ModalsWrapper.react';
 import MenuOverlay from './common/MenuOverlay.react';
 import SmallCall from './SmallCall.react';
+import loading from '../utils/DataLoading';
 
 class Main extends Component {
   static propTypes = {

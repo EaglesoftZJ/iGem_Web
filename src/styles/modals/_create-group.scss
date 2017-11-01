@@ -93,7 +93,9 @@
     &-select {
       position: relative;
       width: 260px;
-      padding: 0 5px;
+      .con {
+        padding: 0 5px;
+      }
       &-tag {
         height: 42px;
         margin-top: 5px;
