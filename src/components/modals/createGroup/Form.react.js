@@ -176,6 +176,15 @@ class CreateGroupForm extends Component {
     }
   }
 
+  renderDwSelectSize() {
+    const { selectedUserIds } = this.state;
+    const contacts = this.getContacts();
+    var results = contacts.filter((contact, i) => {
+      return selectedUserIds.has(contact.IGIMID);
+    });
+    return results.length;
+  }
+
   renderSelect() {
     const { yh_data, selectedUserIds } = this.state;
     var results = [];
@@ -214,6 +223,7 @@ class CreateGroupForm extends Component {
     const { selectedUserIds } = this.state;
     CreateGroupActionCreators.setSelectedUserIds(selectedUserIds.delete(item.IGIMID));
   }
+
 
   renderAddUsersButton() {
     const { step } = this.state;
@@ -281,8 +291,8 @@ class CreateGroupForm extends Component {
   }
 
   render() {
-    console.log('department', this.refs.department);
-    const { step, dw_data, bm_data, search} = this.state;
+    const { step, dw_data, bm_data, search, selectedUserIds, selectedDwmc, selectedBmmc} = this.state;
+    var result = this.getContacts();
     var props = {
       dw_data,
       bm_data,
@@ -302,20 +312,29 @@ class CreateGroupForm extends Component {
           </div>
           <div className="form-body">
           <div className={className} ref="department">
-            <DepartmentMenu {...props}></DepartmentMenu>
-            <div className="department-forbid-mc" style={{top: this.refs.department ? $(this.refs.department).scrollTop() : 0}}></div>
+            <div className="info">{ selectedDwmc } { selectedBmmc ? '> ' + selectedBmmc : ''}</div>
+            <div className="con">
+              <DepartmentMenu {...props}></DepartmentMenu>
+              <div className="department-forbid-mc" style={{top: this.refs.department ? $(this.refs.department).scrollTop() : 0}}></div>
+            </div>
           </div>
           <div className="group-name-col group-name-people">
-            <div className="group-name-people-all">
-            { this.renderAll() }
-            </div>
-            <div className="group-name-people-list">
-            { this.renderContacts() }
+            <div className="info"> { this.renderDwSelectSize() } / {result.length}</div>
+            <div className="con">
+              <div className="group-name-people-all">
+                  { this.renderAll() }
+              </div>
+              <div className="group-name-people-list">
+                { this.renderContacts() }
+              </div>
             </div>
           </div>
 
           <div className="group-name-col group-name-select" ref="select">
-            { this.renderSelect() }
+              <div className="info">共选择{selectedUserIds.size}人</div>
+              <div className="con">
+                { this.renderSelect() }
+              </div>
           </div>
         </div>
         </div>

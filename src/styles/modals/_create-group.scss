@@ -4,7 +4,7 @@
     padding: 0;
   }
   .input-group {
-    padding-bottom: 18px;
+    padding-bottom: 10px;
   }
   .small-search {
     float: right;
@@ -29,12 +29,20 @@
     }
     &-col {
       display: inline-block;
-      height: 360px;
-      border: 1px solid #e6ebf5;
-      overflow: auto;
-      box-sizing: border-box;
       &:not(:last-child) {
         margin-right: 10px;
+      }
+      .info {
+        height: 20px;
+        font-size: 12px;
+        line-height: 20px;
+      }
+      .con {
+        position: relative;
+        height: 360px;
+        border: 1px solid #e6ebf5;
+        overflow: auto;
+        box-sizing: border-box;
       }
     }
   
