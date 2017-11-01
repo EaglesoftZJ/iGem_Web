@@ -180,24 +180,6 @@ class LoginActionCreators extends ActionCreators {
         DepartmentActionCreators.setRes({res});
       }
     });
-
-
-    const loadMembers = (users) =>{
-      let usr = users;
-      console.log(usr);
-    };
-
-    const catchF = (users) =>{
-      let usr = users;
-      console.log(usr);
-    };
-
-    let promise = ActorClient.loadMembers(1787707707, 54, null)
-    .then(loadMembers)
-    .catch(catchF);
-
-
-
     // JoinGroupActions.joinAfterLogin();
   }
 
