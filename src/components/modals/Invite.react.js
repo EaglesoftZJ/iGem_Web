@@ -20,6 +20,7 @@ import InviteUserStore from '../../stores/InviteUserStore';
 
 import ContactItem from '../common/ContactItem.react';
 import Stateful from '../common/Stateful.react';
+import GroupForm from './createGroup/Form.react';
 
 class InviteUser extends Component {
   static getStores() {
@@ -28,9 +29,12 @@ class InviteUser extends Component {
 
   static calculateState() {
     return {
-      contacts: PeopleStore.getState(),
+      name: InviteUserStore.getState().name,
+      search: InviteUserStore.getState().search,
+      step: InviteUserStore.getState().step,
+      members: InviteUserStore.getState().members,
+      selectedUserIds: InviteUserStore.getState().selectedUserIds,
       group: InviteUserStore.getState().group,
-      users: InviteUserStore.getState().users
     };
   }
 
@@ -130,6 +134,15 @@ class InviteUser extends Component {
       </div>
     );
   }
+  renderHeader() {
+    return (
+      <header className="header">
+        <div className="pull-left"><FormattedMessage id="invite.title"/></div>
+        { this.inviteByLinkButton() }
+        <div className="pull-right" style={{cursor: 'Pointer'}}><strong onClick={() => this.handleClose()}>关闭</strong></div>
+      </header>
+    );
+  }
 
   inviteByLinkButton() {
     return (
@@ -140,7 +153,28 @@ class InviteUser extends Component {
     );
   }
 
+  onContactToggle(userIds) {
+    InviteUserActions.setSelectedUserIds(userIds);
+  }
+  handleSearchChange(value) {
+    InviteUserActions.setGroupSearch(value);
+  }
+  handleSubmit(idList, name, peer) {
+    InviteUserActions.inviteUser(peer.id, idList);
+  }
+  handleDelete(selectedUserIds) {
+    InviteUserActions.setSelectedUserIds(selectedUserIds);
+  }
+
   render() {
+    var props = {
+      onContactToggle: this.onContactToggle,
+      handleSearchChange: this.handleSearchChange,
+      handleDelete: this.handleDelete,
+      handleSubmit: this.handleSubmit,
+      handleClose: this.handleClose,
+      ...this.state
+    }
     return (
       <Modal
         overlayClassName="modal-overlay"
@@ -150,8 +184,9 @@ class InviteUser extends Component {
 
         <div className="invite">
           <div className="modal__content">
-
-            <header className="modal__header">
+            { this.renderHeader() }
+            <GroupForm {...props} />
+            {/* <header className="modal__header">
               <i className="modal__header__icon material-icons">person_add</i>
               <FormattedMessage id="invite.title" tagName="h1"/>
               <button className="button button--lightblue" onClick={this.handleClose}>
@@ -167,7 +202,7 @@ class InviteUser extends Component {
               <ul className="contacts__list">
                 {this.renderContacts()}
               </ul>
-            </div>
+            </div> */}
 
           </div>
         </div>

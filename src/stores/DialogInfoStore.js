@@ -22,6 +22,7 @@ class DialogInfoStore extends ReduceStore {
     return null;
   }
 
+
   reduce(state, action) {
     switch (action.type) {
       case ActionTypes.SELECT_DIALOG_PEER:

@@ -1,4 +1,4 @@
-.loading-wraper{
+.loading-wrapper{
     position: fixed;
     z-index: 99999;
     top: 0px;
@@ -74,6 +74,12 @@
         animation: load 1.1s infinite ease;
         -webkit-transform: translateZ(0);
         -ms-transform: translateZ(0);
-        transform: translateZ(0);
+      }
+      .progress {
+        background: black;
+        color: #fff;
+        position: absolute;
+        left: 0px;
+        top: 0px;
       }
 }

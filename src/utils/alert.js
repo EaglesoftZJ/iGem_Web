@@ -92,8 +92,8 @@ export default function alert(message, options = {})  {
   let element = document.createElement('div');
   element.className = 'modal-overlay';
   const wrapper = document.body.appendChild(element);
-
   const component = render(createElement(Alert, { message, ...options }), wrapper);
+
 
   function cleanup() {
     unmountComponentAtNode(wrapper);

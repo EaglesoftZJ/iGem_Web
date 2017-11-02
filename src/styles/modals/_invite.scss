@@ -1,30 +1,25 @@
 $invite-modal-width: 400px;
 .invite {
-  width: $invite-modal-width;
+  // width: $invite-modal-width;
   .modal__body {
-    padding: 0;
   }
   .small-search {
     margin: $modal-padding $modal-padding 0;
   }
   .link {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 500;
-    line-height: 24px;
 
     display: inline-block;
-
-    margin: 8px $modal-padding;
-
-    vertical-align: middle;
     text-transform: uppercase;
     .material-icons {
       font-size: 22px;
 
-      margin-right: 16px;
       margin-left: 5px;
+    }
 
-      vertical-align: bottom;
+    span {
+      vertical-align: middle;
     }
   }
   .contacts__list {

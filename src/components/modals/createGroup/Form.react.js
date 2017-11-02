@@ -12,8 +12,7 @@ import { CreateGroupSteps } from '../../../constants/ActorAppConstants';
 import CreateGroupActionCreators from '../../../actions/CreateGroupActionCreators';
 
 import DepartmentStore from '../../../stores/DepartmentStore';
-import PeopleStore from '../../../stores/PeopleStore';
-import CreateGroupStore from '../../../stores/CreateGroupStore';
+import DialogStore from '../../../stores/DialogStore';
 
 import DepartmentMenu from '../departmentMenu/DepartmentMenu.react';
 import ContactItem from '../../common/ContactItem.react';
@@ -26,21 +25,31 @@ class CreateGroupForm extends Component {
   static contextTypes = {
     intl: PropTypes.object
   };
+  static PropTypes = {
+    type: PropTypes.string,
+    name: PropTypes.string,
+    search: PropTypes.string,
+    step: PropTypes.string,
+    members: PropTypes.array,
+    selectedUserIds: PropTypes.object,
+    onContactToggle: PropTypes.func,
+    handleNameChange: PropTypes.func,
+    handleSearchChange: PropTypes.fuc,
+    handleSubmit: PropTypes.fuc,
+    handleDelete: PropTypes.fuc
+  }
 
   static getStores() {
-    return [CreateGroupStore, PeopleStore, DepartmentStore];
+    return [DepartmentStore];
   }
 
   static calculateState() {
     let res = DepartmentStore.getState();
     return {
-      name: CreateGroupStore.getGroupName(),
-      search: CreateGroupStore.getGroupSearch(),
-      step: CreateGroupStore.getCurrentStep(),
-      selectedUserIds: CreateGroupStore.getSelectedUserIds(),
       dw_data: linq.from(res.dw_data).where('$.id!=="dw017"').orderBy('$.wzh').toArray(),
       bm_data: res.bm_data,
-      yh_data: res.yh_data
+      yh_data: res.yh_data,
+      peer: DialogStore.getCurrentPeer()
     };
   }
 
@@ -60,7 +69,8 @@ class CreateGroupForm extends Component {
     
     this.onContactToggle = this.onContactToggle.bind(this);
     this.handleNameChange = this.handleNameChange.bind(this);
-    this.handleCreateGroup = this.handleCreateGroup.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleSearchChange = this.handleSearchChange.bind(this);
   }
 
   componentDidMount() {
@@ -72,19 +82,27 @@ class CreateGroupForm extends Component {
 
   handleUpdate() {
     const { shouldScroll } = this.state;
+    console.log('shouldScroll', shouldScroll);
     if (shouldScroll) {
-      $(this.refs.select).scrollTop(100000);
-      this.setState({shouldScroll: false});
+      setTimeout(() => {
+        $(this.refs.select_con).scrollTop(10000);
+        this.setState({shouldScroll: false});
+      }, 100);
     }
   }
 
   getContacts() {
-    const { yh_data, search, selectedBm, selectedDw, szk } = this.state;
+    const { yh_data, selectedBm, selectedDw, szk } = this.state;
+    const { search } = this.props;
 
     let results = linq.from(yh_data).where('$.bmid.trim() == "' + selectedBm + '" && $.dwid.trim() == "' + selectedDw + '"&& $.szk == "' + szk +'"').orderBy('$.wzh').toArray();
 
     if (!search) {
       return results;
+    }
+
+    if (search === "*") {
+      return yh_data.slice(0, 300);
     }
     
     return fuzzaldrin.filter(yh_data, search, {
@@ -113,29 +131,35 @@ class CreateGroupForm extends Component {
   }
 
   handleName(type, contact) {
-    const { selectedUserIds } = this.state;
+    const { selectedUserIds, members } = this.props;
     // console.log(selectedUserIds, 'selectedUserIds');
     var isSelected = false;
+    var isMember = false;
     var contacts = null;
+    var set = null;
+    if (members) {
+      set = new Set(linq.from(members).select('$.peerInfo.peer.id.toString()').toArray());
+    }
     if (type === 'item') {
       isSelected = selectedUserIds.has(contact.IGIMID);
+      isMember = set && set.has(contact.IGIMID);
       contacts = [contact];
     } else {
       var arr = contact.filter((item) => {
-        return !selectedUserIds.has(item.IGIMID);
+        return !selectedUserIds.has(item.IGIMID) && !(set && set.has(item.IGIMID));
       })
       isSelected = arr.length > 0 ? false : true;
       contacts = contact;
     }
     
-    const icon = isSelected ? 'check_box' : 'check_box_outline_blank';
-
+    const icon = isSelected || isMember ? 'check_box' : 'check_box_outline_blank';
+  
     var name = type === 'item' ? contact.xm + (contact.zwmc ? ` (${contact.zwmc})` : '') : '全选';
     var key = type === 'item' ? contact.IGIMID : 'all';
-    var itemClassName = classnames('group-name-item', icon);
+    var itemClassName = classnames('group-name-item', icon, {'disabled': isMember});
 
     return (
-      <div className={ itemClassName } key={ key } onClick={() => this.onContactToggle(type, contacts, !isSelected)}>
+      <div className={ itemClassName } key={ key } onClick={() => this.onContactToggle(type, contacts, set, !isSelected)}>
         <a className="material-icons">
           {icon}
         </a>
@@ -144,32 +168,34 @@ class CreateGroupForm extends Component {
     );
   }
 
-  onContactToggle(type, contacts, isSelected) {
-    const { selectedUserIds } = this.state;
+  onContactToggle(type, contacts, set, isSelected) {
+    const { selectedUserIds, onContactToggle } = this.props;
     var userIds = selectedUserIds;
     contacts.forEach((item) => {
-      userIds = isSelected ? userIds.add(item.IGIMID) : userIds.delete(item.IGIMID);
+      if (!set || !set.has(item.IGIMID)) {
+        userIds = isSelected ? userIds.add(item.IGIMID) : userIds.delete(item.IGIMID);
+      } 
     });
     isSelected && this.setState({'shouldScroll': true});
-    CreateGroupActionCreators.setSelectedUserIds(userIds);
+    onContactToggle && onContactToggle(userIds);
   }
 
   handleNameChange(event) {
     event.preventDefault();
-
-    CreateGroupActionCreators.setGroupName(event.target.value);
-    this.setState({ error: '', nameError: '' });
+    const { handleNameChange } = this.props;
+    handleNameChange && handleNameChange(event.target.value);
   }
 
-  handleCreateGroup(event) {
+  handleSubmit(event) {
     event.preventDefault();
 
-    const { name, selectedUserIds } = this.state;
-    console.log('name', name);
+    const { name, selectedUserIds, handleSubmit } = this.props;
+    const { peer } = this.state;
     const trimmedName = name.trim();
+    console.log('123123123');
 
     if (trimmedName.length > 0) {
-      CreateGroupActionCreators.createGroup(name, null, selectedUserIds.toJS());
+      handleSubmit && handleSubmit(selectedUserIds.toJS(), name, peer);
     } else {
       this.refs.name.focus();
       this.setState({ error: ' ', nameError: 'error' });
@@ -177,7 +203,7 @@ class CreateGroupForm extends Component {
   }
 
   renderDwSelectSize() {
-    const { selectedUserIds } = this.state;
+    const { selectedUserIds } = this.props;
     const contacts = this.getContacts();
     var results = contacts.filter((contact, i) => {
       return selectedUserIds.has(contact.IGIMID);
@@ -186,7 +212,8 @@ class CreateGroupForm extends Component {
   }
 
   renderSelect() {
-    const { yh_data, selectedUserIds } = this.state;
+    const { yh_data } = this.state;
+    const { selectedUserIds } = this.props;
     var results = [];
     selectedUserIds.forEach((item) => {
       var result = linq.from(yh_data).where(`$.IGIMID == "${item}"`).toArray();
@@ -203,7 +230,8 @@ class CreateGroupForm extends Component {
     })
   }
   renderGroupNameInput() {
-    const { name, error, nameError } = this.state;
+    const { error, nameError } = this.state;
+    const { name, handleNameChange } = this.props;
     return (
       <TextField
         className="input__material--wide"
@@ -211,28 +239,30 @@ class CreateGroupForm extends Component {
         ref="name"
         errorText={error}
         onChange={this.handleNameChange}
-        value={name}/>
+        value={name}
+        disabled={!handleNameChange} />
     );
   }
 
   handleSearchChange(event) {
-    CreateGroupActionCreators.setGroupSearch(event.target.value);
+    const { handleSearchChange } = this.props;
+    handleSearchChange && handleSearchChange(event.target.value)
   }
 
   handleDelete(item) {
-    const { selectedUserIds } = this.state;
-    CreateGroupActionCreators.setSelectedUserIds(selectedUserIds.delete(item.IGIMID));
+    const { selectedUserIds, handleDelete } = this.props;
+    handleDelete && handleDelete(selectedUserIds.delete(item.IGIMID));
   }
 
 
   renderAddUsersButton() {
-    const { step } = this.state;
+    const { step, handleClose } = this.props;
     return (
       <div className="button-group">
-        <button className="button button--plain--primary" onClick={this.handleCreateGroup} disabled={step === CreateGroupSteps.CREATION_STARTED}>
+        <button className="button button--plain--primary" onClick={this.handleSubmit} disabled={step === CreateGroupSteps.CREATION_STARTED}>
           <FormattedMessage id="button.ok"/>
         </button>
-        <button className="button button--plain--cancel" onClick={() => CreateGroupActionCreators.close()}>
+        <button className="button button--plain--cancel" onClick={ handleClose }>
           <FormattedMessage id="button.cancel"/>
         </button>
       </div>
@@ -240,7 +270,7 @@ class CreateGroupForm extends Component {
   }
 
   renderUserSearchInput() {
-    const { search } = this.state;
+    const { search } = this.props;
     const { intl } = this.context;
 
     return (
@@ -257,7 +287,7 @@ class CreateGroupForm extends Component {
   }
 
   renderSelectedUsersCount() {
-    const { selectedUserIds } = this.state;
+    const { selectedUserIds } = this.props;
     return (
       <div className="count">
         <FormattedMessage id="members" values={{ numMembers: selectedUserIds.size }}/>
@@ -266,11 +296,11 @@ class CreateGroupForm extends Component {
   }
 
   renderCreateGroupButton() {
-    const { step } = this.state;
+    const { step } = this.props;
 
     if (step !== CreateGroupSteps.CREATION_STARTED) {
       return (
-        <button className="button button--lightblue" onClick={this.handleCreateGroup}>
+        <button className="button button--lightblue" onClick={this.handleSubmit}>
           <FormattedMessage id="button.createGroup"/>
         </button>
       )
@@ -291,14 +321,15 @@ class CreateGroupForm extends Component {
   }
 
   render() {
-    const { step, dw_data, bm_data, search, selectedUserIds, selectedDwmc, selectedBmmc} = this.state;
+    const { dw_data, bm_data, selectedDwmc, selectedBmmc } = this.state;
+    const { step, search, selectedUserIds } = this.props;
     var result = this.getContacts();
     var props = {
       dw_data,
       bm_data,
       onSelectDw: this.handleSelectDw.bind(this),
       onSelectBm: this.handleSelectBm.bind(this),
-      scrollBox: this.refs.department
+      scrollBox: this.refs.department_con
     }
     var className = classnames('group-name-col group-name-department', {
       'department-forbid': search
@@ -312,10 +343,10 @@ class CreateGroupForm extends Component {
           </div>
           <div className="form-body">
           <div className={className} ref="department">
-            <div className="info">{ selectedDwmc } { selectedBmmc ? '> ' + selectedBmmc : ''}</div>
-            <div className="con">
+            <div className="info">{ selectedDwmc ? selectedDwmc : '组织结构' } { selectedBmmc ? '> ' + selectedBmmc : ''}</div>
+            <div className="con" ref="department_con">
               <DepartmentMenu {...props}></DepartmentMenu>
-              <div className="department-forbid-mc" style={{top: this.refs.department ? $(this.refs.department).scrollTop() : 0}}></div>
+              <div className="department-forbid-mc" style={{top: this.refs.department_con ? $(this.refs.department_con).scrollTop() : 0}}></div>
             </div>
           </div>
           <div className="group-name-col group-name-people">
@@ -332,7 +363,7 @@ class CreateGroupForm extends Component {
 
           <div className="group-name-col group-name-select" ref="select">
               <div className="info">共选择{selectedUserIds.size}人</div>
-              <div className="con">
+              <div className="con" ref="select_con">
                 { this.renderSelect() }
               </div>
           </div>

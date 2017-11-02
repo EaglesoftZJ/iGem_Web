@@ -9,10 +9,23 @@ import { FormattedMessage } from 'react-intl';
 
 import CreateGroupActionCreators from '../../actions/CreateGroupActionCreators';
 
-import CreateGroupForm from './createGroup/Form.react';
+import CreateGroupStore from '../../stores/CreateGroupStore';
+
+import GroupForm from './createGroup/Form.react';
 
 
 class CreateGroup extends Component {
+  static getStores() {
+    return [CreateGroupStore];
+  }
+  static calculateState() {
+    return {
+      name: CreateGroupStore.getGroupName(),
+      search: CreateGroupStore.getGroupSearch(),
+      step: CreateGroupStore.getCurrentStep(),
+      selectedUserIds: CreateGroupStore.getSelectedUserIds()
+    };
+  }
   constructor(props) {
     super(props);
 
@@ -29,8 +42,33 @@ class CreateGroup extends Component {
       </header>
     );
   }
+  onContactToggle(userIds) {
+    CreateGroupActionCreators.setSelectedUserIds(userIds);
+  }
+  handleNameChange(value) {
+    CreateGroupActionCreators.setGroupName(value);
+  }
+  handleSearchChange(value) {
+    CreateGroupActionCreators.setGroupSearch(value);
+  }
+  handleSubmit(idList, name, peer) {
+    CreateGroupActionCreators.createGroup(name, null, idList);
+  }
+  handleDelete(selectedUserIds) {
+    CreateGroupActionCreators.setSelectedUserIds(selectedUserIds);
+  }
+  
   
   render() {
+    var props = {
+      onContactToggle: this.onContactToggle,
+      handleNameChange: this.handleNameChange,
+      handleSearchChange: this.handleSearchChange,
+      handleDelete: this.handleDelete,
+      handleSubmit: this.handleSubmit,
+      handleClose: this.handleClose,
+      ...this.state
+    }
     return (
       <Modal
         overlayClassName="modal-overlay"
@@ -41,7 +79,7 @@ class CreateGroup extends Component {
         <div className="create-group">
           <div className="modal__content">
             { this.renderHeader() }
-            <CreateGroupForm/>
+            <GroupForm {...props} />
           </div>
         </div>
 
@@ -50,4 +88,4 @@ class CreateGroup extends Component {
   }
 }
 
-export default CreateGroup;
+export default Container.create(CreateGroup, {pure: false});

@@ -159,6 +159,9 @@ export const ActionTypes = keymirror({
   INVITE_USER: null,
   INVITE_USER_SUCCESS: null,
   INVITE_USER_ERROR: null,
+  NVITE_USER_SET_SEARCH: null,
+  NVITE_USER_SET_MEMBERS: null,
+
 
   PREFERENCES_MODAL_SHOW: null,
   PREFERENCES_MODAL_HIDE: null,
