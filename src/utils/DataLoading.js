@@ -26,15 +26,20 @@ var wrapper = null;
 var component = '';
 
 export default function loading(type, progress, total) {
+    var clean = () => {
+        unmountComponentAtNode(wrapper);
+        setImmediate(() => wrapper.remove());
+        wrapper = null;
+    }
     if (type === 'show') {
+        wrapper && clean();
         wrapper = document.createElement('div');
         wrapper.className = 'loading-wrapper';
         document.body.appendChild(wrapper);
         component = render(createElement(DataLoading, {progress, total}), wrapper);
     } else if (wrapper && type === 'hide') {
         // document.body.removeChild(wrapper);
-        unmountComponentAtNode(wrapper);
-        setImmediate(() => wrapper.remove());
+        clean();
     } else if (type === 'info') {
         component.props.progress = progress;
         component.props.total = total;

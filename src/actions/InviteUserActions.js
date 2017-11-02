@@ -29,7 +29,7 @@ export default {
 
 
   inviteUser(gid, idList) {
-    loading('show', 0, idList.length);
+    loading('show');
     var invite = (index) => {
       dispatchAsync(ActorClient.inviteMember(gid, parseFloat(idList[index])), {
         request: ActionTypes.INVITE_USER,
