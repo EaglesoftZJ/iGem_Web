@@ -3,7 +3,8 @@ export default {
   'messages': {
     // Login
     'login': {
-      'signIn': '登录',
+      'name': '飞鸟',
+      'name_en': 'Flychad',
       'wrong': '切换',
       'phone': '手机号码',
       'email': 'mail地址',

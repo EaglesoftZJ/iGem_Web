@@ -2,13 +2,14 @@ html,
 body {
   box-sizing: border-box;
 
-  background-color: $bismark;;
+  background-color: $light-blue;
+  background: url(/assets/images/bg.png) center center no-repeat;
 
   @include app-sizes();
 }
 
 body {
-  font-family: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: tahoma,arial, 'Hiragino Sans GB', 'Microsoft YaHei', 'Helvetica Neue';
 
   overflow: hidden !important;
 

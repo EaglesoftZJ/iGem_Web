@@ -178,6 +178,7 @@ class Login extends Component {
     );
 
     return (
+      <div className="login-bg-box">
       <section className="login-new row center-xs middle-xs">
 
         {/* <div className="login-new__welcome col-xs row center-xs middle-xs">
@@ -204,32 +205,35 @@ class Login extends Component {
           </footer>
         </div> */}
 
-        <div className="login-new__forms col-xs-6 col-md-4 row center-xs middle-xs">
+        <div className="login-new__forms row center-xs middle-xs">
         <img alt={`${this.appName} messenger`}
                className="logo"
-               src="assets/images/logo.png"
-               srcSet="assets/images/logo@2x.png 2x"/>
+               src="assets/images/logo1.png"
+               width="70"/> 
+          <h2 className="login-title">
+            <FormattedMessage id="login.name"/>
+            <FormattedMessage id="login.name_en"/>
+          </h2>
           <div>
-            <h1 className="login-new__heading"><FormattedMessage id="login.signIn"/></h1>
-
             <form className={requestFormClassName} onSubmit={this.onRequestCode}>
               {/* <a className="wrong" onClick={this.handleRestartAuthClick}><FormattedMessage id="login.wrong"/></a>*/}
               <div className={ dropClassName }>
-              <TextField className="login-new__forms__form__input input__material--wide"
+              <TextField className="login-input login-input-user"
                          disabled={isLoginRequested || step !== AuthSteps.LOGIN_WAIT && step !== AuthSteps.CODE_WAIT}
                          errorText={errors.login}
                          floatingLabel={intl.messages['login.user']}
                          onChange={this.onLoginChange}
+                         placeholder={intl.messages['login.user']}
                          ref="login"
                          value={login}/>
                 { this.renderDropDown() }
               </div>
-              <div style={{height: 20 +'px'}}></div>
-              <TextField className="login-new__forms__form__input input__material--wide"
+              <TextField className="login-input login-input-password"
                          disabled={isLoginRequested || step !== AuthSteps.LOGIN_WAIT && step !== AuthSteps.CODE_WAIT}
                          errorText={errors.code}
                          floatingLabel={intl.messages['login.authPassword']}
                          onChange={this.onCodeChange}
+                         placeholder={intl.messages['login.authPassword']}
                          ref="code"
                          type="password"
                          value={code}/>
@@ -265,6 +269,9 @@ class Login extends Component {
           </div>
         </div>
       </section>
+      {/* <img src="../assets/images/bg_bottom.png" className="login-bg-bottom" width="100%" /> */}
+      <div className="bottom-info"><img src="../assets/images/logo2.png" width="22" height="25" style={{'vertical-align': 'middle'}} /> <span style={{'vertical-align': 'middle'}}>浙江易舸软件有限公司</span></div>
+      </div>
     );
   }
 }

@@ -16,6 +16,7 @@ class TextField extends Component {
     ref: PropTypes.string,
     disabled: PropTypes.bool,
     errorText: PropTypes.string,
+    placeholder: PropTypes.string,
 
     onChange: PropTypes.func,
     onFocus: PropTypes.func,
@@ -32,7 +33,7 @@ class TextField extends Component {
   }
 
   render() {
-    const { className, floatingLabel, type, value, ref, disabled, errorText } = this.props;
+    const { className, floatingLabel, type, value, ref, disabled, errorText, placeholder } = this.props;
     const { isFocused, inputId } = this.state;
 
     const inputClassName = classnames('input input__material', className, {
@@ -50,6 +51,7 @@ class TextField extends Component {
       onBlur: this.handleBlur,
       value,
       disabled,
+      placeholder,
       ref: ref ? ref : 'input'
     };
 
