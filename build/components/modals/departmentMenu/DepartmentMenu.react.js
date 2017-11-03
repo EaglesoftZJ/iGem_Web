@@ -49,7 +49,8 @@ var DepartementItem = function (_Component) {
             selectedBmmc: '',
             szk: '',
             scrollTo: null,
-            hoverable: true
+            hoverable: true,
+            innerHoverId: ''
         };
         return _this;
     }
@@ -107,8 +108,10 @@ var DepartementItem = function (_Component) {
             hoverId = _props.hoverId;
         var _state = this.state,
             selectedDw = _state.selectedDw,
-            szk = _state.szk;
+            szk = _state.szk,
+            innerHoverId = _state.innerHoverId;
 
+        var _hoverId = hoverId === undefined ? innerHoverId : hoverId;
         if (dw_data && dw_data.length <= 0) {
             return _react2.default.createElement(
                 'li',
@@ -125,7 +128,7 @@ var DepartementItem = function (_Component) {
         return dw_data.map(function (result, index) {
             var itemId = result.id + result.szk;
             var selected = selectedDw + szk === itemId;
-            var hover = hoverId === itemId;
+            var hover = _hoverId === itemId;
             var resultClassName = (0, _classnames2.default)('results__item row', {
                 'results__item--active': hover,
                 'results__item--open': selected
@@ -169,8 +172,10 @@ var DepartementItem = function (_Component) {
             hoverId = _props2.hoverId;
         var _state2 = this.state,
             selectedBm = _state2.selectedBm,
-            szk = _state2.szk;
+            szk = _state2.szk,
+            innerHoverId = _state2.innerHoverId;
 
+        var _hoverId = hoverId === undefined ? innerHoverId : hoverId;
 
         var results = _Linq2.default.from(bm_data).where('$.dwid.trim() == "' + dwId + '" && $.fid.trim() == "' + parentId + '" && $.szk ==' + '"' + szk1 + '"').orderBy('$.wzh').toArray();
 
@@ -181,7 +186,7 @@ var DepartementItem = function (_Component) {
         return results.map(function (result, index) {
             var itemId = result.id + result.szk;
             var selected = selectedBm + szk === itemId;
-            var hover = hoverId === itemId;
+            var hover = _hoverId === itemId;
             var resultClassName = (0, _classnames2.default)('results__item row', {
                 'results__item--active': hover,
                 'results__item--selected': selected
@@ -278,6 +283,9 @@ var DepartementItem = function (_Component) {
         var hoverable = this.state.hoverable;
 
         var hoverId = id + szk;
+        if (onItemHover === undefined) {
+            this.setState({ innerHoverId: hoverId });
+        }
         hoverable && onItemHover && onItemHover(hoverId);
     };
 

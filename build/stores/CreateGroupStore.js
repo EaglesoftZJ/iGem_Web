@@ -16,6 +16,10 @@ var _ActorAppDispatcher2 = _interopRequireDefault(_ActorAppDispatcher);
 
 var _ActorAppConstants = require('../constants/ActorAppConstants');
 
+var _DialogStore = require('../stores/DialogStore');
+
+var _DialogStore2 = _interopRequireDefault(_DialogStore);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -38,19 +42,31 @@ var CreateGroupStore = function (_ReduceStore) {
   CreateGroupStore.prototype.getInitialState = function getInitialState() {
     return {
       step: _ActorAppConstants.CreateGroupSteps.NAME_INPUT,
-      name: null,
-      selectedUserIds: new _immutable2.default.Set()
+      name: '',
+      search: '',
+      // selectedUserIds: new Set()
+      selectedUserIds: new _immutable2.default.OrderedSet()
     };
   };
 
   CreateGroupStore.prototype.reduce = function reduce(state, action) {
     switch (action.type) {
+      case _ActorAppConstants.ActionTypes.GROUP_CREATE_OPEN_IN_DIALOG:
+        var peer = _DialogStore2.default.getCurrentPeer();
+        return _extends({}, state, {
+          selectedUserIds: state.selectedUserIds.add(peer.id)
+        });
       case _ActorAppConstants.ActionTypes.GROUP_CREATE_SET_NAME:
         return _extends({}, state, {
           step: _ActorAppConstants.CreateGroupSteps.CONTACTS_SELECTION,
           name: action.name
         });
 
+      case _ActorAppConstants.ActionTypes.GROUP_CREATE_SET_SEARCH:
+        return _extends({}, state, {
+          step: _ActorAppConstants.CreateGroupSteps.CONTACTS_SELECTION,
+          search: action.search
+        });
       case _ActorAppConstants.ActionTypes.GROUP_CREATE_SET_MEMBERS:
         return _extends({}, state, {
           selectedUserIds: action.selectedUserIds
@@ -66,7 +82,9 @@ var CreateGroupStore = function (_ReduceStore) {
 
       case _ActorAppConstants.ActionTypes.GROUP_CREATE_ERROR:
         console.error('Failed to create group', action.error);
-        return state;
+        return _extends({}, state, {
+          step: _ActorAppConstants.CreateGroupSteps.GROUP_CREATE_ERROR
+        });
 
       case _ActorAppConstants.ActionTypes.GROUP_CREATE_MODAL_HIDE:
         return this.getInitialState();
@@ -82,6 +100,10 @@ var CreateGroupStore = function (_ReduceStore) {
 
   CreateGroupStore.prototype.getGroupName = function getGroupName() {
     return this.getState().name;
+  };
+
+  CreateGroupStore.prototype.getGroupSearch = function getGroupSearch() {
+    return this.getState().search;
   };
 
   CreateGroupStore.prototype.getSelectedUserIds = function getSelectedUserIds() {

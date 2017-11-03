@@ -22,11 +22,11 @@ var _ComposeActionCreators = require('../actions/ComposeActionCreators');
 
 var _ComposeActionCreators2 = _interopRequireDefault(_ComposeActionCreators);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _DataLoading = require('../utils/DataLoading');
 
-/*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
- */
+var _DataLoading2 = _interopRequireDefault(_DataLoading);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var CreateGroupActionCreators = {
   open: function open() {
@@ -37,13 +37,24 @@ var CreateGroupActionCreators = {
     (0, _ActorAppDispatcher.dispatch)(_ActorAppConstants.ActionTypes.GROUP_CREATE_MODAL_HIDE);
     _ComposeActionCreators2.default.toggleAutoFocus(true);
   },
+  openInDialog: function openInDialog() {
+    (0, _ActorAppDispatcher.dispatch)(_ActorAppConstants.ActionTypes.GROUP_CREATE_MODAL_SHOW);
+    (0, _ActorAppDispatcher.dispatch)(_ActorAppConstants.ActionTypes.GROUP_CREATE_OPEN_IN_DIALOG);
+    _ComposeActionCreators2.default.toggleAutoFocus(false);
+  },
   setGroupName: function setGroupName(name) {
     (0, _ActorAppDispatcher.dispatch)(_ActorAppConstants.ActionTypes.GROUP_CREATE_SET_NAME, { name: name });
+  },
+  setGroupSearch: function setGroupSearch(search) {
+    (0, _ActorAppDispatcher.dispatch)(_ActorAppConstants.ActionTypes.GROUP_CREATE_SET_SEARCH, { search: search });
   },
   setSelectedUserIds: function setSelectedUserIds(selectedUserIds) {
     (0, _ActorAppDispatcher.dispatch)(_ActorAppConstants.ActionTypes.GROUP_CREATE_SET_MEMBERS, { selectedUserIds: selectedUserIds });
   },
   createGroup: function createGroup(title, avatar, memberIds) {
+    var _this = this;
+
+    (0, _DataLoading2.default)('show');
     var createGroup = function createGroup() {
       return (0, _ActorAppDispatcher.dispatchAsync)(_ActorClient2.default.createGroup(title, avatar, memberIds), {
         request: _ActorAppConstants.ActionTypes.GROUP_CREATE,
@@ -56,9 +67,13 @@ var CreateGroupActionCreators = {
       return _history2.default.push('/im/' + _PeerUtils2.default.peerToString(peer));
     };
 
-    createGroup().then(openCreatedGroup).then(this.close);
+    createGroup().then(openCreatedGroup).then(function () {
+      _this.close();(0, _DataLoading2.default)('hide');
+    });
   }
-};
+}; /*
+    * Copyright (C) 2015 Actor LLC. <https://actor.im>
+    */
 
 exports.default = CreateGroupActionCreators;
 //# sourceMappingURL=CreateGroupActionCreators.js.map

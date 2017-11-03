@@ -14,7 +14,6 @@ class EmptyScreen extends Component {
           <section className="dialog dialog--empty row center-xs middle-xs">
             <div className="advice">
               <div className="logo">
-                <SvgIcon className="icon icon--gray" glyph="star" />
               </div>
             </div>
           </section>

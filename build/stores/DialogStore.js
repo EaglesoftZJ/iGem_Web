@@ -18,6 +18,10 @@ var _ActorClient = require('../utils/ActorClient');
 
 var _ActorClient2 = _interopRequireDefault(_ActorClient);
 
+var _linq = require('linq');
+
+var _linq2 = _interopRequireDefault(_linq);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -97,6 +101,16 @@ var DialogStore = function (_ReduceStore) {
       default:
         return state;
     }
+  };
+
+  DialogStore.prototype.isAdmin = function isAdmin() {
+    if (this.getState().peer.type === _ActorAppConstants.PeerTypes.GROUP) {
+      var myID = _ActorClient2.default.getUid();
+      var members = _ActorClient2.default.getGroup(this.getState().peer.id).members;
+      var adminId = _linq2.default.from(members).where('$.isAdmin == true').select('$.peerInfo.peer.id').toArray()[0];
+      return adminId === myID;
+    }
+    return true;
   };
 
   return DialogStore;

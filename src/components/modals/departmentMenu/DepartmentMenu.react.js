@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import classnames from 'classnames';
 import EventListener from 'fbjs/lib/EventListener';
+import ToolTip from 'rc-tooltip';
 import { FormattedMessage, FormattedHTMLMessage } from 'react-intl';
 import $ from 'jquery';
 import linq from 'Linq';
@@ -13,6 +14,7 @@ class DepartementItem extends Component {
         onSelectDw: PropTypes.func,
         onSelectBm: PropTypes.func,
         onItemHover: PropTypes.func,
+        onShowAll: PropTypes.func,
         scrollBox: PropTypes.element
     }
     
@@ -28,7 +30,8 @@ class DepartementItem extends Component {
             szk: '',
             scrollTo: null,
             hoverable: true,
-            innerHoverId: ''
+            innerHoverId: '',
+            selectAllId: ''
         }
     }
     componentDidMount() {
@@ -68,10 +71,21 @@ class DepartementItem extends Component {
            }, 10);  
         }
     }
+    handleShowAll(selectedDw, selectedDwmc, szk, event) {
+        event.stopPropagation();
+        const { onShowAll } = this.props;
+        this.setState({
+            selectedBm: '', 
+            selectedDw: '',
+            szk: '',
+            selectAllId: selectedDw + szk
+        })
+        onShowAll && onShowAll({selectedDw, selectedDwmc, szk, selectedBm: '', selectedBmmc: ''});
+    }
 
     renderDw() {
-        const { dw_data, hoverId } = this.props;
-        const { selectedDw, szk, innerHoverId } = this.state;
+        const { dw_data, hoverId, onShowAll } = this.props;
+        const { selectedDw, szk, innerHoverId, selectAllId } = this.state;
         var _hoverId = hoverId === undefined ? innerHoverId : hoverId;
         if (dw_data && dw_data.length <= 0) {
           return (
@@ -86,9 +100,11 @@ class DepartementItem extends Component {
           const itemId = result.id + result.szk;
           const selected = (selectedDw + szk) === itemId;
           const hover = _hoverId === itemId;
+          const all = selectAllId === itemId;
           const resultClassName = classnames('results__item row', {
             'results__item--active': hover,
-            'results__item--open': selected
+            'results__item--open': selected,
+            'results__item--all': all
           });
         //   const iconClassName = classnames('material-icons icon', hover ? 'icon--blue' : 'icon--blue');
     
@@ -102,6 +118,7 @@ class DepartementItem extends Component {
               onMouseOver={this.handleMouseOver.bind(this, result.id, result.szk)}>
                 <div className="title col-xs">
                     {result.mc}
+                    { onShowAll ? <a href="javascript:;" onClick={ this.handleShowAll.bind(this, result.id, result.mc, result.szk) } title="单位所有人" className="all" target="_self">all</a> : null }
                     {/* {result.mc} <i className={ iconClassName }>business</i> */}
                 </div>
                 <div className="arrow"></div>
@@ -153,6 +170,7 @@ class DepartementItem extends Component {
         });
     }
     dwSelect(dwid, dwmc, szk, event) {
+        console.log('title click');
         const { selectedDw, selectedDwmc } = this.state;
         const { onSelectDw, bm_data } = this.props;
         var hoverable = false,
@@ -181,7 +199,8 @@ class DepartementItem extends Component {
           selectedBmmc: _bmmc,
           scrollTo: _scrollTo,
           szk: _szk,
-          hoverable: _hoverable
+          hoverable: _hoverable,
+          selectAllId: ''
         });
         onSelectDw && onSelectDw({
             selectedDw: _dwid,
@@ -199,7 +218,7 @@ class DepartementItem extends Component {
             selectedBm: bmid, 
             selectedBmmc: bmmc
         }
-        this.setState(data);
+        this.setState({...data, selectAllId: ''});
         onSelectBm && onSelectBm({selectedDw, selectedDwmc, szk, ...data});
     }
 

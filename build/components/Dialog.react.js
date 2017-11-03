@@ -24,6 +24,10 @@ var _history = require('../utils/history');
 
 var _history2 = _interopRequireDefault(_history);
 
+var _alert = require('../utils/alert');
+
+var _alert2 = _interopRequireDefault(_alert);
+
 var _MessagesSection = require('./dialog/MessagesSection.react');
 
 var _MessagesSection2 = _interopRequireDefault(_MessagesSection);
@@ -272,7 +276,11 @@ var Dialog = function (_Component) {
     var _components = this.components,
         MessagesSection = _components.MessagesSection,
         DialogFooter = _components.DialogFooter;
-
+    // if (!isMember) {
+    //   alert('您不是该群组成员').then(() => {
+    //     history.replace('/im');
+    //   });
+    // }
 
     if (search.isOpen) {
       return _react2.default.createElement(_SearchResults2.default, {

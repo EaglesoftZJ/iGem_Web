@@ -113,21 +113,24 @@ var EditGroup = function (_Component) {
   };
 
   EditGroup.prototype.renderTitle = function renderTitle() {
-    var title = this.state.title;
+    var _state2 = this.state,
+        title = _state2.title,
+        isAdmin = _state2.isAdmin;
 
 
     return _react2.default.createElement(_TextField2.default, {
       className: 'input__material--wide',
       floatingLabel: _react2.default.createElement(_reactIntl.FormattedMessage, { id: 'modal.group.name' }),
       onChange: this.handleTitleChange,
+      disabled: !isAdmin,
       ref: 'name',
       value: title });
   };
 
   EditGroup.prototype.renderAbout = function renderAbout() {
-    var _state2 = this.state,
-        isAdmin = _state2.isAdmin,
-        about = _state2.about;
+    var _state3 = this.state,
+        isAdmin = _state3.isAdmin,
+        about = _state3.about;
 
     if (!isAdmin) return null;
 

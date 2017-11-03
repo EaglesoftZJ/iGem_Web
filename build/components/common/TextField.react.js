@@ -76,7 +76,8 @@ var TextField = function (_Component) {
         value = _props.value,
         ref = _props.ref,
         disabled = _props.disabled,
-        errorText = _props.errorText;
+        errorText = _props.errorText,
+        placeholder = _props.placeholder;
     var _state = this.state,
         isFocused = _state.isFocused,
         inputId = _state.inputId;
@@ -97,6 +98,7 @@ var TextField = function (_Component) {
       onBlur: this.handleBlur,
       value: value,
       disabled: disabled,
+      placeholder: placeholder,
       ref: ref ? ref : 'input'
     };
 
@@ -128,6 +130,7 @@ TextField.propTypes = {
   ref: _react.PropTypes.string,
   disabled: _react.PropTypes.bool,
   errorText: _react.PropTypes.string,
+  placeholder: _react.PropTypes.string,
 
   onChange: _react.PropTypes.func,
   onFocus: _react.PropTypes.func,

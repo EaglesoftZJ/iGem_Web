@@ -254,84 +254,101 @@ var Login = function (_Component) {
     );
 
     return _react2.default.createElement(
-      'section',
-      { className: 'login-new row center-xs middle-xs' },
+      'div',
+      { className: 'login-bg-box' },
       _react2.default.createElement(
-        'div',
-        { className: 'login-new__forms col-xs-6 col-md-4 row center-xs middle-xs' },
-        _react2.default.createElement('img', { alt: this.appName + ' messenger',
-          className: 'logo',
-          src: 'assets/images/logo.png',
-          srcSet: 'assets/images/logo@2x.png 2x' }),
+        'section',
+        { className: 'login-new row center-xs middle-xs' },
         _react2.default.createElement(
           'div',
-          null,
+          { className: 'login-new__forms row center-xs middle-xs' },
+          _react2.default.createElement('img', { alt: this.appName + ' messenger',
+            className: 'logo',
+            src: 'assets/images/logo1.png',
+            width: '70' }),
           _react2.default.createElement(
-            'h1',
-            { className: 'login-new__heading' },
-            _react2.default.createElement(_reactIntl.FormattedMessage, { id: 'login.signIn' })
+            'h2',
+            { className: 'login-title' },
+            _react2.default.createElement(_reactIntl.FormattedMessage, { id: 'login.name' }),
+            _react2.default.createElement(_reactIntl.FormattedMessage, { id: 'login.name_en' })
           ),
           _react2.default.createElement(
-            'form',
-            { className: requestFormClassName, onSubmit: this.onRequestCode },
+            'div',
+            null,
             _react2.default.createElement(
-              'div',
-              { className: dropClassName },
-              _react2.default.createElement(_TextField2.default, { className: 'login-new__forms__form__input input__material--wide',
+              'form',
+              { className: requestFormClassName, onSubmit: this.onRequestCode },
+              _react2.default.createElement(
+                'div',
+                { className: dropClassName },
+                _react2.default.createElement(_TextField2.default, { className: 'login-input login-input-user',
+                  disabled: isLoginRequested || step !== _ActorAppConstants.AuthSteps.LOGIN_WAIT && step !== _ActorAppConstants.AuthSteps.CODE_WAIT,
+                  errorText: errors.login,
+                  floatingLabel: intl.messages['login.user'],
+                  onChange: this.onLoginChange,
+                  placeholder: intl.messages['login.user'],
+                  ref: 'login',
+                  value: login }),
+                this.renderDropDown()
+              ),
+              _react2.default.createElement(_TextField2.default, { className: 'login-input login-input-password',
                 disabled: isLoginRequested || step !== _ActorAppConstants.AuthSteps.LOGIN_WAIT && step !== _ActorAppConstants.AuthSteps.CODE_WAIT,
-                errorText: errors.login,
-                floatingLabel: intl.messages['login.user'],
-                onChange: this.onLoginChange,
-                ref: 'login',
-                value: login }),
-              this.renderDropDown()
-            ),
-            _react2.default.createElement('div', { style: { height: 20 + 'px' } }),
-            _react2.default.createElement(_TextField2.default, { className: 'login-new__forms__form__input input__material--wide',
-              disabled: isLoginRequested || step !== _ActorAppConstants.AuthSteps.LOGIN_WAIT && step !== _ActorAppConstants.AuthSteps.CODE_WAIT,
-              errorText: errors.code,
-              floatingLabel: intl.messages['login.authPassword'],
-              onChange: this.onCodeChange,
-              ref: 'code',
-              type: 'password',
-              value: code }),
-            _react2.default.createElement(
-              'footer',
-              { className: 'text-center' },
+                errorText: errors.code,
+                floatingLabel: intl.messages['login.authPassword'],
+                onChange: this.onCodeChange,
+                placeholder: intl.messages['login.authPassword'],
+                ref: 'code',
+                type: 'password',
+                value: code }),
               _react2.default.createElement(
-                'button',
-                { className: 'button button--rised button--wide',
-                  type: 'submit',
-                  disabled: isLoginRequested },
-                _react2.default.createElement(_reactIntl.FormattedMessage, { id: 'button.login' }),
-                isLoginRequested ? spinner : null
+                'footer',
+                { className: 'text-center' },
+                _react2.default.createElement(
+                  'button',
+                  { className: 'button button--rised button--wide',
+                    type: 'submit',
+                    disabled: isLoginRequested },
+                  _react2.default.createElement(_reactIntl.FormattedMessage, { id: 'button.login' }),
+                  isLoginRequested ? spinner : null
+                )
               )
-            )
-          ),
-          _react2.default.createElement(
-            'form',
-            { className: signupFormClassName, onSubmit: this.onSignupRequested },
-            _react2.default.createElement(_TextField2.default, { className: 'login-new__forms__form__input input__material--wide',
-              disabled: isSignupStarted || step === _ActorAppConstants.AuthSteps.COMPLETED,
-              errorText: errors.signup,
-              floatingLabel: intl.messages['login.yourName'],
-              onChange: this.onNameChange,
-              ref: 'name',
-              type: 'text',
-              value: name }),
+            ),
             _react2.default.createElement(
-              'footer',
-              { className: 'text-center' },
+              'form',
+              { className: signupFormClassName, onSubmit: this.onSignupRequested },
+              _react2.default.createElement(_TextField2.default, { className: 'login-new__forms__form__input input__material--wide',
+                disabled: isSignupStarted || step === _ActorAppConstants.AuthSteps.COMPLETED,
+                errorText: errors.signup,
+                floatingLabel: intl.messages['login.yourName'],
+                onChange: this.onNameChange,
+                ref: 'name',
+                type: 'text',
+                value: name }),
               _react2.default.createElement(
-                'button',
-                { className: 'button button--rised button--wide',
-                  type: 'submit',
-                  disabled: isSignupStarted },
-                _react2.default.createElement(_reactIntl.FormattedMessage, { id: 'button.signUp' }),
-                isSignupStarted ? spinner : null
+                'footer',
+                { className: 'text-center' },
+                _react2.default.createElement(
+                  'button',
+                  { className: 'button button--rised button--wide',
+                    type: 'submit',
+                    disabled: isSignupStarted },
+                  _react2.default.createElement(_reactIntl.FormattedMessage, { id: 'button.signUp' }),
+                  isSignupStarted ? spinner : null
+                )
               )
             )
           )
+        )
+      ),
+      _react2.default.createElement(
+        'div',
+        { className: 'bottom-info' },
+        _react2.default.createElement('img', { src: '../assets/images/logo2.png', width: '22', height: '25', style: { 'vertical-align': 'middle' } }),
+        ' ',
+        _react2.default.createElement(
+          'span',
+          { style: { 'vertical-align': 'middle' } },
+          '\u6D59\u6C5F\u6613\u8238\u8F6F\u4EF6\u6709\u9650\u516C\u53F8'
         )
       )
     );

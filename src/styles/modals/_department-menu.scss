@@ -16,8 +16,27 @@
             padding: 6px 5px;
             user-select: none;
             vertical-align: middle;
-            @include text-elipsis();
+            white-space: nowrap;
+            // @include text-elipsis();
         }
+        .all {
+            display: none;
+            width: 20px;
+            height: 20px;
+            margin-left: 5px;
+            font-size: 12px;
+            line-height: 20px;
+            text-align: center;
+            text-decoration: none;
+            background: #7f7f7f;
+            border-radius: 100%;
+            color: #fff;
+            transition: all 0.3s;
+        }
+        .all:hover {
+            box-shadow: 0 0 3px 0 #7f7f7f;
+        }
+
         .arrow {
             position: absolute;
             left: 24px;
@@ -28,6 +47,7 @@
             border-left: 8px solid #aaa;
             border-right: 0;
         }
+       
         &--suggestion {
             font-weight: 400 !important;
     
@@ -98,10 +118,19 @@
           transform: rotate(90deg);
         }
     }
+    .results__item--all {
+        .all {
+            display: inline-block;
+            box-shadow: 0 0 3px 0 #7f7f7f;
+        }
+    }
     .results__item--active {
         .title {
           font-weight: 500;           
           background-color: #ebf4fb;
+        }
+        .all {
+            display: inline-block;
         }
       }
     .results__item--selected {

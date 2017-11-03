@@ -115,7 +115,7 @@ var DialogActionCreators = function (_ActionCreators) {
         _GroupProfileActionCreators2.default.getIntegrationToken(peer.id);
         break;
     }
-
+    console.log(_ActorClient2.default.getUser(_ActorClient2.default.getUid()), 23131231231);
     this.setBindings('peer', bindings);
   };
 
@@ -128,36 +128,42 @@ var DialogActionCreators = function (_ActionCreators) {
   };
 
   DialogActionCreators.prototype.leaveGroup = function leaveGroup(gid) {
-    (0, _ActorAppDispatcher.dispatchAsync)(_ActorClient2.default.leaveGroup(gid), {
+    return (0, _ActorAppDispatcher.dispatchAsync)(_ActorClient2.default.leaveGroup(gid), {
       request: _ActorAppConstants.ActionTypes.GROUP_LEAVE,
       success: _ActorAppConstants.ActionTypes.GROUP_LEAVE_SUCCESS,
       failure: _ActorAppConstants.ActionTypes.GROUP_LEAVE_ERROR
     }, { gid: gid });
   };
 
-  DialogActionCreators.prototype.deleteChat = function deleteChat(peer) {
-    var gid = peer.id;
-    var leaveGroup = function leaveGroup() {
-      return (0, _ActorAppDispatcher.dispatchAsync)(_ActorClient2.default.leaveGroup(gid), {
-        request: _ActorAppConstants.ActionTypes.GROUP_LEAVE,
-        success: _ActorAppConstants.ActionTypes.GROUP_LEAVE_SUCCESS,
-        failure: _ActorAppConstants.ActionTypes.GROUP_LEAVE_ERROR
-      }, { gid: gid });
-    };
-    var deleteChat = function deleteChat() {
-      return (0, _ActorAppDispatcher.dispatchAsync)(_ActorClient2.default.deleteChat(peer), {
-        request: _ActorAppConstants.ActionTypes.GROUP_DELETE,
-        success: _ActorAppConstants.ActionTypes.GROUP_DELETE_SUCCESS,
-        failure: _ActorAppConstants.ActionTypes.GROUP_DELETE_ERROR
-      }, { peer: peer });
-    };
+  DialogActionCreators.prototype.deleteGroup = function deleteGroup(gid) {
+    return (0, _ActorAppDispatcher.dispatchAsync)(_ActorClient2.default.deleteGroup(gid), {
+      request: _ActorAppConstants.ActionTypes.GROUP_DELETE,
+      success: _ActorAppConstants.ActionTypes.GROUP_DELETE_SUCCESS,
+      failure: _ActorAppConstants.ActionTypes.GROUP_DELETE_ERROR
+    }, { gid: gid });
+  };
 
+  DialogActionCreators.prototype.deleteChat = function deleteChat(peer) {
+    return (0, _ActorAppDispatcher.dispatchAsync)(_ActorClient2.default.deleteChat(peer), {
+      request: _ActorAppConstants.ActionTypes.CHAT_DELETE,
+      success: _ActorAppConstants.ActionTypes.CHAT_DELETE_SUCCESS,
+      failure: _ActorAppConstants.ActionTypes.CHAT_DELETE_ERROR
+    }, { peer: peer });
+  };
+
+  DialogActionCreators.prototype.toLeaveGroup = function toLeaveGroup(peer) {
+    var gid = peer.id;
+    this.leaveGroup(gid).then(this.deleteChat.bind(this, peer));
+  };
+
+  DialogActionCreators.prototype.toDeleteChat = function toDeleteChat(peer) {
+    var gid = peer.id;
     switch (peer.type) {
       case _ActorAppConstants.PeerTypes.USER:
-        deleteChat();
+        this.deleteChat(peer);
         break;
       case _ActorAppConstants.PeerTypes.GROUP:
-        leaveGroup().then(deleteChat);
+        this.deleteGroup(gid);
         break;
       default:
     }

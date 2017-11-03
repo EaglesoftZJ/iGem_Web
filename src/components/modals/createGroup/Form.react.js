@@ -65,6 +65,7 @@ class CreateGroupForm extends Component {
       error: '',
       nameError: '',
       shouldScroll: false,
+      dwAll: false,
     }
     
     this.onContactToggle = this.onContactToggle.bind(this);
@@ -92,10 +93,14 @@ class CreateGroupForm extends Component {
   }
 
   getContacts() {
-    const { yh_data, selectedBm, selectedDw, szk } = this.state;
+    const { yh_data, selectedBm, selectedDw, szk, dwAll } = this.state;
     const { search } = this.props;
-
-    let results = linq.from(yh_data).where('$.bmid.trim() == "' + selectedBm + '" && $.dwid.trim() == "' + selectedDw + '"&& $.szk == "' + szk +'"').orderBy('$.wzh').toArray();
+    let results = null;
+    if (!dwAll) {
+      results = linq.from(yh_data).where('$.bmid.trim() == "' + selectedBm + '" && $.dwid.trim() == "' + selectedDw + '"&& $.szk == "' + szk +'"').orderBy('$.wzh').toArray();
+    } else {
+      results = linq.from(yh_data).where('$.dwid.trim() == "' + selectedDw + '"&& $.szk == "' + szk +'"').orderBy('$.wzh').toArray();
+    }
 
     if (!search) {
       return results;
@@ -313,11 +318,15 @@ class CreateGroupForm extends Component {
     );
   }
   handleSelectDw(obj) {
-    this.setState({...obj});
+    this.setState({...obj, dwAll: false});
   }
 
   handleSelectBm(obj) {
-    this.setState({...obj});
+    this.setState({...obj, dwAll: false});
+  }
+
+  handleShowAll(obj) {
+    this.setState({...obj, dwAll: true});
   }
 
   render() {
@@ -329,6 +338,7 @@ class CreateGroupForm extends Component {
       bm_data,
       onSelectDw: this.handleSelectDw.bind(this),
       onSelectBm: this.handleSelectBm.bind(this),
+      onShowAll: this.handleShowAll.bind(this),
       scrollBox: this.refs.department_con
     }
     var className = classnames('group-name-col group-name-department', {

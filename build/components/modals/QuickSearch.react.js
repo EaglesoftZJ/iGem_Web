@@ -310,13 +310,9 @@ var QuickSearch = function (_Component) {
           ),
           result.peerInfo.title,
           result.peerInfo.peer.type !== 'group' ? _react2.default.createElement(
-            'a',
-            { href: 'javascript:;', target: '_self', className: 'results__item__info', onMouseMove: _this3.handleMouseMove, onMouseEnter: _this3.handleMouseEnter.bind(_this3, result.peerInfo.peer.id) },
-            _react2.default.createElement(
-              'i',
-              { className: 'account-icon material-icons' },
-              'account_circle'
-            )
+            'i',
+            { className: 'account-icon material-icons', onMouseMove: _this3.handleMouseMove, onMouseEnter: _this3.handleMouseEnter.bind(_this3, result.peerInfo.peer.id) },
+            'account_circle'
           ) : null
         )
       );

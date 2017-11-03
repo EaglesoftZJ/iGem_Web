@@ -204,6 +204,10 @@ var ActorClient = function () {
     return window.messenger.getGroup(gid);
   };
 
+  ActorClient.prototype.deleteGroup = function deleteGroup(gid) {
+    return window.messenger.deleteGroup(gid);
+  };
+
   ActorClient.prototype.getInviteUrl = function getInviteUrl(gid) {
     return window.messenger.getInviteLink(gid);
   };
@@ -470,6 +474,10 @@ var ActorClient = function () {
 
   ActorClient.prototype.findGroups = function findGroups(query) {
     return window.messenger.findGroups(query);
+  };
+
+  ActorClient.prototype.loadMembers = function loadMembers(gid, limit, next) {
+    return window.messenger.loadMembers(gid, limit, next);
   };
 
   ActorClient.prototype.findUsers = function findUsers(phone) {

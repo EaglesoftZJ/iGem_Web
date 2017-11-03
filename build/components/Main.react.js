@@ -44,6 +44,10 @@ var _SmallCall = require('./SmallCall.react');
 
 var _SmallCall2 = _interopRequireDefault(_SmallCall);
 
+var _DataLoading = require('../utils/DataLoading');
+
+var _DataLoading2 = _interopRequireDefault(_DataLoading);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }

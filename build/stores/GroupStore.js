@@ -52,7 +52,6 @@ var GroupStore = function (_ReduceStore) {
         });
       case _ActorAppConstants.ActionTypes.GROUP_GET_TOKEN_ERROR:
         return this.getInitialState();
-
       case _ActorAppConstants.ActionTypes.GROUP_CLEAR:
       case _ActorAppConstants.ActionTypes.GROUP_CLEAR_SUCCESS:
       case _ActorAppConstants.ActionTypes.GROUP_CLEAR_ERROR:
@@ -62,6 +61,9 @@ var GroupStore = function (_ReduceStore) {
       case _ActorAppConstants.ActionTypes.GROUP_DELETE:
       case _ActorAppConstants.ActionTypes.GROUP_DELETE_SUCCESS:
       case _ActorAppConstants.ActionTypes.GROUP_DELETE_ERROR:
+      case _ActorAppConstants.ActionTypes.CHAT_DELETE:
+      case _ActorAppConstants.ActionTypes.CHAT_DELETE_SUCCESS:
+      case _ActorAppConstants.ActionTypes.CHAT_DELETE_ERROR:
       default:
         return state;
     }

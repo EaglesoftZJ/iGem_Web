@@ -454,7 +454,7 @@ export const endpoints = [
   'wss://front2-ws-mtproto-api-rev2.actor.im'
 ];
 
-export const appName = 'iGem';
+export const appName = 'Flychat';
 export const rootElement = 'actor-web-app';
 export const helpPhone = '75551234567';
 

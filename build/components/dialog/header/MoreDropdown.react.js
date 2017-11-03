@@ -8,6 +8,8 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactIntl = require('react-intl');
 
+var _utils = require('flux/utils');
+
 var _EventListener = require('fbjs/lib/EventListener');
 
 var _EventListener2 = _interopRequireDefault(_EventListener);
@@ -17,6 +19,10 @@ var _ActorAppConstants = require('../../../constants/ActorAppConstants');
 var _confirm = require('../../../utils/confirm');
 
 var _confirm2 = _interopRequireDefault(_confirm);
+
+var _DialogStore = require('../../../stores/DialogStore');
+
+var _DialogStore2 = _interopRequireDefault(_DialogStore);
 
 var _ContactActionCreators = require('../../../actions/ContactActionCreators');
 
@@ -50,6 +56,16 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 var MoreDropdown = function (_Component) {
   _inherits(MoreDropdown, _Component);
+
+  MoreDropdown.getStores = function getStores() {
+    return [_DialogStore2.default];
+  };
+
+  MoreDropdown.calculateState = function calculateState() {
+    return {
+      isAdmin: _DialogStore2.default.isAdmin()
+    };
+  };
 
   function MoreDropdown(props, context) {
     _classCallCheck(this, MoreDropdown);
@@ -135,7 +151,7 @@ var MoreDropdown = function (_Component) {
     var message = peer.key === _ActorAppConstants.PeerTypes.USER ? _react2.default.createElement(_reactIntl.FormattedHTMLMessage, { id: 'modal.confirm.user.delete', values: { name: info.name } }) : _react2.default.createElement(_reactIntl.FormattedHTMLMessage, { id: 'modal.confirm.group.delete', values: { name: info.name } });
 
     (0, _confirm2.default)(message).then(function () {
-      return _DialogActionCreators2.default.deleteChat(peer);
+      return _DialogActionCreators2.default.toDeleteChat(peer);
     }, function () {});
   };
 
@@ -147,7 +163,7 @@ var MoreDropdown = function (_Component) {
 
 
     (0, _confirm2.default)(_react2.default.createElement(_reactIntl.FormattedHTMLMessage, { id: 'modal.confirm.group.leave', values: { name: info.name } })).then(function () {
-      return _DialogActionCreators2.default.leaveGroup(peer.id);
+      return _DialogActionCreators2.default.toLeaveGroup(peer);
     }, function () {});
   };
 
@@ -262,6 +278,9 @@ var MoreDropdown = function (_Component) {
   };
 
   MoreDropdown.prototype.renderGroupMenuItems = function renderGroupMenuItems() {
+    var isAdmin = this.state.isAdmin;
+
+    console.log(isAdmin, 12312312);
     return _react2.default.createElement(
       'div',
       null,
@@ -277,19 +296,19 @@ var MoreDropdown = function (_Component) {
       ),
       _react2.default.createElement(
         'li',
-        { className: 'dropdown__menu__item', onClick: this.handleChatLeave },
-        _react2.default.createElement(_reactIntl.FormattedMessage, { id: 'leaveGroup' })
-      ),
-      _react2.default.createElement(
-        'li',
         { className: 'dropdown__menu__item', onClick: this.handleChatClear },
         _react2.default.createElement(_reactIntl.FormattedMessage, { id: 'clearGroup' })
       ),
-      _react2.default.createElement(
+      !isAdmin ? _react2.default.createElement(
+        'li',
+        { className: 'dropdown__menu__item', onClick: this.handleChatLeave },
+        _react2.default.createElement(_reactIntl.FormattedMessage, { id: 'leaveGroup' })
+      ) : null,
+      isAdmin ? _react2.default.createElement(
         'li',
         { className: 'dropdown__menu__item', onClick: this.handleChatDelete },
         _react2.default.createElement(_reactIntl.FormattedMessage, { id: 'deleteGroup' })
-      )
+      ) : null
     );
   };
 
@@ -363,5 +382,5 @@ MoreDropdown.propTypes = {
   info: _react.PropTypes.object.isRequired,
   onClose: _react.PropTypes.func.isRequired
 };
-exports.default = MoreDropdown;
+exports.default = _utils.Container.create(MoreDropdown, { pure: false });
 //# sourceMappingURL=MoreDropdown.react.js.map

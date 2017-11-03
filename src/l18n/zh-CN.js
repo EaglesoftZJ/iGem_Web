@@ -197,6 +197,7 @@ export default {
       },
       'department': {
         'title': '组织结构',
+        'dwAll': '单位所有人员',
         'openDialog': '打开聊天窗口',
         'notFound': '无可选人员'
       },

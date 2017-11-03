@@ -52,6 +52,10 @@ var _Stateful = require('../common/Stateful.react');
 
 var _Stateful2 = _interopRequireDefault(_Stateful);
 
+var _Form = require('./createGroup/Form.react');
+
+var _Form2 = _interopRequireDefault(_Form);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -71,9 +75,12 @@ var InviteUser = function (_Component) {
 
   InviteUser.calculateState = function calculateState() {
     return {
-      contacts: _PeopleStore2.default.getState(),
-      group: _InviteUserStore2.default.getState().group,
-      users: _InviteUserStore2.default.getState().users
+      name: _InviteUserStore2.default.getState().name,
+      search: _InviteUserStore2.default.getState().search,
+      step: _InviteUserStore2.default.getState().step,
+      members: _InviteUserStore2.default.getState().members,
+      selectedUserIds: _InviteUserStore2.default.getState().selectedUserIds,
+      group: _InviteUserStore2.default.getState().group
     };
   };
 
@@ -203,6 +210,32 @@ var InviteUser = function (_Component) {
     );
   };
 
+  InviteUser.prototype.renderHeader = function renderHeader() {
+    var _this3 = this;
+
+    return _react2.default.createElement(
+      'header',
+      { className: 'header' },
+      _react2.default.createElement(
+        'div',
+        { className: 'pull-left' },
+        _react2.default.createElement(_reactIntl.FormattedMessage, { id: 'invite.title' })
+      ),
+      this.inviteByLinkButton(),
+      _react2.default.createElement(
+        'div',
+        { className: 'pull-right', style: { cursor: 'Pointer' } },
+        _react2.default.createElement(
+          'strong',
+          { onClick: function onClick() {
+              return _this3.handleClose();
+            } },
+          '\u5173\u95ED'
+        )
+      )
+    );
+  };
+
   InviteUser.prototype.inviteByLinkButton = function inviteByLinkButton() {
     return _react2.default.createElement(
       'a',
@@ -216,7 +249,30 @@ var InviteUser = function (_Component) {
     );
   };
 
+  InviteUser.prototype.onContactToggle = function onContactToggle(userIds) {
+    _InviteUserActions2.default.setSelectedUserIds(userIds);
+  };
+
+  InviteUser.prototype.handleSearchChange = function handleSearchChange(value) {
+    _InviteUserActions2.default.setGroupSearch(value);
+  };
+
+  InviteUser.prototype.handleSubmit = function handleSubmit(idList, name, peer) {
+    _InviteUserActions2.default.inviteUser(peer.id, idList);
+  };
+
+  InviteUser.prototype.handleDelete = function handleDelete(selectedUserIds) {
+    _InviteUserActions2.default.setSelectedUserIds(selectedUserIds);
+  };
+
   InviteUser.prototype.render = function render() {
+    var props = _extends({
+      onContactToggle: this.onContactToggle,
+      handleSearchChange: this.handleSearchChange,
+      handleDelete: this.handleDelete,
+      handleSubmit: this.handleSubmit,
+      handleClose: this.handleClose
+    }, this.state);
     return _react2.default.createElement(
       _reactModal2.default,
       {
@@ -230,32 +286,8 @@ var InviteUser = function (_Component) {
         _react2.default.createElement(
           'div',
           { className: 'modal__content' },
-          _react2.default.createElement(
-            'header',
-            { className: 'modal__header' },
-            _react2.default.createElement(
-              'i',
-              { className: 'modal__header__icon material-icons' },
-              'person_add'
-            ),
-            _react2.default.createElement(_reactIntl.FormattedMessage, { id: 'invite.title', tagName: 'h1' }),
-            _react2.default.createElement(
-              'button',
-              { className: 'button button--lightblue', onClick: this.handleClose },
-              _react2.default.createElement(_reactIntl.FormattedMessage, { id: 'button.done' })
-            )
-          ),
-          _react2.default.createElement(
-            'div',
-            { className: 'modal__body' },
-            this.renderSearch(),
-            this.inviteByLinkButton(),
-            _react2.default.createElement(
-              'ul',
-              { className: 'contacts__list' },
-              this.renderContacts()
-            )
-          )
+          this.renderHeader(),
+          _react2.default.createElement(_Form2.default, props)
         )
       )
     );
