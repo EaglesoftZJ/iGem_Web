@@ -455,7 +455,7 @@ var Path = exports.Path = {
 
 var endpoints = exports.endpoints = ['wss://front1-ws-mtproto-api-rev2.actor.im', 'wss://front2-ws-mtproto-api-rev2.actor.im'];
 
-var appName = exports.appName = 'iGem';
+var appName = exports.appName = 'Flychat';
 var rootElement = exports.rootElement = 'actor-web-app';
 var helpPhone = exports.helpPhone = '75551234567';
 

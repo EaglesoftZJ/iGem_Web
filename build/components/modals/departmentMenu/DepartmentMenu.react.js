@@ -16,6 +16,10 @@ var _EventListener = require('fbjs/lib/EventListener');
 
 var _EventListener2 = _interopRequireDefault(_EventListener);
 
+var _rcTooltip = require('rc-tooltip');
+
+var _rcTooltip2 = _interopRequireDefault(_rcTooltip);
+
 var _reactIntl = require('react-intl');
 
 var _jquery = require('jquery');
@@ -50,7 +54,8 @@ var DepartementItem = function (_Component) {
             szk: '',
             scrollTo: null,
             hoverable: true,
-            innerHoverId: ''
+            innerHoverId: '',
+            selectAllId: ''
         };
         return _this;
     }
@@ -100,16 +105,31 @@ var DepartementItem = function (_Component) {
         }
     };
 
+    DepartementItem.prototype.handleShowAll = function handleShowAll(selectedDw, selectedDwmc, szk, event) {
+        event.stopPropagation();
+        var onShowAll = this.props.onShowAll;
+
+        this.setState({
+            selectedBm: '',
+            selectedDw: '',
+            szk: '',
+            selectAllId: selectedDw + szk
+        });
+        onShowAll && onShowAll({ selectedDw: selectedDw, selectedDwmc: selectedDwmc, szk: szk, selectedBm: '', selectedBmmc: '' });
+    };
+
     DepartementItem.prototype.renderDw = function renderDw() {
         var _this3 = this;
 
         var _props = this.props,
             dw_data = _props.dw_data,
-            hoverId = _props.hoverId;
+            hoverId = _props.hoverId,
+            onShowAll = _props.onShowAll;
         var _state = this.state,
             selectedDw = _state.selectedDw,
             szk = _state.szk,
-            innerHoverId = _state.innerHoverId;
+            innerHoverId = _state.innerHoverId,
+            selectAllId = _state.selectAllId;
 
         var _hoverId = hoverId === undefined ? innerHoverId : hoverId;
         if (dw_data && dw_data.length <= 0) {
@@ -129,9 +149,11 @@ var DepartementItem = function (_Component) {
             var itemId = result.id + result.szk;
             var selected = selectedDw + szk === itemId;
             var hover = _hoverId === itemId;
+            var all = selectAllId === itemId;
             var resultClassName = (0, _classnames2.default)('results__item row', {
                 'results__item--active': hover,
-                'results__item--open': selected
+                'results__item--open': selected,
+                'results__item--all': all
             });
             //   const iconClassName = classnames('material-icons icon', hover ? 'icon--blue' : 'icon--blue');
 
@@ -151,7 +173,12 @@ var DepartementItem = function (_Component) {
                     _react2.default.createElement(
                         'div',
                         { className: 'title col-xs' },
-                        result.mc
+                        result.mc,
+                        onShowAll ? _react2.default.createElement(
+                            'a',
+                            { href: 'javascript:;', onClick: _this3.handleShowAll.bind(_this3, result.id, result.mc, result.szk), title: '\u5355\u4F4D\u6240\u6709\u4EBA', className: 'all', target: '_self' },
+                            'all'
+                        ) : null
                     ),
                     _react2.default.createElement('div', { className: 'arrow' })
                 ),
@@ -219,6 +246,7 @@ var DepartementItem = function (_Component) {
     };
 
     DepartementItem.prototype.dwSelect = function dwSelect(dwid, dwmc, szk, event) {
+        console.log('title click');
         var _state3 = this.state,
             selectedDw = _state3.selectedDw,
             selectedDwmc = _state3.selectedDwmc;
@@ -252,7 +280,8 @@ var DepartementItem = function (_Component) {
             selectedBmmc: _bmmc,
             scrollTo: _scrollTo,
             szk: _szk,
-            hoverable: _hoverable
+            hoverable: _hoverable,
+            selectAllId: ''
         });
         onSelectDw && onSelectDw({
             selectedDw: _dwid,
@@ -274,7 +303,7 @@ var DepartementItem = function (_Component) {
             selectedBm: bmid,
             selectedBmmc: bmmc
         };
-        this.setState(data);
+        this.setState(_extends({}, data, { selectAllId: '' }));
         onSelectBm && onSelectBm(_extends({ selectedDw: selectedDw, selectedDwmc: selectedDwmc, szk: szk }, data));
     };
 
@@ -307,6 +336,7 @@ DepartementItem.PropTypes = {
     onSelectDw: _react.PropTypes.func,
     onSelectBm: _react.PropTypes.func,
     onItemHover: _react.PropTypes.func,
+    onShowAll: _react.PropTypes.func,
     scrollBox: _react.PropTypes.element
 };
 exports.default = DepartementItem;

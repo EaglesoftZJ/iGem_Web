@@ -98,7 +98,8 @@ var CreateGroupForm = function (_Component) {
       szk: '',
       error: '',
       nameError: '',
-      shouldScroll: false
+      shouldScroll: false,
+      dwAll: false
     };
 
     _this.onContactToggle = _this.onContactToggle.bind(_this);
@@ -135,11 +136,16 @@ var CreateGroupForm = function (_Component) {
         yh_data = _state.yh_data,
         selectedBm = _state.selectedBm,
         selectedDw = _state.selectedDw,
-        szk = _state.szk;
+        szk = _state.szk,
+        dwAll = _state.dwAll;
     var search = this.props.search;
 
-
-    var results = _Linq2.default.from(yh_data).where('$.bmid.trim() == "' + selectedBm + '" && $.dwid.trim() == "' + selectedDw + '"&& $.szk == "' + szk + '"').orderBy('$.wzh').toArray();
+    var results = null;
+    if (!dwAll) {
+      results = _Linq2.default.from(yh_data).where('$.bmid.trim() == "' + selectedBm + '" && $.dwid.trim() == "' + selectedDw + '"&& $.szk == "' + szk + '"').orderBy('$.wzh').toArray();
+    } else {
+      results = _Linq2.default.from(yh_data).where('$.dwid.trim() == "' + selectedDw + '"&& $.szk == "' + szk + '"').orderBy('$.wzh').toArray();
+    }
 
     if (!search) {
       return results;
@@ -426,11 +432,15 @@ var CreateGroupForm = function (_Component) {
   };
 
   CreateGroupForm.prototype.handleSelectDw = function handleSelectDw(obj) {
-    this.setState(_extends({}, obj));
+    this.setState(_extends({}, obj, { dwAll: false }));
   };
 
   CreateGroupForm.prototype.handleSelectBm = function handleSelectBm(obj) {
-    this.setState(_extends({}, obj));
+    this.setState(_extends({}, obj, { dwAll: false }));
+  };
+
+  CreateGroupForm.prototype.handleShowAll = function handleShowAll(obj) {
+    this.setState(_extends({}, obj, { dwAll: true }));
   };
 
   CreateGroupForm.prototype.render = function render() {
@@ -450,6 +460,7 @@ var CreateGroupForm = function (_Component) {
       bm_data: bm_data,
       onSelectDw: this.handleSelectDw.bind(this),
       onSelectBm: this.handleSelectBm.bind(this),
+      onShowAll: this.handleShowAll.bind(this),
       scrollBox: this.refs.department_con
     };
     var className = (0, _classnames2.default)('group-name-col group-name-department', {

@@ -42,11 +42,7 @@ var EmptyScreen = function (_Component) {
           _react2.default.createElement(
             'div',
             { className: 'advice' },
-            _react2.default.createElement(
-              'div',
-              { className: 'logo' },
-              _react2.default.createElement(_SvgIcon2.default, { className: 'icon icon--gray', glyph: 'star' })
-            )
+            _react2.default.createElement('div', { className: 'logo' })
           )
         )
       )
