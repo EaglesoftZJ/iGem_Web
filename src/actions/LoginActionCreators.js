@@ -169,6 +169,7 @@ class LoginActionCreators extends ActionCreators {
       ActorClient.bindStickers(StickersActionCreators.setStickers)
     ]);
 
+
     dispatch(ActionTypes.AUTH_SET_LOGGED_IN);
 
     ActorClient.postOAWebservice({

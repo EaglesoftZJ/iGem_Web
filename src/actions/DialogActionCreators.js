@@ -71,7 +71,7 @@ class DialogActionCreators extends ActionCreators {
         GroupProfileActionCreators.getIntegrationToken(peer.id);
         break;
     }
-
+    console.log(ActorClient.getUser(ActorClient.getUid()), 23131231231);
     this.setBindings('peer', bindings);
   }
 

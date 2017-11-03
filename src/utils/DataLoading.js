@@ -28,7 +28,8 @@ var component = '';
 export default function loading(type, progress, total) {
     var clean = () => {
         unmountComponentAtNode(wrapper);
-        setImmediate(() => wrapper.remove());
+        document.body.removeChild(wrapper);
+        // setImmediate(() => wrapper.remove());
         wrapper = null;
     }
     if (type === 'show') {
