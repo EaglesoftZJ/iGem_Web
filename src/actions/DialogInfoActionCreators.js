@@ -14,11 +14,14 @@ const DialogInfoActionCreators = {
     dispatch(ActionTypes.DIALOG_INFO_CHANGED, { info });
 
 
+
     var peer = DialogStore.getCurrentPeer();
-    if (peer.type === PeerTypes.GROUP) {
+    if (peer && peer.type === PeerTypes.GROUP) {
       ActorClient.loadMembers(info.id, 10000, null).then((data) => {
-        info.members = data.members;
-        dispatch(ActionTypes.DIALOG_INFO_CHANGED, { info });
+        if(info.members && info.members.length > 0) {
+          info.members = data.members;
+          dispatch(ActionTypes.DIALOG_INFO_CHANGED, { info });
+        }  
       });
     }
 
