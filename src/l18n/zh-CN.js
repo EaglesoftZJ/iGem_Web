@@ -4,7 +4,7 @@ export default {
     // Login
     'login': {
       'name': '飞鸟',
-      'name_en': 'Flychad',
+      'name_en': 'Flychat',
       'wrong': '切换',
       'phone': '手机号码',
       'email': 'mail地址',
