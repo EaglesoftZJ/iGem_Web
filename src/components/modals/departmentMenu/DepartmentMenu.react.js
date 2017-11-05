@@ -118,7 +118,7 @@ class DepartementItem extends Component {
               onMouseOver={this.handleMouseOver.bind(this, result.id, result.szk)}>
                 <div className="title col-xs">
                     {result.mc}
-                    { onShowAll ? <a href="javascript:;" onClick={ this.handleShowAll.bind(this, result.id, result.mc, result.szk) } title="单位所有人" className="all" target="_self">all</a> : null }
+                    { onShowAll ? <a href="javascript:;" onClick={ this.handleShowAll.bind(this, result.id, result.mc, result.szk) } title="单位所有人" className="all" target="_self">全</a> : null }
                     {/* {result.mc} <i className={ iconClassName }>business</i> */}
                 </div>
                 <div className="arrow"></div>
