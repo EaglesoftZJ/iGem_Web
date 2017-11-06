@@ -177,7 +177,7 @@ var DepartementItem = function (_Component) {
                         onShowAll ? _react2.default.createElement(
                             'a',
                             { href: 'javascript:;', onClick: _this3.handleShowAll.bind(_this3, result.id, result.mc, result.szk), title: '\u5355\u4F4D\u6240\u6709\u4EBA', className: 'all', target: '_self' },
-                            'all'
+                            '\u5168'
                         ) : null
                     ),
                     _react2.default.createElement('div', { className: 'arrow' })

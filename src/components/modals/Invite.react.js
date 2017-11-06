@@ -138,7 +138,6 @@ class InviteUser extends Component {
     return (
       <header className="header">
         <div className="pull-left"><FormattedMessage id="invite.title"/></div>
-        { this.inviteByLinkButton() }
         <div className="pull-right" style={{cursor: 'Pointer'}}><strong onClick={() => this.handleClose()}>关闭</strong></div>
       </header>
     );
