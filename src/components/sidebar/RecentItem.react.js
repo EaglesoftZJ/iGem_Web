@@ -101,6 +101,13 @@ class RecentItem extends Component {
       />
     );
   }
+  renderOnlineState() {
+    return (
+      <div className="online-state">
+
+      </div>
+    );
+  }
 
   render() {
     const { dialog, isActive } = this.props;
@@ -123,6 +130,7 @@ class RecentItem extends Component {
         <div className="recent__item__title col-xs" dangerouslySetInnerHTML={{ __html: title }}/>
         {this.renderCounter()}
         {this.renderArchiveState()}
+        {/* { this.renderOnlineState() } */}
       </div>
     );
   }

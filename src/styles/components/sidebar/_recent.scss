@@ -121,6 +121,7 @@
 }
 
 .recent__item {
+  position: relative;
   display: flex;
   flex-direction: row;
 
@@ -131,6 +132,24 @@
 
   flex: 0 1 auto;
   flex-wrap: wrap;
+
+  .online-state {
+    position: absolute;
+    z-index: 1;
+    left: 34px;
+    top: 23px;
+    width: 8px; 
+    height: 8px;
+    border-radius: 100%;
+  }
+
+  .online-state-ol {
+    background: rgb(25, 139, 82);
+  }
+
+  .online-state-ofl {
+    background: red;
+  }
 
   &__title {
     font-size: 15px;

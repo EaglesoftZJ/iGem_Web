@@ -221,7 +221,6 @@ var InviteUser = function (_Component) {
         { className: 'pull-left' },
         _react2.default.createElement(_reactIntl.FormattedMessage, { id: 'invite.title' })
       ),
-      this.inviteByLinkButton(),
       _react2.default.createElement(
         'div',
         { className: 'pull-right', style: { cursor: 'Pointer' } },

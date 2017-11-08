@@ -6,6 +6,7 @@ import Immutable from 'immutable';
 import { ReduceStore } from 'flux/utils';
 import Dispatcher from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes, MessageChangeReason } from '../constants/ActorAppConstants';
+import ActorClient from '../utils/ActorClient';
 import { getFirstUnreadMessageIndex } from '../utils/MessageUtils';
 import UserStore from './UserStore';
 
@@ -43,6 +44,9 @@ class MessageStore extends ReduceStore {
         return this.getInitialState();
 
       case ActionTypes.MESSAGES_CHANGED:
+        if (ActorClient.isElectron()) {
+          ActorClient.sendToElectron('messageChange', {message: action.messages});
+        }
         const firstId = getMessageId(action.messages[0]);
         const lastId = getMessageId(action.messages[action.messages.length - 1]);
 
