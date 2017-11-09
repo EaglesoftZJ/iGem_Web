@@ -135,6 +135,10 @@ var RecentItem = function (_Component) {
     });
   };
 
+  RecentItem.prototype.renderOnlineState = function renderOnlineState() {
+    return _react2.default.createElement('div', { className: 'online-state' });
+  };
+
   RecentItem.prototype.render = function render() {
     var _props = this.props,
         dialog = _props.dialog,
