@@ -10,6 +10,9 @@ import history from '../../utils/history';
 import { AsyncActionStates } from '../../constants/ActorAppConstants';
 
 import DropdownActionCreators from '../../actions/DropdownActionCreators';
+import ActorClient from '../../utils/ActorClient';
+
+ActorClient
 
 import AvatarItem from '../common/AvatarItem.react';
 import Stateful from '../common/Stateful.react';
@@ -60,6 +63,10 @@ class RecentItem extends Component {
 
   handleClick() {
     const { dialog } = this.props;
+    // 对话框切换推送主进程
+    if (ActorClient.isElectron()) {
+      ActorClient.sendToElectron('dialog-switch', dialog.peer.peer.key);
+    }
     history.push(`/im/${dialog.peer.peer.key}`);
   }
 
@@ -103,9 +110,7 @@ class RecentItem extends Component {
   }
   renderOnlineState() {
     return (
-      <div className="online-state">
-
-      </div>
+      <span className="online-state online-state__ofl"></span>
     );
   }
 
@@ -130,7 +135,7 @@ class RecentItem extends Component {
         <div className="recent__item__title col-xs" dangerouslySetInnerHTML={{ __html: title }}/>
         {this.renderCounter()}
         {this.renderArchiveState()}
-        {/* { this.renderOnlineState() } */}
+        { this.renderOnlineState() }
       </div>
     );
   }

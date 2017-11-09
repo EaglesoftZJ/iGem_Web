@@ -16,6 +16,10 @@ var _ActorAppDispatcher2 = _interopRequireDefault(_ActorAppDispatcher);
 
 var _ActorAppConstants = require('../constants/ActorAppConstants');
 
+var _ActorClient = require('../utils/ActorClient');
+
+var _ActorClient2 = _interopRequireDefault(_ActorClient);
+
 var _MessageUtils = require('../utils/MessageUtils');
 
 var _UserStore = require('./UserStore');
@@ -79,6 +83,9 @@ var MessageStore = function (_ReduceStore) {
         return this.getInitialState();
 
       case _ActorAppConstants.ActionTypes.MESSAGES_CHANGED:
+        if (_ActorClient2.default.isElectron()) {
+          _ActorClient2.default.sendToElectron('messageChange', { message: action.messages });
+        }
         var firstId = getMessageId(action.messages[0]);
         var lastId = getMessageId(action.messages[action.messages.length - 1]);
 

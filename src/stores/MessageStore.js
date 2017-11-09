@@ -45,7 +45,7 @@ class MessageStore extends ReduceStore {
 
       case ActionTypes.MESSAGES_CHANGED:
         if (ActorClient.isElectron()) {
-          ActorClient.sendToElectron('messageChange', {message: action.messages});
+          ActorClient.sendToElectron('message-change', {message: action.messages});
         }
         const firstId = getMessageId(action.messages[0]);
         const lastId = getMessageId(action.messages[action.messages.length - 1]);
