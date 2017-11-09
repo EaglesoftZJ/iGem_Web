@@ -48,6 +48,14 @@ var _DataLoading = require('../utils/DataLoading');
 
 var _DataLoading2 = _interopRequireDefault(_DataLoading);
 
+var _ActorClient = require('../utils/ActorClient');
+
+var _ActorClient2 = _interopRequireDefault(_ActorClient);
+
+var _history = require('../utils/history');
+
+var _history2 = _interopRequireDefault(_history);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -98,6 +106,16 @@ var Main = function (_Component) {
 
   Main.prototype.componentDidMount = function componentDidMount() {
     this.onVisibilityChange();
+    if (_ActorClient2.default.isElectron()) {
+      window.messenger.listenOnRender('windows-blur', function (event, arg) {
+        _history2.default.push('/im');
+      });
+
+      window.messenger.listenOnRender('windows-focus', function (event, arg) {
+
+        _history2.default.push('/im/' + arg);
+      });
+    }
     document.addEventListener('visibilitychange', this.onVisibilityChange);
   };
 

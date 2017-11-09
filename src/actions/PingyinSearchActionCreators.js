@@ -6,7 +6,7 @@ import { dispatch } from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes } from '../constants/ActorAppConstants';
 import ComposeActionCreators from '../actions/ComposeActionCreators';
 import makepy from 'makepy';
-import linq from 'linq';
+import linq from 'Linq';
 
 export default {
   show() {

@@ -115,7 +115,6 @@ var DialogActionCreators = function (_ActionCreators) {
         _GroupProfileActionCreators2.default.getIntegrationToken(peer.id);
         break;
     }
-    console.log(_ActorClient2.default.getUser(_ActorClient2.default.getUid()), 23131231231);
     this.setBindings('peer', bindings);
   };
 

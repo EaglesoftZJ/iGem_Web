@@ -14,9 +14,9 @@ var _makepy = require('makepy');
 
 var _makepy2 = _interopRequireDefault(_makepy);
 
-var _linq = require('linq');
+var _Linq = require('Linq');
 
-var _linq2 = _interopRequireDefault(_linq);
+var _Linq2 = _interopRequireDefault(_Linq);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -32,7 +32,7 @@ exports.default = {
   setPingyinSearchList: function setPingyinSearchList(list) {
     var obj = { '群组': [] };
     // 过滤系统管理员
-    list = _linq2.default.from(list).where('$.peerInfo.title.indexOf("系统管理员") == -1').toArray();
+    list = _Linq2.default.from(list).where('$.peerInfo.title.indexOf("系统管理员") == -1').toArray();
     for (var _iterator = list, _isArray = Array.isArray(_iterator), _i = 0, _iterator = _isArray ? _iterator : _iterator[Symbol.iterator]();;) {
       var _ref;
 

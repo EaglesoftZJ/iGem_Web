@@ -83,7 +83,8 @@
     "react-modal": "1.3.0",
     "react-router": "2.4.1",
     "setimmediate": "1.0.4",
-    "simple-scrollbar": "github:actorapp/simple-scrollbar"
+    "simple-scrollbar": "github:actorapp/simple-scrollbar",
+    "electron": "^1.7.9"
   },
   "devDependencies": {
     "autoprefixer": "^6.3.6",

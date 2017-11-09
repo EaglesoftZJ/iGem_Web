@@ -84,7 +84,7 @@ var MessageStore = function (_ReduceStore) {
 
       case _ActorAppConstants.ActionTypes.MESSAGES_CHANGED:
         if (_ActorClient2.default.isElectron()) {
-          _ActorClient2.default.sendToElectron('messageChange', { message: action.messages });
+          _ActorClient2.default.sendToElectron('message-change', { message: action.messages });
         }
         var firstId = getMessageId(action.messages[0]);
         var lastId = getMessageId(action.messages[action.messages.length - 1]);

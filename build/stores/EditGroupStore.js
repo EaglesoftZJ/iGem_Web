@@ -16,9 +16,9 @@ var _ActorClient = require('../utils/ActorClient');
 
 var _ActorClient2 = _interopRequireDefault(_ActorClient);
 
-var _linq = require('linq');
+var _Linq = require('Linq');
 
-var _linq2 = _interopRequireDefault(_linq);
+var _Linq2 = _interopRequireDefault(_Linq);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -76,7 +76,7 @@ var EditGroupStore = function (_ReduceStore) {
   EditGroupStore.prototype.isAdmin = function isAdmin() {
     var myID = _ActorClient2.default.getUid();
     var members = this.getState().group.members;
-    var adminId = _linq2.default.from(members).where('$.isAdmin == true').select('$.peerInfo.peer.id').toArray()[0];
+    var adminId = _Linq2.default.from(members).where('$.isAdmin == true').select('$.peerInfo.peer.id').toArray()[0];
     return adminId === myID;
   };
 

@@ -6,7 +6,7 @@ import { ReduceStore } from 'flux/utils';
 import Dispatcher from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes } from '../constants/ActorAppConstants';
 import ActorClient from '../utils/ActorClient';
-import linq from 'linq';
+import linq from 'Linq';
 
 class EditGroupStore extends ReduceStore {
   getInitialState() {

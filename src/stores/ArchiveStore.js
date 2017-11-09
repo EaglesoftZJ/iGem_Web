@@ -5,7 +5,7 @@
 import { Store } from 'flux/utils';
 import Dispatcher from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes, AsyncActionStates } from '../constants/ActorAppConstants';
-import linq from 'linq';
+import linq from 'Linq';
 
 class ArchiveStore extends Store {
   constructor(dispatcher) {

@@ -22,6 +22,10 @@ var _DropdownActionCreators = require('../../actions/DropdownActionCreators');
 
 var _DropdownActionCreators2 = _interopRequireDefault(_DropdownActionCreators);
 
+var _ActorClient = require('../../utils/ActorClient');
+
+var _ActorClient2 = _interopRequireDefault(_ActorClient);
+
 var _AvatarItem = require('../common/AvatarItem.react');
 
 var _AvatarItem2 = _interopRequireDefault(_AvatarItem);
@@ -39,6 +43,8 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } /*
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 */
+
+_ActorClient2.default;
 
 var RecentItem = function (_Component) {
   _inherits(RecentItem, _Component);
@@ -78,7 +84,11 @@ var RecentItem = function (_Component) {
 
   RecentItem.prototype.handleClick = function handleClick() {
     var dialog = this.props.dialog;
+    // 对话框切换推送主进程
 
+    if (_ActorClient2.default.isElectron()) {
+      _ActorClient2.default.sendToElectron('dialog-switch', dialog.peer.peer.key);
+    }
     _history2.default.push('/im/' + dialog.peer.peer.key);
   };
 
@@ -136,7 +146,7 @@ var RecentItem = function (_Component) {
   };
 
   RecentItem.prototype.renderOnlineState = function renderOnlineState() {
-    return _react2.default.createElement('div', { className: 'online-state' });
+    return _react2.default.createElement('span', { className: 'online-state online-state__ofl' });
   };
 
   RecentItem.prototype.render = function render() {
@@ -163,7 +173,8 @@ var RecentItem = function (_Component) {
       }),
       _react2.default.createElement('div', { className: 'recent__item__title col-xs', dangerouslySetInnerHTML: { __html: title } }),
       this.renderCounter(),
-      this.renderArchiveState()
+      this.renderArchiveState(),
+      this.renderOnlineState()
     );
   };
 

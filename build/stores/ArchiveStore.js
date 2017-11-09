@@ -10,9 +10,9 @@ var _ActorAppDispatcher2 = _interopRequireDefault(_ActorAppDispatcher);
 
 var _ActorAppConstants = require('../constants/ActorAppConstants');
 
-var _linq = require('linq');
+var _Linq = require('Linq');
 
-var _linq2 = _interopRequireDefault(_linq);
+var _Linq2 = _interopRequireDefault(_Linq);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -100,7 +100,7 @@ var ArchiveStore = function (_Store) {
           this._isAllLoaded = true;
         } else {
           var id = action.response[0].peer.peer.id;
-          var results = _linq2.default.from(this.dialogs).where('$.peer.peer.id ==' + id).toArray();
+          var results = _Linq2.default.from(this.dialogs).where('$.peer.peer.id ==' + id).toArray();
           if (results.length > 0) {
             this._isAllLoaded = true;
           }

@@ -16,6 +16,9 @@ import ModalsWrapper from './modals/ModalsWrapper.react';
 import MenuOverlay from './common/MenuOverlay.react';
 import SmallCall from './SmallCall.react';
 import loading from '../utils/DataLoading';
+import ActorClient from '../utils/ActorClient';
+
+import history from '../utils/history';
 
 class Main extends Component {
   static propTypes = {
@@ -50,6 +53,16 @@ class Main extends Component {
 
   componentDidMount() {
     this.onVisibilityChange();
+    if (ActorClient.isElectron()) {
+      window.messenger.listenOnRender('windows-blur',function(event, arg){
+        history.push('/im');
+      })
+
+      window.messenger.listenOnRender('windows-focus',function(event, arg){
+        
+        history.push(`/im/${arg}`);
+      })
+    }
     document.addEventListener('visibilitychange', this.onVisibilityChange);
   }
 
