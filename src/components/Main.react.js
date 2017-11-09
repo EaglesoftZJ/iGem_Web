@@ -54,16 +54,18 @@ class Main extends Component {
   componentDidMount() {
     this.onVisibilityChange();
     if (ActorClient.isElectron()) {
-      window.messenger.listenOnRender('windows-blur',function(event, arg){
+      window.messenger.listenOnRender('windows-blur', function(event, arg) {
         history.push('/im');
       })
 
-      window.messenger.listenOnRender('windows-focus',function(event, arg){
-        
+      window.messenger.listenOnRender('windows-focus', function(event, arg) {
+
         history.push(`/im/${arg}`);
       })
+    } else {
+      document.addEventListener('visibilitychange', this.onVisibilityChange);
+
     }
-    document.addEventListener('visibilitychange', this.onVisibilityChange);
   }
 
   componentWillUnmount() {
@@ -93,18 +95,18 @@ class Main extends Component {
 
     return (
       <div className="app">
-        <ConnectionState/>
-        <Favicon/>
+        <ConnectionState />
+        <Favicon />
 
-        <Toolbar/>
+        <Toolbar />
         <section className="wrapper">
-          <Sidebar/>
+          <Sidebar />
           {this.props.children}
         </section>
 
 
-        <ModalsWrapper/>
-        <MenuOverlay/>
+        <ModalsWrapper />
+        <MenuOverlay />
 
         {this.renderCall()}
       </div>
