@@ -172,6 +172,10 @@ var ActorClient = function () {
     return ActorClient.createBindings('bindStickers', 'unbindStickers', callback);
   };
 
+  ActorClient.prototype.onUserVisible = function onUserVisible(uid) {
+    return window.messenger.onUserVisible(uid);
+  };
+
   ActorClient.prototype.makeCall = function makeCall(userId) {
     return window.messenger.doCall(userId);
   };
@@ -336,6 +340,10 @@ var ActorClient = function () {
 
   ActorClient.prototype.getGroupPeer = function getGroupPeer(gid) {
     return window.messenger.getGroupPeer(gid);
+  };
+
+  ActorClient.prototype.getUserPresence = function getUserPresence(uid) {
+    return window.messenger.getUserPresence(uid);
   };
 
   ActorClient.prototype.hideChat = function hideChat(peer) {

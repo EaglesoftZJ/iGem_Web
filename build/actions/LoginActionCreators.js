@@ -97,6 +97,18 @@ var LoginActionCreators = function (_ActionCreators) {
     (0, _ActorAppDispatcher.dispatch)(_ActorAppConstants.ActionTypes.AUTH_CHANGE_NAME, { name: name });
   };
 
+  LoginActionCreators.prototype.changeRemember = function changeRemember(remember) {
+    (0, _ActorAppDispatcher.dispatch)(_ActorAppConstants.ActionTypes.AUTH_CHANGE_REMEMBER, { remember: remember });
+  };
+
+  LoginActionCreators.prototype.changeAuto = function changeAuto(auto) {
+    (0, _ActorAppDispatcher.dispatch)(_ActorAppConstants.ActionTypes.AUTH_CHANGE_AUTO, { auto: auto });
+  };
+
+  LoginActionCreators.prototype.changeNameList = function changeNameList(list) {
+    (0, _ActorAppDispatcher.dispatch)(_ActorAppConstants.ActionTypes.AUTH_CHANGE_NAME_LIST, { list: list });
+  };
+
   LoginActionCreators.prototype.startSignup = function startSignup() {
     (0, _ActorAppDispatcher.dispatch)(_ActorAppConstants.ActionTypes.AUTH_SIGNUP_START);
   };
@@ -221,10 +233,11 @@ var LoginActionCreators = function (_ActionCreators) {
     }
 
     if (opts.redirect) {
+      (0, _ActorAppDispatcher.dispatch)(_ActorAppConstants.ActionTypes.AUTH_SET_LOGGED_SET_STORE);
       var location = _LocationContainer2.default.get();
-      var nextPathname = location.state ? location.state.nextPathname : '/';
+      var nextPathname = location.state ? location.state.nextPathname : '/im';
 
-      _history2.default.replace(nextPathname);
+      _history2.default.push(nextPathname);
     }
 
     this.setBindings('main', [_ActorClient2.default.bindUser(_ActorClient2.default.getUid(), _ProfileActionCreators2.default.setProfile), _ActorClient2.default.bindGroupDialogs(_DialogActionCreators2.default.setDialogs), _ActorClient2.default.bindContacts(_ContactActionCreators2.default.setContacts), _ActorClient2.default.bindSearch(_QuickSearchActionCreators2.default.setQuickSearchList), _ActorClient2.default.bindTempGlobalCounter(_FaviconActionCreators2.default.setFavicon), _ActorClient2.default.bindEventBus(_EventBusActionCreators2.default.broadcastEvent), _ActorClient2.default.bindStickers(_StickersActionCreators2.default.setStickers)]);
@@ -233,8 +246,8 @@ var LoginActionCreators = function (_ActionCreators) {
 
     _ActorClient2.default.postOAWebservice({
       //url: 'http://g.portzhoushan.com/MoaService/MoaService.asmx/GetAllUserFullData',
-      // url: 'http://61.175.100.14:8004/WebServiceSSO.asmx/GetAllUserFullData',
-      url: 'http://220.189.207.21:8709/WebServiceSSO.asmx/GetAllUserFullData',
+      url: 'http://61.175.100.14:8004/WebServiceSSO.asmx/GetAllUserFullData',
+      // url: 'http://220.189.207.21:8709/WebServiceSSO.asmx/GetAllUserFullData',
       data: 'k=eagleSoftWebService',
       success: function success(res) {
         _DepartmentActionCreators2.default.setRes({ res: res });

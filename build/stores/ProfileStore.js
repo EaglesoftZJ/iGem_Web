@@ -16,6 +16,10 @@ var _ActorClient = require('../utils/ActorClient');
 
 var _ActorClient2 = _interopRequireDefault(_ActorClient);
 
+var _LoginStore = require('../stores/LoginStore');
+
+var _LoginStore2 = _interopRequireDefault(_LoginStore);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -47,10 +51,6 @@ var ProfileStore = function (_ReduceStore) {
   ProfileStore.prototype.reduce = function reduce(state, action) {
     switch (action.type) {
       case _ActorAppConstants.ActionTypes.PROFILE_CHANGED:
-        // 发送登陆成功消息给主进程
-        if (_ActorClient2.default.isElectron()) {
-          _ActorClient2.default.sendToElectron('logged-in', action.profile);
-        }
         return _extends({}, state, {
           profile: action.profile
         });

@@ -72,6 +72,10 @@ var _defaultLogHandler = require('../utils/defaultLogHandler');
 
 var _defaultLogHandler2 = _interopRequireDefault(_defaultLogHandler);
 
+var _ActorClient = require('../utils/ActorClient');
+
+var _ActorClient2 = _interopRequireDefault(_ActorClient);
+
 var _LoginStore = require('../stores/LoginStore');
 
 var _LoginStore2 = _interopRequireDefault(_LoginStore);
@@ -202,7 +206,9 @@ var ActorSDK = function () {
       _reactModal2.default.setAppElement(appRootElemet);
 
       if (window.location.hash !== '#/deactivated') {
-        if (_LoginStore2.default.isLoggedIn()) _LoginActionCreators2.default.setLoggedIn({ redirect: false });
+        if (!_ActorClient2.default.isElectron() && _LoginStore2.default.isLoggedIn()) {
+          _LoginActionCreators2.default.setLoggedIn({ redirect: false });
+        }
       }
     };
 

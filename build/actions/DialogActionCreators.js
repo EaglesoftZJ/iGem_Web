@@ -108,7 +108,11 @@ var DialogActionCreators = function (_ActionCreators) {
 
     switch (peer.type) {
       case _ActorAppConstants.PeerTypes.USER:
-        bindings.push(_ActorClient2.default.bindUser(peer.id, _DialogInfoActionCreators2.default.setDialogInfo), _ActorClient2.default.bindUserOnline(peer.id, _OnlineActionCreators2.default.setUserOnline));
+        bindings.push(_ActorClient2.default.bindUser(peer.id, _DialogInfoActionCreators2.default.setDialogInfo), _ActorClient2.default.bindUserOnline(peer.id, _OnlineActionCreators2.default.setUserOnline)
+        // ActorClient.bindUserOnline(221653468, function({ ...args }) {
+        //   console.log(args);
+        // })
+        );
         break;
       case _ActorAppConstants.PeerTypes.GROUP:
         bindings.push(_ActorClient2.default.bindGroup(peer.id, _DialogInfoActionCreators2.default.setDialogInfo), _ActorClient2.default.bindGroupOnline(peer.id, _OnlineActionCreators2.default.setGroupOnline));

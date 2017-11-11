@@ -173,8 +173,7 @@ var RecentItem = function (_Component) {
       }),
       _react2.default.createElement('div', { className: 'recent__item__title col-xs', dangerouslySetInnerHTML: { __html: title } }),
       this.renderCounter(),
-      this.renderArchiveState(),
-      this.renderOnlineState()
+      this.renderArchiveState()
     );
   };
 

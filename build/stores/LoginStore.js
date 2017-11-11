@@ -14,6 +14,10 @@ var _ActorClient = require('../utils/ActorClient');
 
 var _ActorClient2 = _interopRequireDefault(_ActorClient);
 
+var _immutable = require('immutable');
+
+var _immutable2 = _interopRequireDefault(_immutable);
+
 var _l18n = require('../l18n');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -35,11 +39,16 @@ var step = _ActorAppConstants.AuthSteps.LOGIN_WAIT,
     login = '',
     code = '',
     name = '',
+    remember = false,
+    auto = false,
+    nameList = new _immutable2.default.OrderedSet(),
     isCodeRequested = false,
     isCodeSended = false,
     isLoginRequested = false,
     isSignupStarted = false,
     myUid = null;
+
+console.log(123, nameList);
 
 var LoginStore = function (_Store) {
   _inherits(LoginStore, _Store);
@@ -68,6 +77,18 @@ var LoginStore = function (_Store) {
 
     _this.getName = function () {
       return name;
+    };
+
+    _this.getRemember = function () {
+      return remember;
+    };
+
+    _this.getAuto = function () {
+      return auto;
+    };
+
+    _this.getNameList = function () {
+      return nameList;
     };
 
     _this.isCodeRequested = function () {
@@ -102,7 +123,8 @@ var LoginStore = function (_Store) {
         signup: null
       };
       login = code = name = '';
-      isCodeRequested = isCodeSended = isSignupStarted = false;
+      remember = auto = false;
+      nameList = new _immutable2.default.OrderedSet(), isCodeRequested = isCodeSended = isSignupStarted = false;
       myUid = null;
     };
 
@@ -112,6 +134,19 @@ var LoginStore = function (_Store) {
 
   LoginStore.prototype.__onDispatch = function __onDispatch(action) {
     switch (action.type) {
+      case _ActorAppConstants.ActionTypes.AUTH_CHANGE_NAME_LIST:
+        console.log(111, action.list);
+        nameList = action.list ? new _immutable2.default.OrderedSet(action.list) : new _immutable2.default.OrderedSet();
+        this.__emitChange();
+        break;
+      case _ActorAppConstants.ActionTypes.AUTH_CHANGE_REMEMBER:
+        remember = action.remember;
+        this.__emitChange();
+        break;
+      case _ActorAppConstants.ActionTypes.AUTH_CHANGE_AUTO:
+        auto = action.auto;
+        this.__emitChange();
+        break;
       case _ActorAppConstants.ActionTypes.AUTH_CHANGE_LOGIN:
         login = action.login;
         this.__emitChange();
@@ -258,11 +293,30 @@ var LoginStore = function (_Store) {
         this.__emitChange();
         break;
 
+      case _ActorAppConstants.ActionTypes.AUTH_SET_LOGGED_SET_STORE:
+        // 登录后操作
+        if (_ActorClient2.default.isElectron()) {
+          var obj = {
+            auto: auto,
+            remember: remember,
+            login: remember ? login : '',
+            code: remember ? code : '',
+            isLogin: true
+          };
+          _ActorClient2.default.sendToElectron('setLoginStore', { key: 'info', value: obj });
+          _ActorClient2.default.sendToElectron('setLoginStore', { key: 'nameList', value: nameList.add(login).toJS() });
+        }
+        break;
       case _ActorAppConstants.ActionTypes.AUTH_SET_LOGGED_IN:
         myUid = _ActorClient2.default.getUid();
         this.__emitChange();
         break;
       case _ActorAppConstants.ActionTypes.AUTH_SET_LOGGED_OUT:
+        // 退出登录
+        if (_ActorClient2.default.isElectron()) {
+          _ActorClient2.default.sendToElectron('setLoginStore', { key: 'info.auto', value: false });
+          _ActorClient2.default.sendToElectron('setLoginStore', { key: 'info.isLogin', value: false });
+        }
         localStorage.clear();
         location.reload();
         break;

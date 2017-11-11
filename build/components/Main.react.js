@@ -16,6 +16,10 @@ var _VisibilityActionCreators = require('../actions/VisibilityActionCreators');
 
 var _VisibilityActionCreators2 = _interopRequireDefault(_VisibilityActionCreators);
 
+var _LoginActionCreators = require('../actions/LoginActionCreators');
+
+var _LoginActionCreators2 = _interopRequireDefault(_LoginActionCreators);
+
 var _Sidebar = require('./Sidebar.react');
 
 var _Sidebar2 = _interopRequireDefault(_Sidebar);
@@ -55,6 +59,8 @@ var _ActorClient2 = _interopRequireDefault(_ActorClient);
 var _history = require('../utils/history');
 
 var _history2 = _interopRequireDefault(_history);
+
+var _timers = require('timers');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -104,6 +110,12 @@ var Main = function (_Component) {
     };
   };
 
+  Main.prototype.componentWillMount = function componentWillMount() {
+    if (_ActorClient2.default.isElectron()) {
+      this.handleEletronEr();
+    }
+  };
+
   Main.prototype.componentDidMount = function componentDidMount() {
     this.onVisibilityChange();
     if (_ActorClient2.default.isElectron()) {
@@ -115,6 +127,14 @@ var Main = function (_Component) {
 
         _history2.default.push('/im/' + arg);
       });
+
+      window.messenger.listenOnRender('setLoggedOut', function (event, arg) {
+        if (_ActorClient2.default.isElectron()) {
+          // 存储用户信息
+          _ActorClient2.default.sendToElectron('setLoginStore', { key: 'info.auto', value: false });
+          _ActorClient2.default.sendToElectron('setLoginStore', { key: 'info.isLogin', value: false });
+        }
+      });
     } else {
       document.addEventListener('visibilitychange', this.onVisibilityChange);
     }
@@ -122,6 +142,18 @@ var Main = function (_Component) {
 
   Main.prototype.componentWillUnmount = function componentWillUnmount() {
     document.removeEventListener('visibilitychange', this.onVisibilityChange);
+  };
+
+  Main.prototype.handleEletronEr = function handleEletronEr() {
+    window.messenger.listenOnRender('loginStore', function (event, data) {
+      if (!data || !data.info.isLogin) {
+        localStorage.clear();
+        _history2.default.push('/auth');
+      } else {
+        _LoginActionCreators2.default.setLoggedIn({ redirect: false });
+      }
+    });
+    _ActorClient2.default.sendToElectron('logged-in');
   };
 
   Main.prototype.renderCall = function renderCall() {
