@@ -154,6 +154,10 @@ class ActorClient {
     return ActorClient.createBindings('bindStickers', 'unbindStickers', callback);
   }
 
+  onUserVisible(uid) {
+    return window.messenger.onUserVisible(uid);
+  }
+
   makeCall(userId) {
     return window.messenger.doCall(userId);
   }
@@ -319,6 +323,10 @@ class ActorClient {
 
   getGroupPeer(gid) {
     return window.messenger.getGroupPeer(gid);
+  }
+
+  getUserPresence(uid) {
+    return window.messenger.getUserPresence(uid);
   }
 
   hideChat(peer) {

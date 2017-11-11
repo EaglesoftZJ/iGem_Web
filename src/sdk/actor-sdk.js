@@ -27,6 +27,7 @@ import { lightbox } from '../utils/ImageUtils'
 
 import LoginActionCreators from '../actions/LoginActionCreators';
 import defaultLogHandler from '../utils/defaultLogHandler';
+import ActorClient from '../utils/ActorClient';
 
 import LoginStore from '../stores/LoginStore';
 
@@ -127,7 +128,7 @@ class ActorSDK {
         </Route>
 
         <Redirect from="join/:token" to="im/join/:token" />
-        <IndexRedirect to="im"/>
+        <IndexRedirect to={'im'}/>
       </Route>
     );
   }
@@ -177,8 +178,11 @@ class ActorSDK {
     // initial setup fot react modal
     Modal.setAppElement(appRootElemet);
 
+
     if (window.location.hash !== '#/deactivated') {
-      if (LoginStore.isLoggedIn()) LoginActionCreators.setLoggedIn({ redirect: false });
+      if (!ActorClient.isElectron() && LoginStore.isLoggedIn()) {
+        LoginActionCreators.setLoggedIn({ redirect: false });
+      }
     }
   };
 

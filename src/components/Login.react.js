@@ -8,6 +8,7 @@ import classnames from 'classnames';
 import SharedContainer from '../utils/SharedContainer';
 import { appName, AuthSteps } from '../constants/ActorAppConstants';
 import { FormattedMessage, FormattedHTMLMessage } from 'react-intl';
+import ActorClient from '../utils/ActorClient';
 
 import LoginActionCreators from '../actions/LoginActionCreators';
 import DepartmentAcationCreators from '../actions/DepartmentActionCreators';
@@ -15,6 +16,7 @@ import DepartmentAcationCreators from '../actions/DepartmentActionCreators';
 import LoginStore from '../stores/LoginStore';
 
 import TextField from './common/TextField.react';
+import Checkbox from './common/Checkbox.react';
 
 class Login extends Component {
   constructor(props) {
@@ -36,6 +38,9 @@ class Login extends Component {
       code: LoginStore.getCode(),
       name: LoginStore.getName(),
       step: LoginStore.getStep(),
+      remember: LoginStore.getRemember(),
+      auto: LoginStore.getAuto(),
+      nameList: LoginStore.getNameList(),
       errors: LoginStore.getErrors(),
       isCodeRequested: LoginStore.isCodeRequested(),
       isCodeSended: LoginStore.isCodeSended(),
@@ -48,13 +53,31 @@ class Login extends Component {
   static contextTypes = {
     intl: PropTypes.object
   };
+  componentWillMount() {
+    // ActorClient.sendToElectron('setLoginStore', {key: 'nameList', value: ''});
+  }
 
   componentDidMount() {
     this.handleFocus();
+    if (ActorClient.isElectron()) {   
+      window.messenger.listenOnRender('loginStore', (event, data) => {
+        LoginActionCreators.changeCode(data.info.code);
+        LoginActionCreators.changeLogin(data.info.login);
+        LoginActionCreators.changeRemember(data.info.remember);
+        LoginActionCreators.changeAuto(data.info.auto);
+        LoginActionCreators.changeNameList(data.nameList);
+        if (data.info.auto) {
+          this.onRequestCode();
+        }
+      });
+      ActorClient.sendToElectron('logged-in');
+    }
   }
 
   componentDidUpdate() {
     // this.handleFocus();
+    const { auto } = this.state;
+   
   }
 
   // From change handlers
@@ -73,7 +96,7 @@ class Login extends Component {
 
   // Form submit handlers
   onRequestCode = event => {
-    event.preventDefault();
+    event && event.preventDefault();
     let prmoise = new Promise((resolve, reject) => {
       LoginActionCreators.requestNickName(this.state.login, resolve, reject);
     });
@@ -101,6 +124,20 @@ class Login extends Component {
   handleSelectName = (name, event) => {
     event.preventDefault();
     LoginActionCreators.changeLogin(name);
+  }
+
+  handleChangeRemember = (event) => {
+    LoginActionCreators.changeRemember(event.target.checked);
+    if (!event.target.checked) {
+      LoginActionCreators.changeAuto(event.target.checked);
+    }
+  }
+
+  handleChangeAuto = (event) => {
+    LoginActionCreators.changeAuto(event.target.checked);
+    if (event.target.checked) {
+      LoginActionCreators.changeRemember(event.target.checked);
+    }
   }
 
   toggleDropdown = event => {
@@ -136,23 +173,43 @@ class Login extends Component {
       default:
     }
   };
+  renderNameList() {
+    const { nameList } = this.state;
+    var arr = [];
+    
+    return arr;
+  }
   renderDropDown() {
-    let storeName = localStorage.getItem('storeName') ? localStorage.getItem('storeName').split(',') : [];
-    if (storeName && storeName.length === 0) return null;
+    const { nameList } = this.state;
+    console.log('nameList', nameList);
+    if (nameList && nameList.size === 0) return null;
     return (
       <div>
       <i className="drop-icon material-icons" onClick={this.toggleDropdown}>arrow_drop_down</i>
       <ul className="dropdown__menu">
-        {storeName.map((item, index) => {
-          return <li className="dropdown__menu__item" onClick={this.handleSelectName.bind(this, item)} key={ index }>{ item }</li>})}
+      { nameList.map((item, index) => {
+      return <li className="dropdown__menu__item" onClick={this.handleSelectName.bind(this, item)} key={ index }>{ item }</li>}) }
       </ul>
       </div>
     );
   }
+  renderCheckbox() {
+    const { remember, auto } = this.state;
+    if (!ActorClient.isElectron()) {
+      return null;
+    }
+    return (
+      <div className="login-remember">
+        <Checkbox label="记住用户名和密码" id="remember" name="remember" value={ remember } onChange={ this.handleChangeRemember } />
+        <Checkbox label="自动登录" id="autoLogin" name="autoLogin" value={ auto } onChange={ this.handleChangeAuto } />
+      </div>
+    );
+  }
   render() {
-    const { step, errors, login, code, name, isOpened, isCodeRequested, isCodeSended, isSignupStarted, isLoginRequested } = this.state;
+    const { step, errors, login, code, name, isOpened, remember, auto, isCodeRequested, isCodeSended, isSignupStarted, isLoginRequested } = this.state;
     const { intl } = this.context;
 
+    console.log('remember', remember);
 
     let requestFormClassName = classnames('login-new__forms__form', 'login-new__forms__form--request', {
       'login-new__forms__form--active': step === AuthSteps.LOGIN_WAIT || step === AuthSteps.CODE_WAIT,
@@ -237,6 +294,11 @@ class Login extends Component {
                          ref="code"
                          type="password"
                          value={code}/>
+              {/* <div className="login-remember">
+                <div className={ selectedClassName }><input type="checkbox" id="remember" checked={ remember } onChange={ this.handleChangeRemember } /></div>
+                <label htmlFor="remember" className="login-remember-msg">记住用户名和密码</label>
+              </div> */}
+              { this.renderCheckbox() }
               <footer className="text-center">
                 <button className="button button--rised button--wide"
                         type="submit"

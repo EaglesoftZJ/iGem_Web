@@ -61,6 +61,9 @@ class DialogActionCreators extends ActionCreators {
         bindings.push(
           ActorClient.bindUser(peer.id, DialogInfoActionCreators.setDialogInfo),
           ActorClient.bindUserOnline(peer.id, OnlineActionCreators.setUserOnline)
+          // ActorClient.bindUserOnline(221653468, function({ ...args }) {
+          //   console.log(args);
+          // })
         );
         break;
       case PeerTypes.GROUP:

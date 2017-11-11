@@ -6,6 +6,7 @@ import { ReduceStore } from 'flux/utils';
 import Dispatcher from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes } from '../constants/ActorAppConstants';
 import ActorClient from '../utils/ActorClient';
+import LoginStore from '../stores/LoginStore';
 
 class ProfileStore extends ReduceStore {
   getInitialState() {
@@ -20,10 +21,6 @@ class ProfileStore extends ReduceStore {
   reduce(state, action) {
     switch (action.type) {
       case ActionTypes.PROFILE_CHANGED:
-        // 发送登陆成功消息给主进程
-        if (ActorClient.isElectron()) {
-          ActorClient.sendToElectron('logged-in', action.profile);
-        }
         return {
           ...state,
           profile: action.profile

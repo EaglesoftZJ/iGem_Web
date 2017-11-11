@@ -34,6 +34,7 @@ export default {
     modulesDirectories: ['node_modules'],
     fallback: [path.join(__dirname, 'node_modules')]
   },
+  externals: { 'electron-config': 'electron-config' },
   module: {
     noParse: [
       /languages\/autoit\.js/

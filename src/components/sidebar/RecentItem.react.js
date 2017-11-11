@@ -135,7 +135,7 @@ class RecentItem extends Component {
         <div className="recent__item__title col-xs" dangerouslySetInnerHTML={{ __html: title }}/>
         {this.renderCounter()}
         {this.renderArchiveState()}
-        { this.renderOnlineState() }
+        {/* { this.renderOnlineState() } */}
       </div>
     );
   }

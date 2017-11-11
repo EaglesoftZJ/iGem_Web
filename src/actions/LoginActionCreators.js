@@ -38,6 +38,18 @@ class LoginActionCreators extends ActionCreators {
     dispatch(ActionTypes.AUTH_CHANGE_NAME, { name });
   }
 
+  changeRemember(remember) {
+    dispatch(ActionTypes.AUTH_CHANGE_REMEMBER, { remember });
+  }
+
+  changeAuto(auto) {
+    dispatch(ActionTypes.AUTH_CHANGE_AUTO, { auto });
+  }
+
+  changeNameList(list) {
+    dispatch(ActionTypes.AUTH_CHANGE_NAME_LIST, { list });
+  }
+
   startSignup() {
     dispatch(ActionTypes.AUTH_SIGNUP_START);
   }
@@ -153,10 +165,11 @@ class LoginActionCreators extends ActionCreators {
     }
 
     if (opts.redirect) {
+      dispatch(ActionTypes.AUTH_SET_LOGGED_SET_STORE);
       const location = LocationContainer.get();
-      const nextPathname = location.state ? location.state.nextPathname : '/';
+      const nextPathname = location.state ? location.state.nextPathname : '/im';
 
-      history.replace(nextPathname);
+      history.push(nextPathname);
     }
 
     this.setBindings('main', [
@@ -170,12 +183,13 @@ class LoginActionCreators extends ActionCreators {
     ]);
 
 
+
     dispatch(ActionTypes.AUTH_SET_LOGGED_IN);
 
     ActorClient.postOAWebservice({
       //url: 'http://g.portzhoushan.com/MoaService/MoaService.asmx/GetAllUserFullData',
-      // url: 'http://61.175.100.14:8004/WebServiceSSO.asmx/GetAllUserFullData',
-      url: 'http://220.189.207.21:8709/WebServiceSSO.asmx/GetAllUserFullData',
+      url: 'http://61.175.100.14:8004/WebServiceSSO.asmx/GetAllUserFullData',
+      // url: 'http://220.189.207.21:8709/WebServiceSSO.asmx/GetAllUserFullData',
       data: 'k=eagleSoftWebService',
       success: res => {
         DepartmentActionCreators.setRes({res});
@@ -186,6 +200,8 @@ class LoginActionCreators extends ActionCreators {
 
   setLoggedOut() {
     const delegate = DelegateContainer.get();
+
+
 
     if (delegate.actions.setLoggedOut) {
       return delegate.actions.setLoggedOut();

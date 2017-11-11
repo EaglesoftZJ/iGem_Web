@@ -7,6 +7,7 @@ import Dispatcher from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes, AuthSteps } from '../constants/ActorAppConstants';
 
 import ActorClient from '../utils/ActorClient';
+import Immutable from 'immutable';
 
 import { getIntlData } from '../l18n';
 
@@ -19,11 +20,16 @@ let step = AuthSteps.LOGIN_WAIT,
     login = '',
     code = '',
     name = '',
+    remember = false,
+    auto = false,
+    nameList = new Immutable.OrderedSet(),
     isCodeRequested = false,
     isCodeSended = false,
     isLoginRequested = false,
     isSignupStarted = false,
     myUid = null;
+
+    console.log(123, nameList);
 
 class LoginStore extends Store {
   constructor(dispatcher) {
@@ -38,12 +44,16 @@ class LoginStore extends Store {
   getLogin = () => login;
   getCode = () => code;
   getName = () => name;
+  getRemember = () => remember;
+  getAuto = () => auto;
+  getNameList = () => nameList;
   isCodeRequested = () => isCodeRequested;
   isCodeSended = () => isCodeSended;
   isLoginRequested = () => isLoginRequested;
   isSignupStarted = () => isSignupStarted;
   getMyId = () => myUid;
   isLoggedIn = () => ActorClient.isLoggedIn();
+
 
   resetStore = () => {
     step = AuthSteps.LOGIN_WAIT;
@@ -53,12 +63,27 @@ class LoginStore extends Store {
       signup: null
     };
     login = code = name = '';
+    remember = auto = false;
+    nameList = new Immutable.OrderedSet(),
     isCodeRequested = isCodeSended = isSignupStarted = false;
     myUid = null;
   };
 
   __onDispatch(action) {
     switch (action.type) {
+      case ActionTypes.AUTH_CHANGE_NAME_LIST:
+      console.log(111, action.list);
+        nameList = action.list ? new Immutable.OrderedSet(action.list) : new Immutable.OrderedSet();
+        this.__emitChange();
+        break;
+      case ActionTypes.AUTH_CHANGE_REMEMBER: 
+        remember = action.remember;
+        this.__emitChange();
+        break;
+      case ActionTypes.AUTH_CHANGE_AUTO:
+        auto = action.auto;
+        this.__emitChange();
+      break;
       case ActionTypes.AUTH_CHANGE_LOGIN:
         login = action.login;
         this.__emitChange();
@@ -205,11 +230,30 @@ class LoginStore extends Store {
         this.__emitChange();
         break;
 
+      case ActionTypes.AUTH_SET_LOGGED_SET_STORE: 
+        // 登录后操作
+        if (ActorClient.isElectron()) {
+          var obj = {
+            auto: auto,
+            remember: remember, 
+            login: remember ? login : '',
+            code: remember ? code : '',
+            isLogin: true
+          };
+          ActorClient.sendToElectron('setLoginStore', {key: 'info', value: obj });
+          ActorClient.sendToElectron('setLoginStore', {key: 'nameList', value: nameList.add(login).toJS() });
+        }
+      break;
       case ActionTypes.AUTH_SET_LOGGED_IN:
         myUid = ActorClient.getUid();
         this.__emitChange();
         break;
       case ActionTypes.AUTH_SET_LOGGED_OUT:
+        // 退出登录
+        if (ActorClient.isElectron()) {
+          ActorClient.sendToElectron('setLoginStore', {key: 'info.auto', value: false });
+          ActorClient.sendToElectron('setLoginStore', {key: 'info.isLogin', value: false });
+        }
         localStorage.clear();
         location.reload();
         break;

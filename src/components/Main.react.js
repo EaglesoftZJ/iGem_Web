@@ -6,6 +6,7 @@ import React, { Component, PropTypes } from 'react';
 import DelegateContainer from '../utils/DelegateContainer';
 
 import VisibilityActionCreators from '../actions/VisibilityActionCreators';
+import LoginActionCreators from '../actions/LoginActionCreators';
 
 import DefaultSidebar from './Sidebar.react';
 import DefaultToolbar from './Toolbar.react';
@@ -19,6 +20,7 @@ import loading from '../utils/DataLoading';
 import ActorClient from '../utils/ActorClient';
 
 import history from '../utils/history';
+import { setTimeout } from 'timers';
 
 class Main extends Component {
   static propTypes = {
@@ -50,6 +52,11 @@ class Main extends Component {
       Toolbar: DefaultToolbar
     };
   }
+  componentWillMount() {
+    if (ActorClient.isElectron()) {
+      this.handleEletronEr();
+    }
+  }
 
   componentDidMount() {
     this.onVisibilityChange();
@@ -62,6 +69,14 @@ class Main extends Component {
 
         history.push(`/im/${arg}`);
       })
+
+      window.messenger.listenOnRender('setLoggedOut', function(event, arg) {
+        if (ActorClient.isElectron()) {
+            // 存储用户信息
+          ActorClient.sendToElectron('setLoginStore', {key: 'info.auto', value: false });
+          ActorClient.sendToElectron('setLoginStore', {key: 'info.isLogin', value: false });
+        }
+      })
     } else {
       document.addEventListener('visibilitychange', this.onVisibilityChange);
 
@@ -70,6 +85,18 @@ class Main extends Component {
 
   componentWillUnmount() {
     document.removeEventListener('visibilitychange', this.onVisibilityChange);
+  }
+
+  handleEletronEr() {
+    window.messenger.listenOnRender('loginStore', (event, data) => {
+      console.log(123, data.info.isLogin)
+      if (!data.info.isLogin) {
+        history.push('/auth');
+      } else {
+        LoginActionCreators.setLoggedIn({redirect: false})
+      }
+    });
+    ActorClient.sendToElectron('logged-in');
   }
 
   onVisibilityChange = () => {
