@@ -61,6 +61,9 @@ class Login extends Component {
     this.handleFocus();
     if (ActorClient.isElectron()) {   
       window.messenger.listenOnRender('loginStore', (event, data) => {
+        if (!data) {
+          return;
+        }
         LoginActionCreators.changeCode(data.info.code);
         LoginActionCreators.changeLogin(data.info.login);
         LoginActionCreators.changeRemember(data.info.remember);

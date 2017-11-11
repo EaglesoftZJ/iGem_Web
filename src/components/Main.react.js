@@ -89,8 +89,8 @@ class Main extends Component {
 
   handleEletronEr() {
     window.messenger.listenOnRender('loginStore', (event, data) => {
-      console.log(123, data.info.isLogin)
-      if (!data.info.isLogin) {
+      if (!data || !data.info.isLogin) {
+        localStorage.clear();
         history.push('/auth');
       } else {
         LoginActionCreators.setLoggedIn({redirect: false})
