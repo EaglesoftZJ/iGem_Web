@@ -115,8 +115,9 @@ var Main = function (_Component) {
 
         _history2.default.push('/im/' + arg);
       });
+    } else {
+      document.addEventListener('visibilitychange', this.onVisibilityChange);
     }
-    document.addEventListener('visibilitychange', this.onVisibilityChange);
   };
 
   Main.prototype.componentWillUnmount = function componentWillUnmount() {
