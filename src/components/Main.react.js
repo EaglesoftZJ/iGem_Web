@@ -81,6 +81,7 @@ class Main extends Component {
       document.addEventListener('visibilitychange', this.onVisibilityChange);
 
     }
+
   }
 
   componentWillUnmount() {

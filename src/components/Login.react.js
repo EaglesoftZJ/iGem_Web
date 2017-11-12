@@ -73,7 +73,7 @@ class Login extends Component {
           this.onRequestCode();
         }
       });
-      ActorClient.sendToElectron('logged-in');
+      ActorClient.sendToElectron('active-focus');
     }
   }
 

@@ -16,5 +16,13 @@
   </div>
 
   <script src="app.js"></script>
+
+  <script>
+    document.addEventListener('drop', function (e) {
+    });
+    document.addEventListener('dragover', function (e) {
+      window.messenger.sendToElectron('active-focus');
+    });
+  </script>
 </body>
 </html>
