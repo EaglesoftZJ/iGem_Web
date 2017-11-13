@@ -212,7 +212,6 @@ var Login = function (_Component) {
         }
       });
       _ActorClient2.default.sendToElectron('logged-in');
-      _ActorClient2.default.sendToElectron('active-focus');
     }
   };
 
