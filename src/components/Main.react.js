@@ -73,8 +73,9 @@ class Main extends Component {
       window.messenger.listenOnRender('setLoggedOut', function(event, arg) {
         if (ActorClient.isElectron()) {
             // 存储用户信息
-          ActorClient.sendToElectron('setLoginStore', {key: 'info.auto', value: false });
-          ActorClient.sendToElectron('setLoginStore', {key: 'info.isLogin', value: false });
+          // ActorClient.sendToElectron('setLoginStore', {key: 'info.auto', value: false });
+          // ActorClient.sendToElectron('setLoginStore', {key: 'info.isLogin', value: false });
+          LoginActionCreators.setLoggedOut();
         }
       })
     } else {
