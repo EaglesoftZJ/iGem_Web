@@ -74,6 +74,8 @@ class Login extends Component {
         }
       });
       ActorClient.sendToElectron('logged-in');
+      ActorClient.sendToElectron('active-focus');
+
     }
   }
 
