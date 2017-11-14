@@ -62,8 +62,11 @@ export default {
   },
 
   sendAttachment() {
-    const currentPeer = DialogStore.getCurrentPeer();
-    const attachment = AttachmentsStore.getAttachment();
+    var currentPeer = DialogStore.getCurrentPeer();
+    var attachment = AttachmentsStore.getAttachment();
+    if (!currentPeer) {
+      currentPeer =  DialogStore.getStorePeer();
+    }
 
     sendAttachment(currentPeer, attachment);
 
@@ -77,7 +80,11 @@ export default {
   },
 
   sendAll(attachments) {
-    const currentPeer = DialogStore.getCurrentPeer();
+    var currentPeer = DialogStore.getCurrentPeer();
+
+    if (!currentPeer) {
+      currentPeer =  DialogStore.getStorePeer();
+    }
 
     attachments.forEach((attachment) => {
       sendAttachment(currentPeer, attachment);
