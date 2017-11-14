@@ -71,7 +71,7 @@ class Login extends Component {
         LoginActionCreators.changeAuto(data.info.auto);
         LoginActionCreators.changeNameList(data.nameList);
         if (data.info.auto) {
-          this.onRequestCode();
+          // this.onRequestCode();
         }
       });
       ActorClient.sendToElectron('logged-in');
