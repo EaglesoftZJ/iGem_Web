@@ -70,6 +70,7 @@ class Main extends Component {
         history.push(`/im/${arg}`);
       })
 
+
       window.messenger.listenOnRender('setLoggedOut', function(event, arg) {
         if (ActorClient.isElectron()) {
             // 存储用户信息
@@ -90,15 +91,23 @@ class Main extends Component {
   }
 
   handleEletronEr() {
-    window.messenger.listenOnRender('loginStore', (event, data) => {
-      if (!data || !data.info.isLogin) {
-        localStorage.clear();
-        history.push('/auth');
-      } else {
-        LoginActionCreators.setLoggedIn({redirect: false})
-      }
-    });
-    ActorClient.sendToElectron('logged-in');
+    // window.messenger.listenOnRender('loginStore', (event, data) => {
+    //   if (!data || !data.info.isLogin) {
+    //     localStorage.clear();
+    //     history.push('/auth');
+    //   } else {
+    //     LoginActionCreators.setLoggedIn({redirect: false})
+    //   }
+    // });
+    // ActorClient.sendToElectron('logged-in');
+  }
+
+  handleVisible() {
+    if (document.visibilityState === 'visible') {
+      ActorClient.sendToElectron('window-visible');
+    } else if (document.visibilityState === 'hidden') {
+      ActorClient.sendToElectron('window-hidden');
+    }
   }
 
   onVisibilityChange = () => {
