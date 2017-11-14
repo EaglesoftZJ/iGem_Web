@@ -64,14 +64,14 @@ class Login extends Component {
         if (!data) {
           return;
         }
-        this.setState('store', data.info);
+        // this.setState('store', data.info);
         LoginActionCreators.changeCode(data.info.code);
         LoginActionCreators.changeLogin(data.info.login);
         LoginActionCreators.changeRemember(data.info.remember);
         LoginActionCreators.changeAuto(data.info.auto);
         LoginActionCreators.changeNameList(data.nameList);
         if (data.info.auto) {
-          // this.onRequestCode();
+          this.onRequestCode();
         }
       });
       ActorClient.sendToElectron('logged-in');
