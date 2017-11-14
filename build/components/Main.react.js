@@ -145,15 +145,16 @@ var Main = function (_Component) {
   };
 
   Main.prototype.handleEletronEr = function handleEletronEr() {
-    window.messenger.listenOnRender('loginStore', function (event, data) {
-      if (!data || !data.info.isLogin) {
-        localStorage.clear();
-        _history2.default.push('/auth');
-      } else {
-        _LoginActionCreators2.default.setLoggedIn({ redirect: false });
-      }
-    });
-    _ActorClient2.default.sendToElectron('logged-in');
+    // window.messenger.listenOnRender('loginStore', (event, data) => {
+    //   if (!data || !data.info.isLogin) {
+    //     localStorage.clear();
+    //     history.push('/auth');
+    //   } else {
+    //     LoginActionCreators.setLoggedIn({redirect: false})
+    //   }
+    // });
+    // ActorClient.sendToElectron('logged-in');
+    _ActorClient2.default.sendToElectron('active-focus');
   };
 
   Main.prototype.renderCall = function renderCall() {

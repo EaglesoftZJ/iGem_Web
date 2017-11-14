@@ -3,7 +3,7 @@ import ActorClient from '../utils/ActorClient';
 
 const RouterHooks = {
   requireAuth(nextState, replaceState) {
-    if (!LoginStore.isLoggedIn() && !ActorClient.isElectron()) {
+    if (!LoginStore.isLoggedIn()) {
       replaceState({
         pathname: '/auth',
         state: {

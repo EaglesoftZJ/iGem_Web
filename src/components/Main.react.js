@@ -89,15 +89,16 @@ class Main extends Component {
   }
 
   handleEletronEr() {
-    window.messenger.listenOnRender('loginStore', (event, data) => {
-      if (!data || !data.info.isLogin) {
-        localStorage.clear();
-        history.push('/auth');
-      } else {
-        LoginActionCreators.setLoggedIn({redirect: false})
-      }
-    });
-    ActorClient.sendToElectron('logged-in');
+    // window.messenger.listenOnRender('loginStore', (event, data) => {
+    //   if (!data || !data.info.isLogin) {
+    //     localStorage.clear();
+    //     history.push('/auth');
+    //   } else {
+    //     LoginActionCreators.setLoggedIn({redirect: false})
+    //   }
+    // });
+    // ActorClient.sendToElectron('logged-in');
+    ActorClient.sendToElectron('active-focus');
   }
 
   onVisibilityChange = () => {
