@@ -32,6 +32,14 @@ class DialogActionCreators extends ActionCreators {
     }
   }
 
+  selectStorePeerUser() {
+    
+    history.push(`/im/${PeerUtils.peerToString(DialogStore.getStorePeer())}`);
+  
+  }
+
+  
+
   selectDialogPeer(peer) {
     const currentPeer = DialogStore.getCurrentPeer();
 

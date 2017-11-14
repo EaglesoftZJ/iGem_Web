@@ -32,6 +32,8 @@ import MessageArt from '../messageArt/MessageArt.react';
 import VoiceRecorder from '../common/VoiceRecorder.react';
 import DropZone from '../common/DropZone.react';
 
+import DialogActionCreators from '../../actions/DialogActionCreators'
+
 class ComposeSection extends Component {
   static contextTypes = {
     intl: PropTypes.object.isRequired,
@@ -198,6 +200,11 @@ class ComposeSection extends Component {
 
   handleComposeAttachmentChange = () => {
     const attachmentInputNode = findDOMNode(this.refs.attachment);
+    if (!attachmentInputNode) {
+      DialogActionCreators.selectStorePeerUser();
+      this.handleComposeAttachmentChange();
+      return;
+    }
     let attachments = [];
 
     forEach(attachmentInputNode.files, (file) => attachments.push(file));

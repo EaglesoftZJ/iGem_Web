@@ -63,9 +63,12 @@ export default {
 
   sendAttachment() {
     var currentPeer = DialogStore.getCurrentPeer();
+    currentPeer = null;
     var attachment = AttachmentsStore.getAttachment();
     if (!currentPeer) {
+      
       currentPeer =  DialogStore.getStorePeer();
+      console.log('storelog',currentPeer );
     }
 
     sendAttachment(currentPeer, attachment);
