@@ -92,6 +92,10 @@ var _DropZone = require('../common/DropZone.react');
 
 var _DropZone2 = _interopRequireDefault(_DropZone);
 
+var _DialogActionCreators = require('../../actions/DialogActionCreators');
+
+var _DialogActionCreators2 = _interopRequireDefault(_DialogActionCreators);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -175,13 +179,23 @@ var ComposeSection = function (_Component) {
     };
 
     _this.handleAttachmentClick = function () {
+      _ActorClient2.default.sendToElectron('startUploadFile');
+      console.log('multiple');
       var attachmentInputNode = (0, _reactDom.findDOMNode)(_this.refs.attachment);
       attachmentInputNode.setAttribute('multiple', true);
       attachmentInputNode.click();
     };
 
     _this.handleComposeAttachmentChange = function () {
+      _ActorClient2.default.sendToElectron('endUploadFile');
       var attachmentInputNode = (0, _reactDom.findDOMNode)(_this.refs.attachment);
+      console.log('attachmentInputNode', attachmentInputNode);
+      if (!attachmentInputNode) {
+        console.log("attach");
+        _DialogActionCreators2.default.selectStorePeerUser();
+        _this.handleComposeAttachmentChange();
+        return;
+      }
       var attachments = [];
 
       (0, _lodash.forEach)(attachmentInputNode.files, function (file) {

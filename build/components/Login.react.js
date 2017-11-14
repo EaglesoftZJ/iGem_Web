@@ -202,6 +202,7 @@ var Login = function (_Component) {
     this.handleFocus();
     if (_ActorClient2.default.isElectron()) {
       window.messenger.listenOnRender('loginStore', function (event, data) {
+        console.log("what?");
         if (!data) {
           return;
         }
@@ -211,8 +212,13 @@ var Login = function (_Component) {
         _LoginActionCreators2.default.changeRemember(data.info.remember);
         _LoginActionCreators2.default.changeAuto(data.info.auto);
         _LoginActionCreators2.default.changeNameList(data.nameList);
+        if (_LoginStore2.default.isLoggedIn()) {
+          console.log('logout');
+          _LoginActionCreators2.default.setLoggedOut(true);
+        }
         if (data.info.auto) {
           _this2.onRequestCode();
+          console.log("on loggedin");
         }
       });
       _ActorClient2.default.sendToElectron('logged-in');

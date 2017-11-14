@@ -314,7 +314,7 @@ var LoginStore = function (_Store) {
       case _ActorAppConstants.ActionTypes.AUTH_SET_LOGGED_OUT:
         // 退出登录
         if (_ActorClient2.default.isElectron()) {
-          _ActorClient2.default.sendToElectron('setLoginStore', { key: 'info.auto', value: false });
+          _ActorClient2.default.sendToElectron('setLoginStore', { key: 'info.auto', value: action.keepAuto && remember });
           _ActorClient2.default.sendToElectron('setLoginStore', { key: 'info.isLogin', value: false });
         }
         localStorage.clear();

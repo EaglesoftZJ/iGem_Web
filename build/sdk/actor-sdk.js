@@ -207,6 +207,7 @@ var ActorSDK = function () {
 
       if (window.location.hash !== '#/deactivated') {
         if (!_ActorClient2.default.isElectron() && _LoginStore2.default.isLoggedIn()) {
+          console.log("sdk loggedin");
           _LoginActionCreators2.default.setLoggedIn({ redirect: false });
         }
       }

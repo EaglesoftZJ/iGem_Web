@@ -85,6 +85,11 @@ var DialogActionCreators = function (_ActionCreators) {
     }
   };
 
+  DialogActionCreators.prototype.selectStorePeerUser = function selectStorePeerUser() {
+
+    _history2.default.push('/im/' + _PeerUtils2.default.peerToString(_DialogStore2.default.getStorePeer()));
+  };
+
   DialogActionCreators.prototype.selectDialogPeer = function selectDialogPeer(peer) {
     var currentPeer = _DialogStore2.default.getCurrentPeer();
 
