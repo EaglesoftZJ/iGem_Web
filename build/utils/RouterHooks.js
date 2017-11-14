@@ -14,7 +14,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var RouterHooks = {
   requireAuth: function requireAuth(nextState, replaceState) {
-    if (!_LoginStore2.default.isLoggedIn() && !_ActorClient2.default.isElectron()) {
+    if (!_LoginStore2.default.isLoggedIn()) {
       replaceState({
         pathname: '/auth',
         state: {

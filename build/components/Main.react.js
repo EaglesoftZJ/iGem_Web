@@ -131,8 +131,9 @@ var Main = function (_Component) {
       window.messenger.listenOnRender('setLoggedOut', function (event, arg) {
         if (_ActorClient2.default.isElectron()) {
           // 存储用户信息
-          _ActorClient2.default.sendToElectron('setLoginStore', { key: 'info.auto', value: false });
-          _ActorClient2.default.sendToElectron('setLoginStore', { key: 'info.isLogin', value: false });
+          // ActorClient.sendToElectron('setLoginStore', {key: 'info.auto', value: false });
+          // ActorClient.sendToElectron('setLoginStore', {key: 'info.isLogin', value: false });
+          _LoginActionCreators2.default.setLoggedOut();
         }
       });
     } else {
@@ -145,15 +146,23 @@ var Main = function (_Component) {
   };
 
   Main.prototype.handleEletronEr = function handleEletronEr() {
-    window.messenger.listenOnRender('loginStore', function (event, data) {
-      if (!data || !data.info.isLogin) {
-        localStorage.clear();
-        _history2.default.push('/auth');
-      } else {
-        _LoginActionCreators2.default.setLoggedIn({ redirect: false });
-      }
-    });
-    _ActorClient2.default.sendToElectron('logged-in');
+    // window.messenger.listenOnRender('loginStore', (event, data) => {
+    //   if (!data || !data.info.isLogin) {
+    //     localStorage.clear();
+    //     history.push('/auth');
+    //   } else {
+    //     LoginActionCreators.setLoggedIn({redirect: false})
+    //   }
+    // });
+    // ActorClient.sendToElectron('logged-in');
+  };
+
+  Main.prototype.handleVisible = function handleVisible() {
+    if (document.visibilityState === 'visible') {
+      _ActorClient2.default.sendToElectron('window-visible');
+    } else if (document.visibilityState === 'hidden') {
+      _ActorClient2.default.sendToElectron('window-hidden');
+    }
   };
 
   Main.prototype.renderCall = function renderCall() {

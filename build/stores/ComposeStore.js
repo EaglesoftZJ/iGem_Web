@@ -18,6 +18,14 @@ var _ActorClient2 = _interopRequireDefault(_ActorClient);
 
 var _ComposeUtils = require('../utils/ComposeUtils');
 
+var _DialogInfoStore = require('../stores/DialogInfoStore');
+
+var _DialogInfoStore2 = _interopRequireDefault(_DialogInfoStore);
+
+var _linq = require('linq');
+
+var _linq2 = _interopRequireDefault(_linq);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -64,6 +72,15 @@ var ComposeStore = function (_ReduceStore) {
           var _query = (0, _ComposeUtils.parseMentionQuery)(action.text, action.caretPosition);
           if (_query) {
             nextState.mentions = _ActorClient2.default.findMentions(action.peer.id, _query.text);
+            var members = _DialogInfoStore2.default.getState().members;
+            // 数据源修改
+            var results = _linq2.default.from(members).where(function (data) {
+              if ((data.peerInfo.userName.indexOf(_query.text) !== -1 || data.peerInfo.title.indexOf(_query.text) !== -1) && !data.isAdmin) {
+                return true;
+              }
+              return false;
+            }).select('{isAdmin: $.isAdmin, isNick: true, mentionMatches: [], mentionText: "@" + $.peerInfo.userName, secondMatches: [], secondText: $.peerInfo.title, peer:$.peerInfo }').toArray();
+            nextState.mentions = results;
           }
         } else {
           var command = (0, _ComposeUtils.parseBotCommand)(action.text);

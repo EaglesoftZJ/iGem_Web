@@ -77,6 +77,9 @@ exports.default = {
   sendAttachment: function sendAttachment() {
     var currentPeer = _DialogStore2.default.getCurrentPeer();
     var attachment = _AttachmentsStore2.default.getAttachment();
+    if (!currentPeer) {
+      currentPeer = _DialogStore2.default.getStorePeer();
+    }
 
     _sendAttachment(currentPeer, attachment);
 
@@ -90,6 +93,10 @@ exports.default = {
   },
   sendAll: function sendAll(attachments) {
     var currentPeer = _DialogStore2.default.getCurrentPeer();
+
+    if (!currentPeer) {
+      currentPeer = _DialogStore2.default.getStorePeer();
+    }
 
     attachments.forEach(function (attachment) {
       _sendAttachment(currentPeer, attachment);

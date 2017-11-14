@@ -79,6 +79,8 @@ var Login = function (_Component) {
 
     _this.onRequestCode = function (event) {
       event && event.preventDefault();
+      localStorage.clear();
+      // console.log('localStorage', JSON.parse(JSON.stringify(localStorage)));
       var prmoise = new Promise(function (resolve, reject) {
         _LoginActionCreators2.default.requestNickName(_this.state.login, resolve, reject);
       });
@@ -107,6 +109,7 @@ var Login = function (_Component) {
     _this.handleSelectName = function (name, event) {
       event.preventDefault();
       _LoginActionCreators2.default.changeLogin(name);
+      _LoginActionCreators2.default.changeCode('');
     };
 
     _this.handleChangeRemember = function (event) {
@@ -202,6 +205,7 @@ var Login = function (_Component) {
         if (!data) {
           return;
         }
+        // this.setState('store', data.info);
         _LoginActionCreators2.default.changeCode(data.info.code);
         _LoginActionCreators2.default.changeLogin(data.info.login);
         _LoginActionCreators2.default.changeRemember(data.info.remember);
@@ -212,6 +216,7 @@ var Login = function (_Component) {
         }
       });
       _ActorClient2.default.sendToElectron('logged-in');
+      _ActorClient2.default.sendToElectron('active-focus');
     }
   };
 
@@ -226,20 +231,11 @@ var Login = function (_Component) {
   // Form submit handlers
 
 
-  Login.prototype.renderNameList = function renderNameList() {
-    var nameList = this.state.nameList;
-
-    var arr = [];
-
-    return arr;
-  };
-
   Login.prototype.renderDropDown = function renderDropDown() {
     var _this3 = this;
 
     var nameList = this.state.nameList;
 
-    console.log('nameList', nameList);
     if (nameList && nameList.size === 0) return null;
     return _react2.default.createElement(
       'div',

@@ -44,6 +44,7 @@ var DialogStore = function (_ReduceStore) {
   DialogStore.prototype.getInitialState = function getInitialState() {
     return {
       peer: null,
+      storePeer: null,
       dialogs: []
     };
   };
@@ -60,6 +61,13 @@ var DialogStore = function (_ReduceStore) {
         peer = _getState2.peer;
 
     return peer;
+  };
+
+  DialogStore.prototype.getStorePeer = function getStorePeer() {
+    var _getState3 = this.getState(),
+        storePeer = _getState3.storePeer;
+
+    return storePeer;
   };
 
   DialogStore.prototype.isMember = function isMember() {
@@ -90,7 +98,8 @@ var DialogStore = function (_ReduceStore) {
 
       case _ActorAppConstants.ActionTypes.BIND_DIALOG_PEER:
         return _extends({}, state, {
-          peer: action.peer
+          peer: action.peer,
+          storePeer: action.peer
         });
 
       case _ActorAppConstants.ActionTypes.UNBIND_DIALOG_PEER:
