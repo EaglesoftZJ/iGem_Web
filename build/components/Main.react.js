@@ -131,9 +131,8 @@ var Main = function (_Component) {
       window.messenger.listenOnRender('setLoggedOut', function (event, arg) {
         if (_ActorClient2.default.isElectron()) {
           // 存储用户信息
-          // ActorClient.sendToElectron('setLoginStore', {key: 'info.auto', value: false });
-          // ActorClient.sendToElectron('setLoginStore', {key: 'info.isLogin', value: false });
-          _LoginActionCreators2.default.setLoggedOut();
+          _ActorClient2.default.sendToElectron('setLoginStore', { key: 'info.auto', value: false });
+          _ActorClient2.default.sendToElectron('setLoginStore', { key: 'info.isLogin', value: false });
         }
       });
     } else {

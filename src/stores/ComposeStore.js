@@ -7,8 +7,7 @@ import Dispatcher from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes, PeerTypes } from '../constants/ActorAppConstants';
 import ActorClient from '../utils/ActorClient';
 import { parseMentionQuery, parseBotCommand } from '../utils/ComposeUtils';
-import DialogInfoStore from '../stores/DialogInfoStore';
-import linq from 'linq';
+
 class ComposeStore extends ReduceStore {
   getInitialState() {
     return {
@@ -38,15 +37,6 @@ class ComposeStore extends ReduceStore {
           const query = parseMentionQuery(action.text, action.caretPosition);
           if (query) {
             nextState.mentions = ActorClient.findMentions(action.peer.id, query.text);
-            var members = DialogInfoStore.getState().members;
-            // 数据源修改
-            var results = linq.from(members).where((data) => {
-              if((data.peerInfo.userName.indexOf(query.text) !== -1 || data.peerInfo.title.indexOf(query.text) !== -1) && !data.isAdmin) {
-                return true;
-              }
-              return false;
-            }).select(`{isAdmin: $.isAdmin, isNick: true, mentionMatches: [], mentionText: "@" + $.peerInfo.userName, secondMatches: [], secondText: $.peerInfo.title, peer:$.peerInfo }`).toArray();
-            nextState.mentions = results;
           }
         } else {
           const command = parseBotCommand(action.text);

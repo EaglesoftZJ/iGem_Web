@@ -13,7 +13,6 @@ class DialogStore extends ReduceStore {
   getInitialState() {
     return {
       peer: null,
-      storePeer: null,
       dialogs: []
     };
   }
@@ -26,11 +25,6 @@ class DialogStore extends ReduceStore {
   getCurrentPeer() {
     const { peer } = this.getState();
     return peer;
-  }
-
-  getStorePeer() {
-    const { storePeer } = this.getState();
-    return storePeer;
   }
 
   isMember() {
@@ -61,8 +55,7 @@ class DialogStore extends ReduceStore {
       case ActionTypes.BIND_DIALOG_PEER:
         return {
           ...state,
-          peer: action.peer,
-          storePeer: action.peer
+          peer: action.peer
         };
 
       case ActionTypes.UNBIND_DIALOG_PEER:

@@ -64,7 +64,6 @@ class Login extends Component {
         if (!data) {
           return;
         }
-        this.setState('store', data.info);
         LoginActionCreators.changeCode(data.info.code);
         LoginActionCreators.changeLogin(data.info.login);
         LoginActionCreators.changeRemember(data.info.remember);
@@ -103,8 +102,6 @@ class Login extends Component {
   // Form submit handlers
   onRequestCode = event => {
     event && event.preventDefault();
-    localStorage.clear();
-    // console.log('localStorage', JSON.parse(JSON.stringify(localStorage)));
     let prmoise = new Promise((resolve, reject) => {
       LoginActionCreators.requestNickName(this.state.login, resolve, reject);
     });
@@ -132,7 +129,6 @@ class Login extends Component {
   handleSelectName = (name, event) => {
     event.preventDefault();
     LoginActionCreators.changeLogin(name);
-    LoginActionCreators.changeCode('');
   }
 
   handleChangeRemember = (event) => {
@@ -182,8 +178,15 @@ class Login extends Component {
       default:
     }
   };
+  renderNameList() {
+    const { nameList } = this.state;
+    var arr = [];
+    
+    return arr;
+  }
   renderDropDown() {
     const { nameList } = this.state;
+    console.log('nameList', nameList);
     if (nameList && nameList.size === 0) return null;
     return (
       <div>
