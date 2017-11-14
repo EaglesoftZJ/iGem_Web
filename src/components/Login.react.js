@@ -61,6 +61,7 @@ class Login extends Component {
     this.handleFocus();
     if (ActorClient.isElectron()) {   
       window.messenger.listenOnRender('loginStore', (event, data) => {
+        console.log("what?");
         if (!data) {
           return;
         }
@@ -72,6 +73,7 @@ class Login extends Component {
         LoginActionCreators.changeNameList(data.nameList);
         if (data.info.auto) {
           this.onRequestCode();
+          console.log("on loggedin");
         }
       });
       ActorClient.sendToElectron('logged-in');

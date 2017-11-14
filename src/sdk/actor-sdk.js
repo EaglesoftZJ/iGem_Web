@@ -181,6 +181,7 @@ class ActorSDK {
 
     if (window.location.hash !== '#/deactivated') {
       if (!ActorClient.isElectron() && LoginStore.isLoggedIn()) {
+        console.log("sdk loggedin");
         LoginActionCreators.setLoggedIn({ redirect: false });
       }
     }

@@ -193,14 +193,19 @@ class ComposeSection extends Component {
   };
 
   handleAttachmentClick = () => {
+    ActorClient.sendToElectron('startUploadFile');
+    console.log('multiple');
     const attachmentInputNode = findDOMNode(this.refs.attachment);
     attachmentInputNode.setAttribute('multiple', true);
     attachmentInputNode.click();
   };
 
   handleComposeAttachmentChange = () => {
+    ActorClient.sendToElectron('endUploadFile');
     const attachmentInputNode = findDOMNode(this.refs.attachment);
+    console.log('attachmentInputNode',attachmentInputNode);
     if (!attachmentInputNode) {
+      console.log("attach")
       DialogActionCreators.selectStorePeerUser();
       this.handleComposeAttachmentChange();
       return;
