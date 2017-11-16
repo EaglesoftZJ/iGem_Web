@@ -15,7 +15,7 @@ import CropStore from '../../stores/CropAvatarStore';
 
 import ModalCloseButton from './ModalCloseButton.react';
 
-const MIN_CROP_SIZE = 100;
+const MIN_CROP_SIZE = 50;
 
 class CropAvatarModal extends Component {
   static getStores() {
@@ -35,6 +35,7 @@ class CropAvatarModal extends Component {
       scaledHeight: 0,
       naturalWidth: 0,
       naturalHeight: 0,
+      bili: 0.5,
       maxImageHeight: (document.body.clientHeight * .9) - 64 // 64 is modal header height.
     };
   }
@@ -135,7 +136,7 @@ class CropAvatarModal extends Component {
   onResizeLeft = (event) => this.onCropResize(event, 'LEFT');
 
   onCropResize = (event, direction) => {
-    const { cropPosition, resizeLastCoord, cropSize, scaledWidth, scaledHeight } = this.state;
+    const { cropPosition, resizeLastCoord, cropSize, naturalWidth, naturalHeight } = this.state;
     const axisCoord = (direction === 'RIGHT' || direction === 'LEFT') ? event.pageX : event.pageY;
     const resizeValue = resizeLastCoord - axisCoord;
 
@@ -172,7 +173,7 @@ class CropAvatarModal extends Component {
       default:
     }
 
-    if (resizedCropSize < MIN_CROP_SIZE || resizedCropSize > scaledWidth || resizedCropSize > scaledHeight) {
+    if (resizedCropSize < MIN_CROP_SIZE) {
       resizedCropSize = cropSize;
       resizeCropPosition = cropPosition;
     }
@@ -199,14 +200,14 @@ class CropAvatarModal extends Component {
   updateCropSize = (cropSize, cropPosition) => this.setState({ cropSize, cropPosition });
 
   onCrop = () => {
-    const { cropPosition, cropSize, scaleRatio, callback } = this.state;
+    const { cropPosition, cropSize, scaleRatio, callback, naturalWidth, naturalHeight } = this.state;
     const cropImage = findDOMNode(this.refs.cropImage);
     let canvas = document.createElement('canvas');
     let context = canvas.getContext('2d');
 
     canvas.width = canvas.height = cropSize;
 
-    context.drawImage(cropImage, cropPosition.x / scaleRatio, cropPosition.y / scaleRatio, cropSize / scaleRatio, cropSize / scaleRatio, 0, 0, cropSize, cropSize);
+    context.drawImage(cropImage, -cropPosition.x, -cropPosition.y, naturalWidth, naturalHeight);
 
     const croppedImage = dataURItoBlob(canvas.toDataURL());
 
@@ -215,14 +216,23 @@ class CropAvatarModal extends Component {
   };
 
   storeScaledSizes = () => {
-    const { cropSize } = this.state;
-    const originalImage = findDOMNode(this.refs.originalImage);
-    const scaledWidth = originalImage.width;
-    const scaledHeight = originalImage.height;
-    const naturalWidth = originalImage.naturalWidth;
-    const naturalHeight = originalImage.naturalHeight;
-    const scaleRatio = scaledWidth/naturalWidth;
-    const cropPosition = {
+    const { cropSize, bili } = this.state;
+    var originalImage = findDOMNode(this.refs.originalImage);
+    var scaledWidth = originalImage.width;
+    var scaledHeight = originalImage.height;
+    var naturalWidth = originalImage.naturalWidth;
+    var naturalHeight = originalImage.naturalHeight;
+    var imgBili = naturalHeight / naturalWidth;
+    var scaleRatio = scaledWidth/naturalWidth;
+
+    if (imgBili < bili) {
+      naturalWidth = 640;
+      naturalHeight = 640 * imgBili;
+    } else {
+      naturalHeight = 320;
+      naturalWidth = 320 / imgBili;
+    }
+    var cropPosition = {
       x: ((naturalWidth / 2) - (cropSize / 2)) * scaleRatio,
       y: ((naturalHeight / 2) - (cropSize / 2)) * scaleRatio
     };
@@ -244,7 +254,7 @@ class CropAvatarModal extends Component {
   }
 
   render() {
-    const { pictureSource, cropPosition, cropSize, scaledWidth, scaledHeight, maxImageHeight } = this.state;
+    const { pictureSource, cropPosition, cropSize, naturalWidth, naturalHeight, maxImageHeight } = this.state;
 
     return (
       <Modal
@@ -291,7 +301,7 @@ class CropAvatarModal extends Component {
                        draggable="false"
                        ref="cropImage"
                        src={pictureSource}
-                       style={{ left: -cropPosition.x, top: -cropPosition.y, width: scaledWidth, height: scaledHeight }}/>
+                       style={{ left: -cropPosition.x, top: -cropPosition.y, width: naturalWidth, height: naturalHeight }}/>
                 </div>
 
                 <img
@@ -299,7 +309,7 @@ class CropAvatarModal extends Component {
                   draggable="false"
                   ref="originalImage"
                   src={pictureSource}
-                  style={{ maxHeight: maxImageHeight }}/>
+                  style={{ width: naturalWidth, height: naturalHeight }}/>
               </div>
             </div>
 

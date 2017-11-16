@@ -109,7 +109,7 @@ class Popup extends Component {
           {this.renderBody()}
         </div>
 
-        {this.renderFooter()}
+        {/* {this.renderFooter()} */}
       </div>
     )
   }

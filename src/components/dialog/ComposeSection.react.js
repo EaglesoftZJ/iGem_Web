@@ -331,7 +331,7 @@ class ComposeSection extends Component {
           stickers={stickers}
         />
 
-        <VoiceRecorder onFinish={this.sendVoiceRecord}/>
+        {/* <VoiceRecorder onFinish={this.sendVoiceRecord}/> */}
 
         <AvatarItem
           className="my-avatar"
