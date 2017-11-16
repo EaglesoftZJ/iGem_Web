@@ -376,6 +376,9 @@
     font-weight: normal;
     color: #fff;
     line-height: 1.2;
+    span {
+      display: inline-block;
+    }
     span:first-child {
       font-size: 38px;
     }
