@@ -101,7 +101,8 @@ $stem-size: 10px;
       position: relative;
       z-index: 110;
 
-      overflow: scroll;
+      overflow-x: hidden;
+      overflow-y: auto;
 
       box-sizing: border-box;
       max-height: 440px;

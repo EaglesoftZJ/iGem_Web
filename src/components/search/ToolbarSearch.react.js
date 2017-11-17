@@ -81,9 +81,9 @@ class ToolbarSearch extends Component {
       <SelectList className="toolbar__search__dropdown" max={results.length} onSelect={this.onResultSelect}>
         <ToolbarSearchResults query={query}results={results} />
         <SelectListItem index={results.length}>
-          <footer className="toolbar__search__footer">
-            {/* <FormattedMessage id="search.inDialog"/> <i className="material-icons">arrow_forward</i> */}
-          </footer>
+          {/* <footer className="toolbar__search__footer">
+            <FormattedMessage id="search.inDialog"/> <i className="material-icons">arrow_forward</i>
+          </footer> */}
         </SelectListItem>
       </SelectList>
     );
