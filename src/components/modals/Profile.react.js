@@ -11,6 +11,7 @@ import { ModalTypes } from '../../constants/ActorAppConstants';
 import ProfileStore from '../../stores/ProfileStore';
 
 import ProfileActionCreators from '../../actions/ProfileActionCreators';
+import MessageAlertActionCreators from '../../actions/MessageAlertActionCreators';
 
 import ModalCloseButton from './ModalCloseButton.react';
 import TextField from '../common/TextField.react';
@@ -96,11 +97,22 @@ class Profile extends Component {
   }
 
   handleAvatarChange(croppedImage) {
+    console.log(123, croppedImage);
     ProfileActionCreators.changeMyAvatar(croppedImage);
+    MessageAlertActionCreators.show({title: '头像修改成功', type: 'success', key: new Date().getTime()});
+    // .then(
+    //   () => {
+    //     MessageAlertActionCreators.show({title: '头像修改成功', type: 'success', key: new Date().getTime()})
+    //   },
+    //   () => {
+    //     MessageAlertActionCreators.show({title: '头像修改失败', type: 'error', key: new Date().getTime()})
+    //   }
+    // )
   }
 
   handleAvatarRemove() {
-    ProfileActionCreators.removeMyAvatar()
+    ProfileActionCreators.removeMyAvatar();
+    MessageAlertActionCreators.show({title: '头像删除成功', type: 'success', key: new Date().getTime()});
   }
 
   renderControls() {

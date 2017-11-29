@@ -92,6 +92,13 @@ $sticker-max-size: 180px;
 
   flex: 0 1 auto;
   flex-wrap: wrap;
+  .message__body:hover{
+    .message__photo__box{
+      .img-icon{
+        display: block;
+      }
+    }
+  }
 
   &__header {
     font-weight: 500;
@@ -1117,7 +1124,37 @@ $sticker-max-size: 180px;
     background-color: #fffbe9;
   }
 }
-
+.message__photo__box {
+  position: relative;
+  display: inline-block;
+  font-size: 12px;
+  .img-icon{
+    display: none;
+    position: absolute;
+    z-index: 3;
+    bottom: 5px;
+    width: 18px;
+    height: 18px;
+    text-indent: -9999px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    overflow: hidden;
+    opacity: 0.6;
+    transition: opacity 0.5s ease-out;
+  }
+  .download {
+    right: -26px;
+    background-image: url('/assets/images/download.png');
+  }
+  .copy {
+    right: -50px;
+    background-image: url('/assets/images/copy.png');
+  }
+  a:hover {
+    opacity: 1;
+  }
+}
 .message__photo {
   cursor: pointer;
 }

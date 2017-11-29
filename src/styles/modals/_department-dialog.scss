@@ -1,0 +1,109 @@
+.department-dialog {
+    width: 800px;
+    .header {
+      font-size: 13px;
+      line-height: 20px;
+  
+      padding: 6px 16px;
+  
+      cursor: default;
+      user-select: none;
+  
+      color: rgba(0, 0, 0, .5);
+  
+      @include clearfix();
+      span,
+      strong {
+        display: inline-block;
+      }
+      .pull-right {
+        margin-left: 6px;
+      }
+    }
+  
+    .large-search {
+      position: relative;
+      z-index: 10;
+  
+      padding: 0 $modal-padding;
+    }
+  
+    .results {
+      display: flex;
+      flex-direction: row;
+      margin: 0;
+      padding: 8px 0 0;
+      min-height: 176px;
+      max-height: 352px;
+      .dw_bm_Results{
+          padding-left: 10px;
+          overflow-y: scroll;
+          width: 400px;
+      }
+      .yhResults{
+          overflow-y: scroll;
+          width: 400px;
+      }
+      &__item {
+        line-height: $modal-text-item-height;
+
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0 26px;
+  
+        list-style: none;
+  
+        cursor: pointer;
+  
+        color: $mine-shaft;
+        .title {
+          font-size: 15px;
+          line-height: $modal-text-item-height;
+  
+          display: inline-block;
+
+          padding: 6px 5px;
+  
+          user-select: none;
+          vertical-align: middle;
+  
+          @include text-elipsis();
+        }
+        .hint {
+          font-size: 13px;
+          line-height: $modal-text-item-height;
+  
+          display: none;
+  
+          text-align: right;
+          vertical-align: middle;
+        }
+        &--active {
+          .title {
+            font-weight: 500;           
+            background-color: #ebf4fb;
+          }
+        }
+        &--suggestion {
+          font-weight: 400 !important;
+  
+          display: block;
+  
+          cursor: default !important;
+          text-align: center;
+  
+          color: $dove-gray !important;
+          background-color: white !important;
+          text-shadow: none !important;
+          & > span {
+            display: block;
+          }
+          .button {
+            margin-top: 10px;
+          }
+        }
+      }
+    }
+  }
+  
+  

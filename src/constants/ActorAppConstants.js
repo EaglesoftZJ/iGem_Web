@@ -211,6 +211,9 @@ export const ActionTypes = keymirror({
 
   PINGYIN_SEARCH_CHANGED: null,
 
+  MESSAGE_ALERT_ADD: null,
+  MESSAGE_ALERT_REMOVE: null,
+
   DEPARTMENT_SHOW: null,
   DEPARTMENT_HIDE: null,
   DEPARTMENT_CHANGED: null,

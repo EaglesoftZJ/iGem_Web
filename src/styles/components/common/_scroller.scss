@@ -18,15 +18,15 @@ $scroller-thumb-radius: 6px;
 
 .scroller__container {
   overflow-y: scroll;
+}
 
-  &::-webkit-scrollbar {
-    width: $scroller-thumb-width;
-  }
+div::-webkit-scrollbar,  ul::-webkit-scrollbar {
+  width: $scroller-thumb-width;
+}
 
-  &::-webkit-scrollbar-thumb {
-    background-color: #adc2dc;
-    border-radius: $scroller-thumb-radius;
-  }
+div::-webkit-scrollbar-thumb, ul::-webkit-scrollbar-thumb {
+  background-color: #adc2dc;
+  border-radius: $scroller-thumb-radius;
 }
 
 .scroller__active {

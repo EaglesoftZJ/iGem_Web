@@ -23,7 +23,7 @@ import DefaultInvite from './Invite.react';
 import DefaultInviteByLink from './InviteByLink.react';
 import DefaultQuickSearch from './QuickSearch.react';
 import DefaultAttachments from './Attachments.react';
-import DefaultDepartment from './Department.react';
+import DefaultDepartment from './DepartmentDialog.react';
 
 class ModalsWrapper extends Component {
   static getStores() {

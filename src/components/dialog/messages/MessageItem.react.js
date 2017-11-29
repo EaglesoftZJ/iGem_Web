@@ -119,7 +119,7 @@ class MessageItem extends Component {
           </a>
         </h3>
         <time className="message__timestamp">{message.date}</time>
-        <State state={state} />
+        {/* <State state={state} /> */}
       </header>
     );
   }
@@ -131,7 +131,7 @@ class MessageItem extends Component {
       return (
         <div className="message__info">
           <time className="message__timestamp">{message.date}</time>
-          <State state={state} />
+          {/* <State state={state} /> */}
         </div>
       );
     } else {

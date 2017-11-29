@@ -184,20 +184,20 @@ body {
 
 
 // 重定义滚动条
-&::-webkit-scrollbar-track
-{
-  border-radius: 20px;
-  background-color: transparent;
-}
+// &::-webkit-scrollbar-track
+// {
+//   border-radius: 20px;
+//   background-color: transparent;
+// }
 
-&::-webkit-scrollbar
-{
-  width: 8px;
-  background-color: transparent;
-}
+// &::-webkit-scrollbar
+// {
+//   width: 8px;
+//   background-color: transparent;
+// }
 
-&::-webkit-scrollbar-thumb
-{
-  border-radius: 20px;
-  background-color: rgba(#555, 0.6);
-}
+// &::-webkit-scrollbar-thumb
+// {
+//   border-radius: 20px;
+//   background-color: rgba(#555, 0.6);
+// }

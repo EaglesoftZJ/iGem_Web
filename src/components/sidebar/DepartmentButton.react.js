@@ -3,13 +3,25 @@
  */
 
 import React, { Component } from 'react';
+import classNames from 'classnames';
+import { Container } from 'flux/utils';
 import { FormattedMessage } from 'react-intl';
 import Tooltip from 'rc-tooltip';
 import EventListener from 'fbjs/lib/EventListener';
 import { KeyCodes } from '../../constants/ActorAppConstants';
 import DepartmentActionCreators from '../../actions/DepartmentActionCreators';
+import DepartmentStore from '../../stores/DepartmentStore';
+import history from '../../utils/history';
 
 class QuickSearchButton extends Component {
+  static getStores() {
+    return [DepartmentStore];
+  }
+  static calculateState() {
+    return {
+      show: DepartmentStore.getState().department_show
+    }
+  }
   constructor(props) {
     super(props);
 
@@ -48,10 +60,14 @@ class QuickSearchButton extends Component {
   }
 
   openQuickSearch() {
-    DepartmentActionCreators.show();
+    // DepartmentActionCreators.show();
+    history.push('/im/department');
   }
 
   render() {
+    const { show } = this.state;
+    console.log('show', show);
+    var className = classNames({selected: show});
     return (
       <footer className="sidebar__department">
         <Tooltip
@@ -59,7 +75,7 @@ class QuickSearchButton extends Component {
           mouseEnterDelay={0.15}
           mouseLeaveDelay={0}
           overlay={<FormattedMessage id="tooltip.department"/>}>
-          <a onClick={this.openQuickSearch}>
+          <a onClick={this.openQuickSearch} className={className}>
             <div className="icon-holder"><i className="material-icons">search</i></div>
             <FormattedMessage id="button.department"/>
           </a>
@@ -69,4 +85,4 @@ class QuickSearchButton extends Component {
   }
 }
 
-export default QuickSearchButton;
+export default Container.create(QuickSearchButton);

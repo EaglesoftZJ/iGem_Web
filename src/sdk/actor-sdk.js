@@ -40,6 +40,7 @@ import DefaultInstall from '../components/Install.react';
 import DefaultArchive from '../components/Archive.react';
 import DefaultDialog from '../components/Dialog.react';
 import DefaultEmpty from '../components/Empty.react';
+import Department from '../components/Department.react';
 
 import { extendL18n, getIntlData } from '../l18n';
 
@@ -122,6 +123,7 @@ class ActorSDK {
 
         <Route path="im" component={Main} onEnter={RouterHooks.requireAuth}>
           <Route path="history" component={Archive} />
+          <Route path="department" component={Department} />
           <Route path="join/:token" component={Join} />
           <Route path=":id" component={Dialog} />
           <IndexRoute component={Empty} />

@@ -7,15 +7,18 @@ import DelegateContainer from '../utils/DelegateContainer';
 
 import VisibilityActionCreators from '../actions/VisibilityActionCreators';
 import LoginActionCreators from '../actions/LoginActionCreators';
+import MessageAlertActionCreators from '../actions/MessageAlertActionCreators';
 
 import DefaultSidebar from './Sidebar.react';
 import DefaultToolbar from './Toolbar.react';
 import ConnectionState from './common/ConnectionState.react';
 import Favicon from './common/Favicon.react';
-
+import Department from './Department.react';
 import ModalsWrapper from './modals/ModalsWrapper.react';
 import MenuOverlay from './common/MenuOverlay.react';
 import SmallCall from './SmallCall.react';
+import MessageAlert from './common/MessageAlert.react';
+
 import loading from '../utils/DataLoading';
 import ActorClient from '../utils/ActorClient';
 
@@ -59,6 +62,9 @@ class Main extends Component {
   }
 
   componentDidMount() {
+    // 测试
+    // message('测试测试测试');  
+
     this.onVisibilityChange();
     if (ActorClient.isElectron()) {
       window.messenger.listenOnRender('windows-blur', function(event, arg) {
@@ -127,12 +133,16 @@ class Main extends Component {
 
     return <SmallCall />;
   }
+  handleClick() {
+    MessageAlertActionCreators.show({name: 123, type: 'success', key: new Date().getTime()})
+  }
 
   render() {
     const { Sidebar, Toolbar } = this.components;
-
     return (
       <div className="app">
+        {/* <a href="javascript:;" target="_self" onClick={this.handleClick.bind(this)} style={{position: 'absolute', 'zIndex': 99999, top: 0, left: 0}}>click</a> */}
+
         <ConnectionState />
         <Favicon />
 
@@ -142,7 +152,7 @@ class Main extends Component {
           {this.props.children}
         </section>
 
-
+        <MessageAlert />
         <ModalsWrapper />
         <MenuOverlay />
 

@@ -48,6 +48,14 @@ export default {
 
   changeMyAvatar(newAvatar) {
     ActorClient.changeMyAvatar(newAvatar);
+    // .then(
+    //   (res) => {
+    //     Promise.resolve(res);
+    //   },
+    //   (res) => {
+    //     Promise.reject(res);
+    //   }
+    // );
   },
 
   removeMyAvatar() {

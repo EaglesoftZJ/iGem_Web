@@ -118,6 +118,10 @@
       color: white;
       background-color: rgba(black, .15);
     }
+    &.selected {
+      color: #fff;
+      background: #468de5;
+    }
   }
   .icon-holder {
     position: relative;

@@ -1,0 +1,107 @@
+.department {
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+    font-size: 16px;
+    background: #fff;
+    .department-detial, .results {
+        display: flex;
+        flex: 1;
+    }
+    .dw_bm_Results {
+        width: 340px;
+        border-right: 1px solid #ededed;
+        overflow: auto;
+    }
+    .yhResults {
+        padding-top: 20px;
+        flex: 1;
+        overflow: auto;
+    }
+    .results__item {
+        height: 46px;
+        line-height: 46px;
+        cursor: pointer;
+    }
+    .department-menu .results__item .arrow {
+        left: auto;
+        right: 10px;
+        border-left-color: #7b7b7b;
+        border-width: 5px;
+    }
+    .dw_bm_Results .results__item {
+        position: relative;
+        padding-left: 45px;
+    }
+    .dw_bm_Results .results__bm .results__item {
+        padding-left: 25px;
+    }
+    .yhResults .results__item {
+        height: 32px;
+        line-height: 32px;
+        padding: 9px 0 9px 30px;
+        box-sizing: content-box;
+    }
+    .yhResults .username {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        flex: 1;
+    }
+    .dw_bm_Results > .results__item--active, .yhResults  > .results__item--active{
+        background: #f2f2f2;
+    }
+    .department-menu .results__item--selected .title {
+        color: #4fa2fb;
+        background: none;
+        font-weight: normal;
+        text-shadow: none;
+    }
+    .yhResults .title {
+        display: flex;
+    }
+    .results__item--active .title {
+        background: none;
+    }
+    .department-menu .all {
+        vertical-align: text-bottom;
+    }
+    .department-menu .results__item::before, .department-menu .results__item::after {
+        bottom: auto;
+        font-family: 'Material Icons';
+        content: none;
+        border: none;
+        direction: ltr;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+        -moz-osx-font-smoothing: grayscale;
+        font-feature-settings: 'liga';
+    }
+    .dw_bm_Results .department-menu .results__dw > .results__item::before {
+        position: absolute;
+        left: 10px;
+        top: 8px;
+        width: 30px;
+        height: 30px;
+        color: #fff;
+        text-align: center;
+        line-height: 30px;
+        border-radius: 50%;
+        background: url('/assets/images/department.png');
+        content: '';
+       
+    }
+    .dw_bm_Results .results__bm .results__item::before {
+        position: absolute;
+        left: -5px;
+        top: -4px;
+        color: #dbdbdd;
+        font-size: 30px;
+        line-height: 1;
+        content: 'keyboard_arrow_down';
+        transform: rotate(45deg);
+    }
+    .dw_bm_Results .results__bm .results__item--selected::before {
+        color: #4e81d8;
+    }
+}

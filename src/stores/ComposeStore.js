@@ -8,6 +8,7 @@ import { ActionTypes, PeerTypes } from '../constants/ActorAppConstants';
 import ActorClient from '../utils/ActorClient';
 import { parseMentionQuery, parseBotCommand } from '../utils/ComposeUtils';
 import DialogInfoStore from '../stores/DialogInfoStore';
+import ProfileStore from '../stores/ProfileStore';
 import linq from 'linq';
 class ComposeStore extends ReduceStore {
   getInitialState() {
@@ -41,7 +42,7 @@ class ComposeStore extends ReduceStore {
             var members = DialogInfoStore.getState().members;
             // 数据源修改
             var results = linq.from(members).where((data) => {
-              if((data.peerInfo.userName.indexOf(query.text) !== -1 || data.peerInfo.title.indexOf(query.text) !== -1) && !data.isAdmin) {
+              if((data.peerInfo.userName.indexOf(query.text) !== -1 || data.peerInfo.title.indexOf(query.text) !== -1) && data.peerInfo.userName !== ProfileStore.getState().profile.nick) {
                 return true;
               }
               return false;

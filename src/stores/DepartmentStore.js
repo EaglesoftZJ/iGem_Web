@@ -12,14 +12,28 @@ class DepartmentStore extends ReduceStore {
       dw_data: [],
       bm_data: [],
       yh_data: [],
-      yh_pinyin: {}
+      yh_pinyin: {},
+      department_show: false
     }
   }
 
   reduce(state, action) {
     switch (action.type) {
       case ActionTypes.DEPARTMENT_CHANGED:
-        return action.res;
+        return {
+          ...state,
+          ...action.res
+        }
+      case ActionTypes.DEPARTMENT_SHOW:
+        return {
+          ...state,
+          department_show: true
+        }
+      case ActionTypes.DEPARTMENT_HIDE:
+        return {
+          ...state,
+          department_show: false
+        }
       default:
         return state;
     }
