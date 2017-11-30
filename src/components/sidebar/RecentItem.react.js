@@ -12,8 +12,6 @@ import { AsyncActionStates } from '../../constants/ActorAppConstants';
 import DropdownActionCreators from '../../actions/DropdownActionCreators';
 import ActorClient from '../../utils/ActorClient';
 
-ActorClient
-
 import AvatarItem from '../common/AvatarItem.react';
 import Stateful from '../common/Stateful.react';
 
@@ -62,11 +60,7 @@ class RecentItem extends Component {
   }
 
   handleClick() {
-    const { dialog } = this.props;
-    // 对话框切换推送主进程
-    if (ActorClient.isElectron()) {
-      ActorClient.sendToElectron('dialog-switch', dialog.peer.peer.key);
-    }
+    const { dialog } = this.props; 
     history.push(`/im/${dialog.peer.peer.key}`);
   }
 

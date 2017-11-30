@@ -9,7 +9,8 @@ import DelegateContainer from '../utils/DelegateContainer';
 
 import PeerUtils from '../utils/PeerUtils';
 import history from '../utils/history';
-import alert from '../utils/alert';
+import alert from '../utils/alert'; 
+import ActorClient from '../utils/ActorClient';
 
 import DefaultMessages from './dialog/MessagesSection.react';
 import DefaultDialogHeader from './dialog/DialogHeader.react';
@@ -87,6 +88,12 @@ class Dialog extends Component {
     this.components = this.getComponents();
   }
 
+  componentDidMount() {
+    this.handleDialogSwitch();
+  }
+  componentDidUpdate() {
+    this.handleDialogSwitch();
+  }
   componentWillReceiveProps(nextProps) {
     if (nextProps.params.id !== this.props.params.id) {
       this.updatePeer(nextProps.params.id);
@@ -95,6 +102,14 @@ class Dialog extends Component {
 
   componentWillUnmount() {
     DialogActionCreators.selectDialogPeer(null);
+  }
+
+  handleDialogSwitch() {
+    const { peer } = this.state; 
+    // 对话框切换推送主进程
+    if (ActorClient.isElectron()) {
+      ActorClient.sendToElectron('dialog-switch', peer.key);
+    }
   }
 
   updatePeer(id) {
