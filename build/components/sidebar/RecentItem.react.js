@@ -44,8 +44,6 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 */
 
-_ActorClient2.default;
-
 var RecentItem = function (_Component) {
   _inherits(RecentItem, _Component);
 
@@ -84,11 +82,7 @@ var RecentItem = function (_Component) {
 
   RecentItem.prototype.handleClick = function handleClick() {
     var dialog = this.props.dialog;
-    // 对话框切换推送主进程
 
-    if (_ActorClient2.default.isElectron()) {
-      _ActorClient2.default.sendToElectron('dialog-switch', dialog.peer.peer.key);
-    }
     _history2.default.push('/im/' + dialog.peer.peer.key);
   };
 

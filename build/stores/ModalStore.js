@@ -85,7 +85,9 @@ var ModalStore = function (_ReduceStore) {
       case _ActorAppConstants.ActionTypes.DEPARTMENT_SHOW:
         return _extends({}, state);
       case _ActorAppConstants.ActionTypes.INVITE_USER_MODAL_SHOW:
-        return _extends({}, state);
+        return _extends({}, state, {
+          currentModal: _ActorAppConstants.ModalTypes.INVITE
+        });
       case _ActorAppConstants.ActionTypes.INVITE_USER_BY_LINK_MODAL_SHOW:
         return _extends({}, state, {
           prevModal: action.prevModal,

@@ -30,7 +30,6 @@
         border-width: 5px;
     }
     .dw_bm_Results .results__item {
-        position: relative;
         padding-left: 45px;
     }
     .dw_bm_Results .results__bm .results__item {
@@ -66,7 +65,7 @@
     .department-menu .all {
         vertical-align: text-bottom;
     }
-    .department-menu .results__item::before, .department-menu .results__item::after {
+    .department-menu .results__dw > .results__item::before, .department-menu .results__dw > .results__item::after {
         bottom: auto;
         font-family: 'Material Icons';
         content: none;
@@ -91,17 +90,21 @@
         content: '';
        
     }
-    .dw_bm_Results .results__bm .results__item::before {
-        position: absolute;
-        left: -5px;
-        top: -4px;
-        color: #dbdbdd;
-        font-size: 30px;
-        line-height: 1;
-        content: 'keyboard_arrow_down';
-        transform: rotate(45deg);
+    .results__dw > .children-box > .results__bm:first-child .results__item::before{
+        top: 0px;
     }
-    .dw_bm_Results .results__bm .results__item--selected::before {
-        color: #4e81d8;
-    }
+    
+    // .dw_bm_Results .results__bm .results__item::before {
+    //     position: absolute;
+    //     left: -5px;
+    //     top: -4px;
+    //     color: #dbdbdd;
+    //     font-size: 30px;
+    //     line-height: 1;
+    //     content: 'keyboard_arrow_down';
+    //     transform: rotate(45deg);
+    // }
+    // .dw_bm_Results .results__bm .results__item--selected::before {
+    //     color: #4e81d8;
+    // }
 }

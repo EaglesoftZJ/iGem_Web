@@ -167,7 +167,7 @@ export default {
         'type': '类型',
         'size': '大小',
         'extra': '描述',
-        'sendAsPicture': '已图片形式发送'
+        'sendAsPicture': '以图片形式发送'
       },
       'addContact': {
         'title': '添加联系人',

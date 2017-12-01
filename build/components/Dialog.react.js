@@ -28,6 +28,10 @@ var _alert = require('../utils/alert');
 
 var _alert2 = _interopRequireDefault(_alert);
 
+var _ActorClient = require('../utils/ActorClient');
+
+var _ActorClient2 = _interopRequireDefault(_ActorClient);
+
 var _MessagesSection = require('./dialog/MessagesSection.react');
 
 var _MessagesSection2 = _interopRequireDefault(_MessagesSection);
@@ -164,6 +168,14 @@ var Dialog = function (_Component) {
     return _this;
   }
 
+  Dialog.prototype.componentDidMount = function componentDidMount() {
+    this.handleDialogSwitch();
+  };
+
+  Dialog.prototype.componentDidUpdate = function componentDidUpdate() {
+    this.handleDialogSwitch();
+  };
+
   Dialog.prototype.componentWillReceiveProps = function componentWillReceiveProps(nextProps) {
     if (nextProps.params.id !== this.props.params.id) {
       this.updatePeer(nextProps.params.id);
@@ -172,6 +184,17 @@ var Dialog = function (_Component) {
 
   Dialog.prototype.componentWillUnmount = function componentWillUnmount() {
     _DialogActionCreators2.default.selectDialogPeer(null);
+  };
+
+  Dialog.prototype.handleDialogSwitch = function handleDialogSwitch() {
+    var _state = this.state,
+        peer = _state.peer,
+        dialogInfo = _state.dialogInfo;
+    // 对话框切换推送主进程
+
+    if (_ActorClient2.default.isElectron()) {
+      _ActorClient2.default.sendToElectron('dialog-switch', { id: peer.key, name: dialogInfo.name });
+    }
   };
 
   Dialog.prototype.updatePeer = function updatePeer(id) {
@@ -267,12 +290,12 @@ var Dialog = function (_Component) {
   };
 
   Dialog.prototype.renderContent = function renderContent() {
-    var _state = this.state,
-        uid = _state.uid,
-        peer = _state.peer,
-        isMember = _state.isMember,
-        dialogInfo = _state.dialogInfo,
-        search = _state.search;
+    var _state2 = this.state,
+        uid = _state2.uid,
+        peer = _state2.peer,
+        isMember = _state2.isMember,
+        dialogInfo = _state2.dialogInfo,
+        search = _state2.search;
     var _components = this.components,
         MessagesSection = _components.MessagesSection,
         DialogFooter = _components.DialogFooter;
@@ -308,14 +331,14 @@ var Dialog = function (_Component) {
   };
 
   Dialog.prototype.render = function render() {
-    var _state2 = this.state,
-        peer = _state2.peer,
-        dialogInfo = _state2.dialogInfo,
-        message = _state2.message,
-        isFavorite = _state2.isFavorite,
-        call = _state2.call,
-        isActivityOpen = _state2.isActivityOpen,
-        search = _state2.search;
+    var _state3 = this.state,
+        peer = _state3.peer,
+        dialogInfo = _state3.dialogInfo,
+        message = _state3.message,
+        isFavorite = _state3.isFavorite,
+        call = _state3.call,
+        isActivityOpen = _state3.isActivityOpen,
+        search = _state3.search;
     var DialogHeader = this.components.DialogHeader;
 
 

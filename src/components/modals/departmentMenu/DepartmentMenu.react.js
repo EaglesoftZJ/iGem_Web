@@ -10,6 +10,7 @@ class DepartementItem extends Component {
     static PropTypes = {
         dw_data: PropTypes.array.isRequired,
         bm_data: PropTypes.array.isRequired,
+        yh_data: PropTypes.array,
         hoverId: PropTypes.string,
         onSelectDw: PropTypes.func,
         onSelectBm: PropTypes.func,
@@ -132,12 +133,13 @@ class DepartementItem extends Component {
       }
 
     renderBm(dwId, szk1, parentId) {
-        const { bm_data, hoverId } = this.props;
+        const { bm_data, yh_data, hoverId } = this.props;
         const { selectedBm, szk, innerHoverId} = this.state;
         var _hoverId = hoverId === undefined ? innerHoverId : hoverId;
 
         let results = linq.from(bm_data).where('$.dwid.trim() == "' + dwId + '" && $.fid.trim() == "' + parentId + '" && $.szk ==' + '"' + szk1 + '"').orderBy('$.wzh').toArray();
-    
+        
+        
         if (results.length <= 0) {
             return null;
         }
@@ -152,6 +154,11 @@ class DepartementItem extends Component {
             'results__item--selected': selected
             });
 
+            var usersLength =  0;
+            if (yh_data) {
+                usersLength = linq.from(yh_data).where('$.bmid.trim() == "' + result.id + '" && $.dwid.trim() == "' + result.dwid + '"&& $.szk == "' + result.szk +'"').count();
+            }
+
             return (
                 <div key={result.id + result.szk} className="results__bm">
                     <div
@@ -159,7 +166,7 @@ class DepartementItem extends Component {
                     onClick={() => this.bmSelect(result.id, result.mc)}
                     onMouseOver={this.handleMouseOver.bind(this, result.id, result.szk)}>
                     <div className="title col-xs">
-                        {result.mc}
+                        {result.mc} {yh_data ? '(' + usersLength + ')' : null}
                     </div>
                     </div>
                     <div className="children-box">

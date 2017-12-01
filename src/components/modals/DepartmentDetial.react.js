@@ -212,10 +212,11 @@ class DepartmentDetial extends Component {
  
 
   render() {
-      const { dw_data, bm_data, hoverId} = this.state;
+      const { dw_data, bm_data, yh_data, hoverId} = this.state;
       var props = {
         dw_data,
         bm_data,
+        yh_data,
         hoverId,
         onSelectDw: this.handleSelectDw.bind(this),
         onSelectBm: this.handleSelectBm.bind(this),

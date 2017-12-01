@@ -32,6 +32,9 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 */
 
+var newDailogObj = {},
+    oldDailogObj = {};
+
 var DialogStore = function (_ReduceStore) {
   _inherits(DialogStore, _ReduceStore);
 
@@ -92,6 +95,31 @@ var DialogStore = function (_ReduceStore) {
   DialogStore.prototype.reduce = function reduce(state, action) {
     switch (action.type) {
       case _ActorAppConstants.ActionTypes.DIALOGS_CHANGED:
+        console.log('dialogs', JSON.stringify(action.dialogs));
+        var arr = [];
+        var dailogs = JSON.parse(JSON.stringify(action.dialogs));
+        newDailogObj = {};
+        for (var i = 0; i < dailogs.length; i++) {
+          for (var j = 0; j < dailogs[i].shorts.length; j++) {
+            if (dailogs[i].shorts[j].counter > 0) {
+              var key = dailogs[i].shorts[j].peer.peer.key;
+              newDailogObj[key] = dailogs[i].shorts[j];
+              if (oldDailogObj[key] && oldDailogObj[key].counter < dailogs[i].shorts[j].counter || !oldDailogObj[key]) {
+                dailogs[i].shorts[j].updateTime = new Date().getTime();
+              } else {
+                dailogs[i].shorts[j].updateTime = oldDailogObj[key].updateTime;
+              }
+              arr.push(dailogs[i].shorts[j]);
+            }
+          }
+        }
+        oldDailogObj = newDailogObj;
+        arr.sort(function (a, b) {
+          return b.updateTime - a.updateTime;
+        });
+        if (_ActorClient2.default.isElectron()) {
+          _ActorClient2.default.sendToElectron('new-messages', { minimizeMsg: arr });
+        }
         return _extends({}, state, {
           dialogs: action.dialogs
         });

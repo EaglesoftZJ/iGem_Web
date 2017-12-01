@@ -26,6 +26,10 @@ var _UserStore = require('./UserStore');
 
 var _UserStore2 = _interopRequireDefault(_UserStore);
 
+var _DialogStore = require('./DialogStore');
+
+var _DialogStore2 = _interopRequireDefault(_DialogStore);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -84,7 +88,7 @@ var MessageStore = function (_ReduceStore) {
 
       case _ActorAppConstants.ActionTypes.MESSAGES_CHANGED:
         if (_ActorClient2.default.isElectron()) {
-          _ActorClient2.default.sendToElectron('message-change', { message: action.messages });
+          _ActorClient2.default.sendToElectron('message-change', { currentMsg: action.messages });
         }
         var firstId = getMessageId(action.messages[0]);
         var lastId = getMessageId(action.messages[action.messages.length - 1]);
