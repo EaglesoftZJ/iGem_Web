@@ -105,10 +105,10 @@ class Dialog extends Component {
   }
 
   handleDialogSwitch() {
-    const { peer } = this.state; 
+    const { peer, dialogInfo } = this.state; 
     // 对话框切换推送主进程
     if (ActorClient.isElectron()) {
-      ActorClient.sendToElectron('dialog-switch', peer.key);
+      ActorClient.sendToElectron('dialog-switch', {id: peer.key, name: dialogInfo.name});
     }
   }
 

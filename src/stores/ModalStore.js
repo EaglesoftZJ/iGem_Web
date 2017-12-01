@@ -76,7 +76,7 @@ class ModalStore extends ReduceStore {
       case ActionTypes.INVITE_USER_MODAL_SHOW:
         return {
           ...state,
-          // currentModal: ModalTypes.INVITE
+          currentModal: ModalTypes.INVITE
         }
       case ActionTypes.INVITE_USER_BY_LINK_MODAL_SHOW:
         return {
