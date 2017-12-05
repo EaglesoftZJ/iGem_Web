@@ -57,35 +57,9 @@ class DialogStore extends ReduceStore {
   reduce(state, action) {
     switch (action.type) {
       case ActionTypes.DIALOGS_CHANGED:
-        // 客户端消息排序处理 
+        // web端左侧对话框列表排序处理，客户端消息推送处理
         var arr = [];
-        var dailogs = JSON.parse(JSON.stringify(action.dialogs));
-        newDailogObj = {};
-        for (var i = 0; i < dailogs.length; i++) {
-          for (var j = 0; j < dailogs[i].shorts.length; j++) {
-            if (dailogs[i].shorts[j].counter > 0) {
-              var key = dailogs[i].shorts[j].peer.peer.key;
-              newDailogObj[key] = dailogs[i].shorts[j];
-              if (oldDailogObj[key] && oldDailogObj[key].counter < dailogs[i].shorts[j].counter || !oldDailogObj[key]) {
-                dailogs[i].shorts[j].updateTime = new Date().getTime();
-              } else {
-                dailogs[i].shorts[j].updateTime = oldDailogObj[key].updateTime;
-              }
-              arr.push(dailogs[i].shorts[j]);
-            } 
-          }
-        }
-        oldDailogObj = newDailogObj;
-        arr.sort((a, b) => {
-          return b.updateTime - a.updateTime;
-        });
-        if (ActorClient.isElectron()) {
-          ActorClient.sendToElectron('new-messages', {minimizeMsg: arr});
-        }
-        // web端左侧对话框列表排序处理
-        if (action.dialogs[0] && action.dialogs[0].sort) {
-
-        } else {
+        if (!action.dialogs[0] || !action.dialogs[0].sort) {
           for (var i = 0; i < action.dialogs.length; i++) {
             var oldData = linq.from(state.dialogs).where(`$.key == '${action.dialogs[i].key}'`).toArray()[0];
             var oldArr = [];
@@ -106,10 +80,18 @@ class DialogStore extends ReduceStore {
               return b.updateTime - a.updateTime;
             });
             action.dialogs[i].sort = true;
+            arr = arr.concat(action.dialogs[i].shorts);
           }
         }
+        arr = linq.from(arr).where('$.counter > 0').toArray().sort((a, b) => {
+          return b.updateTime - a.updateTime;
+        });
+
+        console.log('arr', arr);
+        
         if (ActorClient.isElectron()) {
           ActorClient.sendToElectron('setDialogStore', {key: 'dialogs', value: action.dialogs});
+          ActorClient.sendToElectron('new-messages', {minimizeMsg: arr});
         }
         return {
           ...state,
