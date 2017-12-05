@@ -193,7 +193,7 @@ var Dialog = function (_Component) {
     // 对话框切换推送主进程
 
     if (_ActorClient2.default.isElectron()) {
-      _ActorClient2.default.sendToElectron('dialog-switch', { id: peer.key, name: dialogInfo.name });
+      _ActorClient2.default.sendToElectron('dialog-switch', { dialogInfo: dialogInfo });
     }
   };
 

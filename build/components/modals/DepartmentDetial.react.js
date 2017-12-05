@@ -313,11 +313,13 @@ var DepartmentDetial = function (_Component) {
     var _state3 = this.state,
         dw_data = _state3.dw_data,
         bm_data = _state3.bm_data,
+        yh_data = _state3.yh_data,
         hoverId = _state3.hoverId;
 
     var props = {
       dw_data: dw_data,
       bm_data: bm_data,
+      yh_data: yh_data,
       hoverId: hoverId,
       onSelectDw: this.handleSelectDw.bind(this),
       onSelectBm: this.handleSelectBm.bind(this),

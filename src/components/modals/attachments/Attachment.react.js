@@ -8,6 +8,7 @@ import { FormattedMessage } from 'react-intl';
 import humanFileSize from '../../../utils/humanFileSize';
 
 import AttachmentsActionCreators from '../../../actions/AttachmentsActionCreators';
+import MessageAlertActionCreators from '../../../actions/MessageAlertActionCreators';
 
 class Attachment extends Component {
   static propTypes = {
@@ -16,12 +17,16 @@ class Attachment extends Component {
 
   constructor(props) {
     super(props);
-
+    
     this.handleChangeSendAsPicture = this.handleChangeSendAsPicture.bind(this);
    }
 
   handleChangeSendAsPicture() {
-    const { sendAsPicture } = this.props.attachment;
+    const { sendAsPicture, isOverSize } = this.props.attachment;
+    if (isOverSize) {
+      MessageAlertActionCreators.show({title: '文件过大,不支持以图片形式发送', type: 'warning', key: new Date().getTime()});
+      return;
+    }
     AttachmentsActionCreators.changeAttachment(!sendAsPicture);
   }
 

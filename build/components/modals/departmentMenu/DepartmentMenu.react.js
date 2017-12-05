@@ -196,6 +196,7 @@ var DepartementItem = function (_Component) {
 
         var _props2 = this.props,
             bm_data = _props2.bm_data,
+            yh_data = _props2.yh_data,
             hoverId = _props2.hoverId;
         var _state2 = this.state,
             selectedBm = _state2.selectedBm,
@@ -219,6 +220,11 @@ var DepartementItem = function (_Component) {
                 'results__item--selected': selected
             });
 
+            var usersLength = 0;
+            if (yh_data) {
+                usersLength = _Linq2.default.from(yh_data).where('$.bmid.trim() == "' + result.id + '" && $.dwid.trim() == "' + result.dwid + '"&& $.szk == "' + result.szk + '"').count();
+            }
+
             return _react2.default.createElement(
                 'div',
                 { key: result.id + result.szk, className: 'results__bm' },
@@ -233,7 +239,9 @@ var DepartementItem = function (_Component) {
                     _react2.default.createElement(
                         'div',
                         { className: 'title col-xs' },
-                        result.mc
+                        result.mc,
+                        ' ',
+                        yh_data ? '(' + usersLength + ')' : null
                     )
                 ),
                 _react2.default.createElement(
@@ -332,6 +340,7 @@ var DepartementItem = function (_Component) {
 DepartementItem.PropTypes = {
     dw_data: _react.PropTypes.array.isRequired,
     bm_data: _react.PropTypes.array.isRequired,
+    yh_data: _react.PropTypes.array,
     hoverId: _react.PropTypes.string,
     onSelectDw: _react.PropTypes.func,
     onSelectBm: _react.PropTypes.func,

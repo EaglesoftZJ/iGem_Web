@@ -47,6 +47,7 @@ export const ActionTypes = keymirror({
   UNBIND_DIALOG_PEER: null,
 
   DIALOGS_CHANGED: null,
+  DIALOGS_STORE_CHANGED: null,
   DIALOG_INFO_CHANGED: null,
   SELECT_DIALOG_PEER: null,
   TYPING_CHANGED: null,

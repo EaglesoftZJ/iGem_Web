@@ -8,6 +8,7 @@ import DelegateContainer from '../utils/DelegateContainer';
 import VisibilityActionCreators from '../actions/VisibilityActionCreators';
 import LoginActionCreators from '../actions/LoginActionCreators';
 import MessageAlertActionCreators from '../actions/MessageAlertActionCreators';
+import DialogActionCreators from '../actions/DialogActionCreators';
 
 import DefaultSidebar from './Sidebar.react';
 import DefaultToolbar from './Toolbar.react';
@@ -85,11 +86,11 @@ class Main extends Component {
           LoginActionCreators.setLoggedOut();
         }
       })
+      this.getDialogStore();
     } else {
       document.addEventListener('visibilitychange', this.onVisibilityChange);
 
     }
-
   }
 
   componentWillUnmount() {
@@ -106,6 +107,16 @@ class Main extends Component {
     //   }
     // });
     // ActorClient.sendToElectron('logged-in');
+  }
+
+  getDialogStore() {
+    window.messenger.listenOnRender('dialogStore', function(event, arg) {
+      if (arg) {
+        console.log('getDialogStore', arg);
+        DialogActionCreators.setDialogs(arg.dialogs);
+      }
+    });
+    ActorClient.sendToElectron('getDialogStore');
   }
 
   handleVisible() {

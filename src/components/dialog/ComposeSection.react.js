@@ -94,6 +94,7 @@ class ComposeSection extends Component {
   }
 
   onPaste(event) {
+    console.log(123, event.clipboardData.items, Array.from(event.clipboardData.items)[0], Array.from(event.clipboardData.items)[0].getAsFile());
     const attachments = Array.from(event.clipboardData.items)
       .filter((item) => item.type.indexOf('image') !== -1)
       .map((item) => item.getAsFile());

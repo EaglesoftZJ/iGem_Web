@@ -97,6 +97,7 @@ class Attachments extends Component {
   renderAttachment() {
     const { attachments, selectedIndex } = this.state;
     if (attachments.length === 0) return null;
+    console.log(1111111111111111111, attachments[selectedIndex]);
 
     return (
       <Attachment attachment={attachments[selectedIndex]}/>
