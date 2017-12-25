@@ -46,11 +46,16 @@ exports.default = {
       if (file instanceof File == false) {
         file = (0, _blobToFile2.default)(file);
       }
+      var isOverSize = false;
 
+      if (file.size >= 10 * 1024 * 1024) {
+        isOverSize = true;
+      }
       return {
         isImage: file.type.includes('image'),
         isAnimation: file.type === 'image/gif',
-        sendAsPicture: true,
+        sendAsPicture: isOverSize ? false : true,
+        isOverSize: isOverSize,
         file: file
       };
     });

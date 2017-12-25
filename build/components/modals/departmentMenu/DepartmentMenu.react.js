@@ -122,6 +122,8 @@ var DepartementItem = function (_Component) {
         var _this3 = this;
 
         var _props = this.props,
+            yh_data = _props.yh_data,
+            bm_data = _props.bm_data,
             dw_data = _props.dw_data,
             hoverId = _props.hoverId,
             onShowAll = _props.onShowAll;
@@ -156,7 +158,8 @@ var DepartementItem = function (_Component) {
                 'results__item--all': all
             });
             //   const iconClassName = classnames('material-icons icon', hover ? 'icon--blue' : 'icon--blue');
-
+            var arr = _Linq2.default.from(yh_data).where('$.dwid.trim() == "' + result.id + '" && $.szk =="' + result.szk + '"').toArray();
+            var size = arr.length;
             return _react2.default.createElement(
                 'li',
                 {

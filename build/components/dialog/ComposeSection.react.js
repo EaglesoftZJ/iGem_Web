@@ -252,6 +252,7 @@ var ComposeSection = function (_Component) {
   };
 
   ComposeSection.prototype.onPaste = function onPaste(event) {
+    console.log(123, event.clipboardData.items, Array.from(event.clipboardData.items)[0], Array.from(event.clipboardData.items)[0].getAsFile());
     var attachments = Array.from(event.clipboardData.items).filter(function (item) {
       return item.type.indexOf('image') !== -1;
     }).map(function (item) {

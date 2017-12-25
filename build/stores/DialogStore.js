@@ -95,35 +95,48 @@ var DialogStore = function (_ReduceStore) {
   DialogStore.prototype.reduce = function reduce(state, action) {
     switch (action.type) {
       case _ActorAppConstants.ActionTypes.DIALOGS_CHANGED:
-        console.log('dialogs', JSON.stringify(action.dialogs));
+        // web端左侧对话框列表排序处理，客户端消息推送处理
         var arr = [];
-        var dailogs = JSON.parse(JSON.stringify(action.dialogs));
-        newDailogObj = {};
-        for (var i = 0; i < dailogs.length; i++) {
-          for (var j = 0; j < dailogs[i].shorts.length; j++) {
-            if (dailogs[i].shorts[j].counter > 0) {
-              var key = dailogs[i].shorts[j].peer.peer.key;
-              newDailogObj[key] = dailogs[i].shorts[j];
-              if (oldDailogObj[key] && oldDailogObj[key].counter < dailogs[i].shorts[j].counter || !oldDailogObj[key]) {
-                dailogs[i].shorts[j].updateTime = new Date().getTime();
-              } else {
-                dailogs[i].shorts[j].updateTime = oldDailogObj[key].updateTime;
-              }
-              arr.push(dailogs[i].shorts[j]);
+        if (!action.dialogs[0] || !action.dialogs[0].sort) {
+          for (var i = 0; i < action.dialogs.length; i++) {
+            var oldData = _Linq2.default.from(state.dialogs).where('$.key == \'' + action.dialogs[i].key + '\'').toArray()[0];
+            var oldArr = [];
+            if (oldData) {
+              oldArr = oldData.shorts;
             }
+            for (var j = 0; j < action.dialogs[i].shorts.length; j++) {
+              var dialog = action.dialogs[i].shorts[j];
+              var key = dialog.peer.peer.key;
+              var oldDialog = _Linq2.default.from(oldArr).where('$.peer.peer.key == \'' + key + '\'').toArray()[0];
+              if (oldDialog && oldDialog.counter < dialog.counter || !oldDialog) {
+                dialog.updateTime = new Date().getTime();
+              } else {
+                dialog.updateTime = oldDialog.updateTime;
+              }
+            }
+            action.dialogs[i].shorts.sort(function (a, b) {
+              return b.updateTime - a.updateTime;
+            });
+            action.dialogs[i].sort = true;
+            arr = arr.concat(action.dialogs[i].shorts);
           }
         }
-        oldDailogObj = newDailogObj;
-        arr.sort(function (a, b) {
+        arr = _Linq2.default.from(arr).where('$.counter > 0').toArray().sort(function (a, b) {
           return b.updateTime - a.updateTime;
         });
+
+        console.log('arr', arr);
+
         if (_ActorClient2.default.isElectron()) {
+          _ActorClient2.default.sendToElectron('setDialogStore', { key: 'dialogs', value: action.dialogs });
           _ActorClient2.default.sendToElectron('new-messages', { minimizeMsg: arr });
         }
         return _extends({}, state, {
           dialogs: action.dialogs
         });
-
+      case _ActorAppConstants.ActionTypes.DIALOGS_STORE_CHANGED:
+        console.log('DIALOGS_STORE_CHANGED');
+        return _extends({}, state);
       case _ActorAppConstants.ActionTypes.BIND_DIALOG_PEER:
         return _extends({}, state, {
           peer: action.peer,

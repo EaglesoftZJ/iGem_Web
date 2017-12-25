@@ -85,7 +85,7 @@ class DepartementItem extends Component {
     }
 
     renderDw() {
-        const { dw_data, hoverId, onShowAll } = this.props;
+        const { yh_data, bm_data, dw_data, hoverId, onShowAll } = this.props;
         const { selectedDw, szk, innerHoverId, selectAllId } = this.state;
         var _hoverId = hoverId === undefined ? innerHoverId : hoverId;
         if (dw_data && dw_data.length <= 0) {
@@ -108,8 +108,9 @@ class DepartementItem extends Component {
             'results__item--all': all
           });
         //   const iconClassName = classnames('material-icons icon', hover ? 'icon--blue' : 'icon--blue');
-    
-          return (
+            let arr = linq.from(yh_data).where('$.dwid.trim() == "' + result.id + '" && $.szk =="' + result.szk + '"').toArray();
+            let size = arr.length;
+            return (
             <li
               className="results__dw"
               style={{'position': 'relative'}}

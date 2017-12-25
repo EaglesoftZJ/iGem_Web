@@ -24,6 +24,10 @@ var _MessageAlertActionCreators = require('../actions/MessageAlertActionCreators
 
 var _MessageAlertActionCreators2 = _interopRequireDefault(_MessageAlertActionCreators);
 
+var _DialogActionCreators = require('../actions/DialogActionCreators');
+
+var _DialogActionCreators2 = _interopRequireDefault(_DialogActionCreators);
+
 var _Sidebar = require('./Sidebar.react');
 
 var _Sidebar2 = _interopRequireDefault(_Sidebar);
@@ -151,6 +155,7 @@ var Main = function (_Component) {
           _LoginActionCreators2.default.setLoggedOut();
         }
       });
+      this.getDialogStore();
     } else {
       document.addEventListener('visibilitychange', this.onVisibilityChange);
     }
@@ -170,6 +175,16 @@ var Main = function (_Component) {
     //   }
     // });
     // ActorClient.sendToElectron('logged-in');
+  };
+
+  Main.prototype.getDialogStore = function getDialogStore() {
+    window.messenger.listenOnRender('dialogStore', function (event, arg) {
+      if (arg) {
+        console.log('getDialogStore', arg);
+        _DialogActionCreators2.default.setDialogs(arg.dialogs);
+      }
+    });
+    _ActorClient2.default.sendToElectron('getDialogStore');
   };
 
   Main.prototype.handleVisible = function handleVisible() {

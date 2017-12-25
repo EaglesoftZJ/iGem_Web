@@ -16,6 +16,10 @@ var _AttachmentsActionCreators = require('../../../actions/AttachmentsActionCrea
 
 var _AttachmentsActionCreators2 = _interopRequireDefault(_AttachmentsActionCreators);
 
+var _MessageAlertActionCreators = require('../../../actions/MessageAlertActionCreators');
+
+var _MessageAlertActionCreators2 = _interopRequireDefault(_MessageAlertActionCreators);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -39,8 +43,14 @@ var Attachment = function (_Component) {
   }
 
   Attachment.prototype.handleChangeSendAsPicture = function handleChangeSendAsPicture() {
-    var sendAsPicture = this.props.attachment.sendAsPicture;
+    var _props$attachment = this.props.attachment,
+        sendAsPicture = _props$attachment.sendAsPicture,
+        isOverSize = _props$attachment.isOverSize;
 
+    if (isOverSize) {
+      _MessageAlertActionCreators2.default.show({ title: '文件过大,不支持以图片形式发送', type: 'warning', key: new Date().getTime() });
+      return;
+    }
     _AttachmentsActionCreators2.default.changeAttachment(!sendAsPicture);
   };
 

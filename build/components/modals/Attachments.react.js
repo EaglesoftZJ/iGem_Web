@@ -133,6 +133,7 @@ var Attachments = function (_Component) {
         selectedIndex = _state.selectedIndex;
 
     if (attachments.length === 0) return null;
+    console.log(1111111111111111111, attachments[selectedIndex]);
 
     return _react2.default.createElement(_Attachment2.default, { attachment: attachments[selectedIndex] });
   };
