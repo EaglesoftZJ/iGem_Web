@@ -75,10 +75,9 @@ class Login extends Component {
         if(LoginStore.isLoggedIn()) {
           console.log('logout');
           LoginActionCreators.setLoggedOut(true);
-        }
-        if (data.info.auto) {
-          this.onRequestCode();
+        } else if (data.info.auto) {
           console.log("on loggedin");
+          this.onRequestCode();
         }
       });
       ActorClient.sendToElectron('logged-in');

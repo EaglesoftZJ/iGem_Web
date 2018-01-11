@@ -43,6 +43,7 @@ class MessageActionCreators {
   }
 
   sendPhotoMessage(peer, photo) {
+    console.log('photo', photo);
     ActorClient.sendPhotoMessage(peer, photo);
     dispatch(ActionTypes.MESSAGE_SEND_PHOTO, { peer, photo });
   }
