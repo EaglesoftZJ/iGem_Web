@@ -9,6 +9,7 @@ import { shouldComponentUpdate } from 'react-addons-pure-render-mixin';
 
 import isInside from '../../../utils/isInside';
 import { quoteMessage } from '../../../utils/MessageUtils';
+import ActorClient from '../../../utils/ActorClient';
 
 import { MessageContentTypes } from '../../../constants/ActorAppConstants';
 
@@ -73,6 +74,43 @@ class MessageActions extends Component {
     this.handleDropdownClose();
   };
 
+  handleRepeat= ()=> {
+    // 消息转发
+    const { message } = this.props;
+    const sendType = {
+      'text': {type: 'sendTextMessage', key: 'text'},
+      'photo': {type: 'sendPhotoMessage', key: 'preview'}
+    };
+    const type = sendType[message.content.content].type;
+    const key = sendType[message.content.content].key;
+    var peer1 = {
+      id: 130508843,
+      key: 'g130508843',
+      type: 'group'
+    };
+    var peer2 = {
+      id: 182777372,
+      key: "u182777372",
+      type: "user"
+    }
+    console.log('preview', message.content[key]);
+    // ActorClient[type](peer1, message.content[key]);
+    ActorClient[type](peer2, this.dataURItoBlob(message.content[key]));
+    // ActorClient.sendPhotoMessage
+    
+  }
+  
+  dataURItoBlob(dataURI) {  
+    var byteString = atob(dataURI.split(',')[1]);  
+    var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];  
+    var ab = new ArrayBuffer(byteString.length);  
+    var ia = new Uint8Array(ab);  
+    for (var i = 0; i < byteString.length; i++) {  
+        ia[i] = byteString.charCodeAt(i);  
+    }  
+    return new Blob([ab], {type: mimeString});  
+}  
+
   handleReply = () => {
     const { message } = this.props;
     const info = UserStore.getUser(message.sender.peer.id);
@@ -109,6 +147,9 @@ class MessageActions extends Component {
         <ul className="dropdown__menu dropdown__menu--right" ref="dropdown" style={dropdownMenuStyles}>
           <li className="dropdown__menu__item hide">
             <i className="icon material-icons">star_rate</i> {intl.messages['message.pin']}
+          </li>
+          <li className="dropdown__menu__item" onClick={this.handleRepeat}>
+            <i className="icon material-icons">repeat</i> {intl.messages['message.repeat']}
           </li>
           {
             !isThisMyMessage

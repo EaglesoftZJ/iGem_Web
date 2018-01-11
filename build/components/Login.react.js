@@ -215,10 +215,9 @@ var Login = function (_Component) {
         if (_LoginStore2.default.isLoggedIn()) {
           console.log('logout');
           _LoginActionCreators2.default.setLoggedOut(true);
-        }
-        if (data.info.auto) {
-          _this2.onRequestCode();
+        } else if (data.info.auto) {
           console.log("on loggedin");
+          _this2.onRequestCode();
         }
       });
       _ActorClient2.default.sendToElectron('logged-in');

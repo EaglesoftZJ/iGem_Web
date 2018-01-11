@@ -259,7 +259,7 @@ var ActorSDK = function () {
         _react2.default.createElement(_reactRouter.IndexRoute, { component: Empty })
       ),
       _react2.default.createElement(_reactRouter.Redirect, { from: 'join/:token', to: 'im/join/:token' }),
-      _react2.default.createElement(_reactRouter.IndexRedirect, { to: 'im' })
+      _react2.default.createElement(_reactRouter.IndexRedirect, { to: 'auth' })
     );
   };
 

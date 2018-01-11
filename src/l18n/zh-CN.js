@@ -72,6 +72,7 @@ export default {
     // Messages
     'message': {
       'pin': 'Pin',
+      'repeat': '转发',
       'reply': '回复',
       'forward': '前进',
       'download': '下载',

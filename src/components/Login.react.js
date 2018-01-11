@@ -72,18 +72,13 @@ class Login extends Component {
         LoginActionCreators.changeRemember(data.info.remember);
         LoginActionCreators.changeAuto(data.info.auto);
         LoginActionCreators.changeNameList(data.nameList);
-        if(LoginStore.isLoggedIn()) {
-          console.log('logout');
-          LoginActionCreators.setLoggedOut(true);
-        }
         if (data.info.auto) {
-          this.onRequestCode();
           console.log("on loggedin");
+          this.onRequestCode();
         }
       });
       ActorClient.sendToElectron('logged-in');
       ActorClient.sendToElectron('active-focus');
-
     }
   }
 

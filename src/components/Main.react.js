@@ -98,15 +98,13 @@ class Main extends Component {
   }
 
   handleEletronEr() {
-    // window.messenger.listenOnRender('loginStore', (event, data) => {
-    //   if (!data || !data.info.isLogin) {
-    //     localStorage.clear();
-    //     history.push('/auth');
-    //   } else {
-    //     LoginActionCreators.setLoggedIn({redirect: false})
-    //   }
-    // });
-    // ActorClient.sendToElectron('logged-in');
+    window.messenger.listenOnRender('inMainTimes', (event, data) => {
+      if (data === 1 && LoginStore.isLoggedIn()) {
+        // 打开客户端后第一次进入main并且处于登录状态，需要退出登录处理
+        LoginActionCreators.setLoggedOut(true);
+      }
+    });
+    ActorClient.sendToElectron('recodeInMain');
   }
 
   getDialogStore() {
