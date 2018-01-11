@@ -130,7 +130,7 @@ class ActorSDK {
         </Route>
 
         <Redirect from="join/:token" to="im/join/:token" />
-        <IndexRedirect to={'auth'}/>
+        <IndexRedirect to={'im'}/>
       </Route>
     );
   }
