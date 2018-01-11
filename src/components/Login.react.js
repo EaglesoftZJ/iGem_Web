@@ -55,6 +55,12 @@ class Login extends Component {
   };
   componentWillMount() {
     // ActorClient.sendToElectron('setLoginStore', {key: 'nameList', value: ''});
+
+    if (ActorClient.isElectron()) {
+      ActorClient.sendToElectron('recodeInLogin');
+    }
+
+   
   }
 
   componentDidMount() {
@@ -336,7 +342,7 @@ class Login extends Component {
         </div>
       </section>
       {/* <img src="../assets/images/bg_bottom.png" className="login-bg-bottom" width="100%" /> */}
-      <div className="bottom-info"><img src="../assets/images/logo2.png" width="22" height="25" style={{'verticalAlign': 'middle'}} /> <span style={{'vertical-align': 'middle'}}>浙江易舸软件有限公司</span></div>
+      <div className="bottom-info"><img src="../assets/images/logo2.png" width="22" height="25" style={{'verticalAlign': 'middle'}} /> <span style={{'verticalAlign': 'middle'}}>浙江易舸软件有限公司</span></div>
       </div>
     );
   }

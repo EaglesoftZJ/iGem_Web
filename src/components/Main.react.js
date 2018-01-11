@@ -20,6 +20,8 @@ import MenuOverlay from './common/MenuOverlay.react';
 import SmallCall from './SmallCall.react';
 import MessageAlert from './common/MessageAlert.react';
 
+import LoginStore from '../stores/LoginStore';
+
 import loading from '../utils/DataLoading';
 import ActorClient from '../utils/ActorClient';
 
@@ -57,6 +59,7 @@ class Main extends Component {
     };
   }
   componentWillMount() {
+    console.log("测试测试测试123");
     if (ActorClient.isElectron()) {
       this.handleEletronEr();
     }
@@ -64,7 +67,6 @@ class Main extends Component {
 
   componentDidMount() {
     // 测试
-    // message('测试测试测试');  
 
     this.onVisibilityChange();
     if (ActorClient.isElectron()) {
@@ -99,9 +101,12 @@ class Main extends Component {
 
   handleEletronEr() {
     window.messenger.listenOnRender('inMainTimes', (event, data) => {
-      if (data === 1 && LoginStore.isLoggedIn()) {
-        // 打开客户端后第一次进入main并且处于登录状态，需要退出登录处理
+      console.log('inMainTimes', data, LoginStore.isLoggedIn());
+      if (data.main === 1 && data.login === 0 && LoginStore.isLoggedIn()) {
+        // 直接进入main并处于登录状态，需要退出登录处理
         LoginActionCreators.setLoggedOut(true);
+
+        console.log('进来了，进来了，进来了');
       }
     });
     ActorClient.sendToElectron('recodeInMain');

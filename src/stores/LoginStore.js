@@ -9,6 +9,8 @@ import { ActionTypes, AuthSteps } from '../constants/ActorAppConstants';
 import ActorClient from '../utils/ActorClient';
 import Immutable from 'immutable';
 
+import history from '../utils/history';
+
 import { getIntlData } from '../l18n';
 
 let step = AuthSteps.LOGIN_WAIT,
