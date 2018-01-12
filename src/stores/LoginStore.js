@@ -253,7 +253,9 @@ class LoginStore extends Store {
       case ActionTypes.AUTH_SET_LOGGED_OUT:
         // 退出登录
         if (ActorClient.isElectron()) {
-          ActorClient.sendToElectron('setLoginStore', {key: 'info.auto', value: action.keepAuto && auto });
+          var reloadAuto = action.login ? auto : false;
+          ActorClient.sendToElectron('setLoginStore', {key: 'info.auto', value: reloadAuto });
+          ActorClient.sendToElectron('setLoginStore', {key: 'info.requestAuto', value: action.requestAuto});
           ActorClient.sendToElectron('setLoginStore', {key: 'info.isLogin', value: false });
         }
         localStorage.clear();

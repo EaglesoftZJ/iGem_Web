@@ -54,13 +54,9 @@ class Login extends Component {
     intl: PropTypes.object
   };
   componentWillMount() {
-    // ActorClient.sendToElectron('setLoginStore', {key: 'nameList', value: ''});
-
     if (ActorClient.isElectron()) {
       ActorClient.sendToElectron('recodeInLogin');
-    }
-
-   
+    } 
   }
 
   componentDidMount() {
@@ -78,7 +74,9 @@ class Login extends Component {
         LoginActionCreators.changeRemember(data.info.remember);
         LoginActionCreators.changeAuto(data.info.auto);
         LoginActionCreators.changeNameList(data.nameList);
-        if (data.info.auto) {
+        if (LoginStore.isLoggedIn()) {
+          LoginActionCreators.setLoggedOut({'keepAuto': true});
+        } else if(data.info.auto || data.requestAuto) {
           console.log("on loggedin");
           this.onRequestCode();
         }
@@ -112,6 +110,10 @@ class Login extends Component {
   onRequestCode = event => {
     event && event.preventDefault();
     localStorage.clear();
+    if (LoginStore.isLoggedIn()) {
+      LoginActionCreators.setLoggedOut({'requestAuto': true});
+      return;
+    }
     // console.log('localStorage', JSON.parse(JSON.stringify(localStorage)));
     let prmoise = new Promise((resolve, reject) => {
       LoginActionCreators.requestNickName(this.state.login, resolve, reject);

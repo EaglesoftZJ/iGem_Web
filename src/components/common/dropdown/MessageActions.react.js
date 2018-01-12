@@ -148,9 +148,9 @@ class MessageActions extends Component {
           <li className="dropdown__menu__item hide">
             <i className="icon material-icons">star_rate</i> {intl.messages['message.pin']}
           </li>
-          <li className="dropdown__menu__item" onClick={this.handleRepeat}>
+          {/* <li className="dropdown__menu__item" onClick={this.handleRepeat}>
             <i className="icon material-icons">repeat</i> {intl.messages['message.repeat']}
-          </li>
+          </li> */}
           {
             !isThisMyMessage
               ? <li className="dropdown__menu__item" onClick={this.handleReply}>

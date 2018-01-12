@@ -198,7 +198,7 @@ class LoginActionCreators extends ActionCreators {
     // JoinGroupActions.joinAfterLogin();
   }
 
-  setLoggedOut(keepAuto) {
+  setLoggedOut(obj) {
     const delegate = DelegateContainer.get();
 
 
@@ -209,7 +209,7 @@ class LoginActionCreators extends ActionCreators {
 
     this.removeBindings('main');
 
-    dispatch(ActionTypes.AUTH_SET_LOGGED_OUT,{keepAuto: keepAuto?true:false});
+    dispatch(ActionTypes.AUTH_SET_LOGGED_OUT,{login: obj ? obj:false});
   }
 }
 

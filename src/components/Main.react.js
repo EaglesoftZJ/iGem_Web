@@ -59,9 +59,8 @@ class Main extends Component {
     };
   }
   componentWillMount() {
-    console.log("测试测试测试123");
     if (ActorClient.isElectron()) {
-      this.handleEletronEr();
+      // this.handleEletronEr();
     }
   }
 
@@ -82,11 +81,14 @@ class Main extends Component {
 
       window.messenger.listenOnRender('setLoggedOut', function(event, arg) {
         if (ActorClient.isElectron()) {
-            // 存储用户信息
-          // ActorClient.sendToElectron('setLoginStore', {key: 'info.auto', value: false });
-          // ActorClient.sendToElectron('setLoginStore', {key: 'info.isLogin', value: false });
           LoginActionCreators.setLoggedOut();
         }
+      })
+      window.messenger.listenOnRender('downloadCompleted', function(event, arg) {
+        MessageAlertActionCreators.show({title: '下载完成', type: 'success', key: new Date().getTime()})
+      })
+      window.messenger.listenOnRender('downloadCancelled', function(event, arg) {
+        MessageAlertActionCreators.show({title: '下载取消', type: 'warning', key: new Date().getTime()})
       })
       this.getDialogStore();
     } else {
@@ -105,8 +107,6 @@ class Main extends Component {
       if (data.main === 1 && data.login === 0 && LoginStore.isLoggedIn()) {
         // 直接进入main并处于登录状态，需要退出登录处理
         LoginActionCreators.setLoggedOut(true);
-
-        console.log('进来了，进来了，进来了');
       }
     });
     ActorClient.sendToElectron('recodeInMain');
@@ -115,7 +115,6 @@ class Main extends Component {
   getDialogStore() {
     window.messenger.listenOnRender('dialogStore', function(event, arg) {
       if (arg) {
-        console.log('getDialogStore', arg);
         DialogActionCreators.setDialogs(arg.dialogs);
       }
     });
