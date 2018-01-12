@@ -76,8 +76,9 @@ class Login extends Component {
         LoginActionCreators.changeNameList(data.nameList);
         if (LoginStore.isLoggedIn()) {
           LoginActionCreators.setLoggedOut({'keepAuto': true});
-        } else if(data.info.auto || data.requestAuto) {
+        } else if(data.info.auto || data.info.requestAuto) {
           console.log("on loggedin");
+          ActorClient.sendToElectron('setLoginStore', {key: 'info.requestAuto', value: false});
           this.onRequestCode();
         }
       });
