@@ -11,7 +11,8 @@ import classnames from 'classnames';
 class Popover extends Component {
   static propTypes = {
     node: PropTypes.object,
-    isShow: PropTypes.bool
+    isShow: PropTypes.bool,
+    container: PropTypes.object,
   };
   componentDidMount() {
   }
@@ -26,13 +27,14 @@ class Popover extends Component {
     super(props);
     this.state = {
       left: 0,
-      top: 0
+      top: 0,
+      allowTop: 0
     };
   }
 
   resetPopoverPosition() {
-    const { node } = this.props;
-    const { left, top } = this.state; 
+    const { node, container } = this.props;
+    const { left, top, allowTop } = this.state; 
     if (!node) return;
     // this.setState({'left': 10, 'top': 10});
     let popoverHeight = $(this.refs.popover).outerHeight();
@@ -44,8 +46,19 @@ class Popover extends Component {
     let toTop = nodeTop + nodeHeight - popoverHeight / 2 - nodeHeight / 2;
     let wTop = $(window).scrollTop();
     let wBottom = wTop + $(window).height();
-    if (left !== toLeft || top !== toTop) {
-      this.setState({'left': toLeft, 'top': toTop});
+    let aTop = $(this.refs.popover).outerHeight() / 2 - 10;
+    let newToTop = 0;
+    if (container && $(container).offset().top - wTop + toTop < 0) {
+      newToTop = wTop - $(container).offset().top + 4;
+    } else if (container && (wTop + wBottom) < $(container).offset().top + toTop + popoverHeight) {
+      newToTop = wTop + wBottom - 4 - popoverHeight - $(container).offset().top;
+    }
+    if (newToTop) {
+      aTop = aTop + (toTop - newToTop);
+      toTop = newToTop;
+    }
+    if (left !== toLeft || top !== toTop || aTop !== allowTop) {
+      this.setState({'left': toLeft, 'top': toTop, 'allowTop': aTop});
     }
   }
 
@@ -54,9 +67,10 @@ class Popover extends Component {
   }
 
   renderArrow() {
-    const { node } = this.props;
+    const { allowTop } = this.state;
     let style = {
-      top: ($(this.refs.popover).outerHeight() / 2 - 10) + 'px' 
+      // top: ($(this.refs.popover).outerHeight() / 2 - 10) + 'px' 
+      top: allowTop + 'px'
     };
     return (
       <div className="arrow" style={style}></div>

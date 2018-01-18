@@ -58,6 +58,7 @@ var MessageActionCreators = function () {
   };
 
   MessageActionCreators.prototype.sendPhotoMessage = function sendPhotoMessage(peer, photo) {
+    console.log('photo', photo);
     _ActorClient2.default.sendPhotoMessage(peer, photo);
     (0, _ActorAppDispatcher.dispatch)(_ActorAppConstants.ActionTypes.MESSAGE_SEND_PHOTO, { peer: peer, photo: photo });
   };

@@ -114,6 +114,16 @@ $stem-size: 10px;
 
         padding: 8px 16px;
       }
+      .account-icon {
+        margin-left: 10px;
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 21px;
+        // transition: all 0.3s ease-out;
+        cursor: pointer;
+        .material-icons {
+          display: inline-block!important;
+        }
+      }
 
       .selected {
         .contact {
@@ -123,7 +133,14 @@ $stem-size: 10px;
             display: block;
           }
         }
+        .account-icon {
+          display: inline-block;
+          &:hover {
+            color: rgba(255, 255, 255, 1);
+          }
+        }
       }
+      
 
       .contact {
         padding: 4px 16px;
@@ -148,7 +165,7 @@ $stem-size: 10px;
       top: 100%;
       left: -4px;
 
-      overflow: hidden;
+      // overflow: hidden;
 
       width: 308px;
       margin-top: 4px;

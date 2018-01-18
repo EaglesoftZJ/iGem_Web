@@ -256,7 +256,7 @@ var LoginActionCreators = function (_ActionCreators) {
     // JoinGroupActions.joinAfterLogin();
   };
 
-  LoginActionCreators.prototype.setLoggedOut = function setLoggedOut(keepAuto) {
+  LoginActionCreators.prototype.setLoggedOut = function setLoggedOut(obj) {
     var delegate = _DelegateContainer2.default.get();
 
     if (delegate.actions.setLoggedOut) {
@@ -265,7 +265,7 @@ var LoginActionCreators = function (_ActionCreators) {
 
     this.removeBindings('main');
 
-    (0, _ActorAppDispatcher.dispatch)(_ActorAppConstants.ActionTypes.AUTH_SET_LOGGED_OUT, { keepAuto: keepAuto ? true : false });
+    (0, _ActorAppDispatcher.dispatch)(_ActorAppConstants.ActionTypes.AUTH_SET_LOGGED_OUT, { login: obj ? obj : false });
   };
 
   return LoginActionCreators;

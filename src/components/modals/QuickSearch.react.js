@@ -173,7 +173,8 @@ class QuickSearch extends Component {
 
   handleMouseEnter = (id, event) => {
     event.stopPropagation();
-    this.setState({'isShow': true, 'node': event.target, 'selectedUserId': id });
+    this.setState({'isShow': true, 'node': event.currentTarget, 'selectedUserId': id });
+    this.setListeners();
   }
 
   handleMouseMove = event => {
@@ -184,6 +185,7 @@ class QuickSearch extends Component {
     const { isShow } = this.state;
     if (isShow) {
       this.setState({'isShow': false});
+      this.cleanListeners();
     }
   }
 
@@ -230,7 +232,7 @@ class QuickSearch extends Component {
           <div className="title col-xs">
             <div className="hint pull-right"><FormattedMessage id="modal.quickSearch.openDialog"/></div>
             {result.peerInfo.title}
-            {result.peerInfo.peer.type !== 'group' ? <i className="account-icon material-icons" onMouseMove={this.handleMouseMove} onMouseEnter={this.handleMouseEnter.bind(this, result.peerInfo.peer.id)}>account_circle</i> : null}
+            {result.peerInfo.peer.type !== 'group' ? <span className="account-icon" onMouseMove={this.handleMouseMove} onMouseEnter={this.handleMouseEnter.bind(this, result.peerInfo.peer.id)}><i className="material-icons" >account_circle</i><i style={{fontStyle: 'normal', fontSize: '12px'}}>查看详情</i></span> : null}
           </div>
         </li>
       );
@@ -306,9 +308,9 @@ class QuickSearch extends Component {
         className="modal"
         onRequestClose={this.handleClose}
         isOpen>
-        <div className="popover-outer">
+        <div className="popover-outer" ref="outer">
 
-          <Popover node={node} isShow={isShow}>
+          <Popover node={node} isShow={isShow} container={this.refs.outer}>
             { this.renderInfo() }
           </Popover>
 

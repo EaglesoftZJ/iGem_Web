@@ -18,6 +18,10 @@ var _immutable = require('immutable');
 
 var _immutable2 = _interopRequireDefault(_immutable);
 
+var _history = require('../utils/history');
+
+var _history2 = _interopRequireDefault(_history);
+
 var _l18n = require('../l18n');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -314,7 +318,9 @@ var LoginStore = function (_Store) {
       case _ActorAppConstants.ActionTypes.AUTH_SET_LOGGED_OUT:
         // 退出登录
         if (_ActorClient2.default.isElectron()) {
-          _ActorClient2.default.sendToElectron('setLoginStore', { key: 'info.auto', value: action.keepAuto && auto });
+          var reloadAuto = action.login ? auto : false;
+          _ActorClient2.default.sendToElectron('setLoginStore', { key: 'info.auto', value: reloadAuto });
+          _ActorClient2.default.sendToElectron('setLoginStore', { key: 'info.requestAuto', value: action.requestAuto });
           _ActorClient2.default.sendToElectron('setLoginStore', { key: 'info.isLogin', value: false });
         }
         localStorage.clear();

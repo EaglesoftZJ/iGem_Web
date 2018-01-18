@@ -80,6 +80,10 @@ var Login = function (_Component) {
     _this.onRequestCode = function (event) {
       event && event.preventDefault();
       localStorage.clear();
+      if (_LoginStore2.default.isLoggedIn()) {
+        _LoginActionCreators2.default.setLoggedOut({ 'requestAuto': true });
+        return;
+      }
       // console.log('localStorage', JSON.parse(JSON.stringify(localStorage)));
       var prmoise = new Promise(function (resolve, reject) {
         _LoginActionCreators2.default.requestNickName(_this.state.login, resolve, reject);
@@ -193,7 +197,9 @@ var Login = function (_Component) {
   };
 
   Login.prototype.componentWillMount = function componentWillMount() {
-    // ActorClient.sendToElectron('setLoginStore', {key: 'nameList', value: ''});
+    if (_ActorClient2.default.isElectron()) {
+      _ActorClient2.default.sendToElectron('recodeInLogin');
+    }
   };
 
   Login.prototype.componentDidMount = function componentDidMount() {
@@ -213,10 +219,10 @@ var Login = function (_Component) {
         _LoginActionCreators2.default.changeAuto(data.info.auto);
         _LoginActionCreators2.default.changeNameList(data.nameList);
         if (_LoginStore2.default.isLoggedIn()) {
-          console.log('logout');
-          _LoginActionCreators2.default.setLoggedOut(true);
-        } else if (data.info.auto) {
+          _LoginActionCreators2.default.setLoggedOut({ 'keepAuto': true });
+        } else if (data.info.auto || data.info.requestAuto) {
           console.log("on loggedin");
+          _ActorClient2.default.sendToElectron('setLoginStore', { key: 'info.requestAuto', value: false });
           _this2.onRequestCode();
         }
       });
@@ -423,11 +429,11 @@ var Login = function (_Component) {
       _react2.default.createElement(
         'div',
         { className: 'bottom-info' },
-        _react2.default.createElement('img', { src: '../assets/images/logo2.png', width: '22', height: '25', style: { 'vertical-align': 'middle' } }),
+        _react2.default.createElement('img', { src: '../assets/images/logo2.png', width: '22', height: '25', style: { 'verticalAlign': 'middle' } }),
         ' ',
         _react2.default.createElement(
           'span',
-          { style: { 'vertical-align': 'middle' } },
+          { style: { 'verticalAlign': 'middle' } },
           '\u6D59\u6C5F\u6613\u8238\u8F6F\u4EF6\u6709\u9650\u516C\u53F8'
         )
       )

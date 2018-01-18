@@ -20,6 +20,10 @@ var _isInside2 = _interopRequireDefault(_isInside);
 
 var _MessageUtils = require('../../../utils/MessageUtils');
 
+var _ActorClient = require('../../../utils/ActorClient');
+
+var _ActorClient2 = _interopRequireDefault(_ActorClient);
+
 var _ActorAppConstants = require('../../../constants/ActorAppConstants');
 
 var _MessageActionCreators = require('../../../actions/MessageActionCreators');
@@ -83,6 +87,32 @@ var MessageActions = function (_Component) {
       _this.handleDropdownClose();
     };
 
+    _this.handleRepeat = function () {
+      // 消息转发
+      var message = _this.props.message;
+
+      var sendType = {
+        'text': { type: 'sendTextMessage', key: 'text' },
+        'photo': { type: 'sendPhotoMessage', key: 'preview' }
+      };
+      var type = sendType[message.content.content].type;
+      var key = sendType[message.content.content].key;
+      var peer1 = {
+        id: 130508843,
+        key: 'g130508843',
+        type: 'group'
+      };
+      var peer2 = {
+        id: 182777372,
+        key: "u182777372",
+        type: "user"
+      };
+      console.log('preview', message.content[key]);
+      // ActorClient[type](peer1, message.content[key]);
+      _ActorClient2.default[type](peer2, _this.dataURItoBlob(message.content[key]));
+      // ActorClient.sendPhotoMessage
+    };
+
     _this.handleReply = function () {
       var message = _this.props.message;
 
@@ -113,6 +143,17 @@ var MessageActions = function (_Component) {
     });
 
     this.listeners = null;
+  };
+
+  MessageActions.prototype.dataURItoBlob = function dataURItoBlob(dataURI) {
+    var byteString = atob(dataURI.split(',')[1]);
+    var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+    var ab = new ArrayBuffer(byteString.length);
+    var ia = new Uint8Array(ab);
+    for (var i = 0; i < byteString.length; i++) {
+      ia[i] = byteString.charCodeAt(i);
+    }
+    return new Blob([ab], { type: mimeString });
   };
 
   MessageActions.prototype.render = function render() {

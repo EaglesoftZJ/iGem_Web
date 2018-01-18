@@ -64,6 +64,10 @@ var _MessageAlert = require('./common/MessageAlert.react');
 
 var _MessageAlert2 = _interopRequireDefault(_MessageAlert);
 
+var _LoginStore = require('../stores/LoginStore');
+
+var _LoginStore2 = _interopRequireDefault(_LoginStore);
+
 var _DataLoading = require('../utils/DataLoading');
 
 var _DataLoading2 = _interopRequireDefault(_DataLoading);
@@ -128,13 +132,12 @@ var Main = function (_Component) {
 
   Main.prototype.componentWillMount = function componentWillMount() {
     if (_ActorClient2.default.isElectron()) {
-      this.handleEletronEr();
+      // this.handleEletronEr();
     }
   };
 
   Main.prototype.componentDidMount = function componentDidMount() {
     // 测试
-    // message('测试测试测试');  
 
     this.onVisibilityChange();
     if (_ActorClient2.default.isElectron()) {
@@ -149,11 +152,14 @@ var Main = function (_Component) {
 
       window.messenger.listenOnRender('setLoggedOut', function (event, arg) {
         if (_ActorClient2.default.isElectron()) {
-          // 存储用户信息
-          // ActorClient.sendToElectron('setLoginStore', {key: 'info.auto', value: false });
-          // ActorClient.sendToElectron('setLoginStore', {key: 'info.isLogin', value: false });
           _LoginActionCreators2.default.setLoggedOut();
         }
+      });
+      window.messenger.listenOnRender('downloadCompleted', function (event, arg) {
+        _MessageAlertActionCreators2.default.show({ title: '下载完成', type: 'success', key: new Date().getTime() });
+      });
+      window.messenger.listenOnRender('downloadCancelled', function (event, arg) {
+        _MessageAlertActionCreators2.default.show({ title: '下载取消', type: 'warning', key: new Date().getTime() });
       });
       this.getDialogStore();
     } else {
@@ -166,21 +172,19 @@ var Main = function (_Component) {
   };
 
   Main.prototype.handleEletronEr = function handleEletronEr() {
-    // window.messenger.listenOnRender('loginStore', (event, data) => {
-    //   if (!data || !data.info.isLogin) {
-    //     localStorage.clear();
-    //     history.push('/auth');
-    //   } else {
-    //     LoginActionCreators.setLoggedIn({redirect: false})
-    //   }
-    // });
-    // ActorClient.sendToElectron('logged-in');
+    window.messenger.listenOnRender('inMainTimes', function (event, data) {
+      console.log('inMainTimes', data, _LoginStore2.default.isLoggedIn());
+      if (data.main === 1 && data.login === 0 && _LoginStore2.default.isLoggedIn()) {
+        // 直接进入main并处于登录状态，需要退出登录处理
+        _LoginActionCreators2.default.setLoggedOut(true);
+      }
+    });
+    _ActorClient2.default.sendToElectron('recodeInMain');
   };
 
   Main.prototype.getDialogStore = function getDialogStore() {
     window.messenger.listenOnRender('dialogStore', function (event, arg) {
       if (arg) {
-        console.log('getDialogStore', arg);
         _DialogActionCreators2.default.setDialogs(arg.dialogs);
       }
     });
