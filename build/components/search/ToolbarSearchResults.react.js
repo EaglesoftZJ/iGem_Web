@@ -12,9 +12,29 @@ var _ContactItem = require('../common/ContactItem.react');
 
 var _ContactItem2 = _interopRequireDefault(_ContactItem);
 
+var _Popover = require('../common/Popover.react');
+
+var _Popover2 = _interopRequireDefault(_Popover);
+
 var _SelectListItem = require('../common/SelectListItem.react');
 
 var _SelectListItem2 = _interopRequireDefault(_SelectListItem);
+
+var _ContactDetails = require('../common/ContactDetails.react');
+
+var _ContactDetails2 = _interopRequireDefault(_ContactDetails);
+
+var _EventListener = require('fbjs/lib/EventListener');
+
+var _EventListener2 = _interopRequireDefault(_EventListener);
+
+var _DepartmentStore = require('../../stores/DepartmentStore');
+
+var _DepartmentStore2 = _interopRequireDefault(_DepartmentStore);
+
+var _Linq = require('Linq');
+
+var _Linq2 = _interopRequireDefault(_Linq);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -29,13 +49,42 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var ToolbarSearchResults = function (_Component) {
   _inherits(ToolbarSearchResults, _Component);
 
-  function ToolbarSearchResults() {
+  function ToolbarSearchResults(props) {
     _classCallCheck(this, ToolbarSearchResults);
 
-    return _possibleConstructorReturn(this, _Component.apply(this, arguments));
+    var _this = _possibleConstructorReturn(this, _Component.call(this, props));
+
+    _this.state = {
+      isShow: false,
+      node: null,
+      department: _DepartmentStore2.default.getState(),
+      selectedUserId: -1
+    };
+    return _this;
   }
 
+  ToolbarSearchResults.prototype.componentDidMount = function componentDidMount() {
+    this.setListeners();
+  };
+
+  ToolbarSearchResults.prototype.componentWillUnmount = function componentWillUnmount() {
+    this.cleanListeners();
+  };
+
+  ToolbarSearchResults.prototype.renderInfo = function renderInfo() {
+    var _state = this.state,
+        department = _state.department,
+        selectedUserId = _state.selectedUserId;
+    var yh_data = department.yh_data;
+
+    var info = _Linq2.default.from(yh_data).where('parseFloat($.IGIMID) ==' + selectedUserId).toArray()[0];
+    if (!info) return null;
+    return _react2.default.createElement(_ContactDetails2.default, { peerInfo: info });
+  };
+
   ToolbarSearchResults.prototype.renderResults = function renderResults() {
+    var _this2 = this;
+
     var _props = this.props,
         query = _props.query,
         results = _props.results;
@@ -57,17 +106,58 @@ var ToolbarSearchResults = function (_Component) {
           uid: item.peerInfo.peer.id,
           name: item.peerInfo.title,
           avatar: item.peerInfo.avatar,
-          placeholder: item.peerInfo.placeholder
+          type: item.peerInfo.peer.type,
+          placeholder: item.peerInfo.placeholder,
+          showDetial: true,
+          instance: _this2
         })
       );
     });
   };
 
+  ToolbarSearchResults.prototype.setListeners = function setListeners() {
+    this.cleanListeners();
+    this.listeners = [
+    // EventListener.listen(document, 'keydown', this.handleKeyDown),
+    _EventListener2.default.listen(document, 'mousemove', this.popoverHide.bind(this)), _EventListener2.default.listen(this.refs.results, 'scroll', this.popoverHide.bind(this))];
+  };
+
+  ToolbarSearchResults.prototype.cleanListeners = function cleanListeners() {
+    if (this.listeners) {
+      this.listeners.forEach(function (listener) {
+        return listener.remove();
+      });
+      this.listeners = null;
+    }
+  };
+
+  ToolbarSearchResults.prototype.popoverHide = function popoverHide() {
+    var isShow = this.state.isShow;
+
+    if (isShow) {
+      this.setState({ 'isShow': false });
+      this.cleanListeners();
+    }
+  };
+
   ToolbarSearchResults.prototype.render = function render() {
+    var _state2 = this.state,
+        isShow = _state2.isShow,
+        node = _state2.node;
+
     return _react2.default.createElement(
       'div',
-      { className: 'toolbar__search__results' },
-      this.renderResults()
+      { className: 'popover-outer', ref: 'outer' },
+      _react2.default.createElement(
+        _Popover2.default,
+        { node: node, isShow: isShow, container: this.refs.outer },
+        this.renderInfo()
+      ),
+      _react2.default.createElement(
+        'div',
+        { className: 'toolbar__search__results', ref: 'results' },
+        this.renderResults()
+      )
     );
   };
 

@@ -105,7 +105,8 @@ var QuickSearch = function (_Component) {
 
     _this.handleMouseEnter = function (id, event) {
       event.stopPropagation();
-      _this.setState({ 'isShow': true, 'node': event.target, 'selectedUserId': id });
+      _this.setState({ 'isShow': true, 'node': event.currentTarget, 'selectedUserId': id });
+      _this.setListeners();
     };
 
     _this.handleMouseMove = function (event) {
@@ -117,6 +118,7 @@ var QuickSearch = function (_Component) {
 
       if (isShow) {
         _this.setState({ 'isShow': false });
+        _this.cleanListeners();
       }
     };
 
@@ -310,9 +312,18 @@ var QuickSearch = function (_Component) {
           ),
           result.peerInfo.title,
           result.peerInfo.peer.type !== 'group' ? _react2.default.createElement(
-            'i',
-            { className: 'account-icon material-icons', onMouseMove: _this3.handleMouseMove, onMouseEnter: _this3.handleMouseEnter.bind(_this3, result.peerInfo.peer.id) },
-            'account_circle'
+            'span',
+            { className: 'account-icon', onMouseMove: _this3.handleMouseMove, onMouseEnter: _this3.handleMouseEnter.bind(_this3, result.peerInfo.peer.id) },
+            _react2.default.createElement(
+              'i',
+              { className: 'material-icons' },
+              'account_circle'
+            ),
+            _react2.default.createElement(
+              'i',
+              { style: { fontStyle: 'normal', fontSize: '12px' } },
+              '\u67E5\u770B\u8BE6\u60C5'
+            )
           ) : null
         )
       );
@@ -421,10 +432,10 @@ var QuickSearch = function (_Component) {
         isOpen: true },
       _react2.default.createElement(
         'div',
-        { className: 'popover-outer' },
+        { className: 'popover-outer', ref: 'outer' },
         _react2.default.createElement(
           _Popover2.default,
-          { node: node, isShow: isShow },
+          { node: node, isShow: isShow, container: this.refs.outer },
           this.renderInfo()
         ),
         _react2.default.createElement(

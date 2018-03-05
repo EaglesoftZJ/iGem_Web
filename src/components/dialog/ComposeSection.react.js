@@ -195,6 +195,9 @@ class ComposeSection extends Component {
 
   handleAttachmentClick = () => {
     ActorClient.sendToElectron('startUploadFile');
+    if (ActorClient.isElectron()) {
+      ActorClient.sendToElectron('startUploadFile');
+    }
     console.log('multiple');
     const attachmentInputNode = findDOMNode(this.refs.attachment);
     attachmentInputNode.setAttribute('multiple', true);
@@ -202,7 +205,9 @@ class ComposeSection extends Component {
   };
 
   handleComposeAttachmentChange = () => {
-    ActorClient.sendToElectron('endUploadFile');
+    if (ActorClient.isElectron()) {
+      ActorClient.sendToElectron('endUploadFile');
+    }
     const attachmentInputNode = findDOMNode(this.refs.attachment);
     console.log('attachmentInputNode',attachmentInputNode);
     if (!attachmentInputNode) {

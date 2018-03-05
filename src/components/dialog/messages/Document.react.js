@@ -5,6 +5,9 @@
 import React, { Component, PropTypes } from 'react';
 import classnames from 'classnames';
 import { FormattedMessage } from 'react-intl';
+import DialogStore from '../../../stores/DialogStore';
+import ActorClient from '../../../utils/ActorClient';
+
 
 /**
  * Class that represents a component for display document message content
@@ -17,6 +20,13 @@ class Document extends Component {
     fileExtension: PropTypes.string.isRequired,
     isUploading: PropTypes.bool.isRequired,
     className: PropTypes.string
+  }
+
+  constructor() {
+    super();
+    this.state = {
+      peer: DialogStore.getCurrentPeer()
+    };
   }
 
   renderIcon() {
@@ -46,8 +56,15 @@ class Document extends Component {
       );
     } else {
       return (
-        <a href={fileUrl}><FormattedMessage id="message.download"/></a>
+        <a href={fileUrl} onClick={this.handleDownloadClick.bind(this)}><FormattedMessage id="message.download"/></a>
       );
+    }
+  }
+  
+  handleDownloadClick() {
+    const { peer } = this.state;
+    if (ActorClient.isElectron()) {
+      window.messenger.sendToElectron('will-download-peer', peer);
     }
   }
 

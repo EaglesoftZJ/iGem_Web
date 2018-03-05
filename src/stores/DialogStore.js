@@ -63,6 +63,8 @@ class DialogStore extends ReduceStore {
           for (var i = 0; i < action.dialogs.length; i++) {
             var oldData = linq.from(state.dialogs).where(`$.key == '${action.dialogs[i].key}'`).toArray()[0];
             var oldArr = [];
+            // 数据过滤
+            action.dialogs[i]['shorts'] = linq.from(action.dialogs[i]['shorts']).where('$.peer.title !== "系统管理员" && $.peer.title !== "账号已删除"').toArray();
             if (oldData) {
               oldArr = oldData.shorts;
             }

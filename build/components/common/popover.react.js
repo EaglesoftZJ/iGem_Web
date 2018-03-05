@@ -46,16 +46,20 @@ var Popover = function (_Component) {
 
     _this.state = {
       left: 0,
-      top: 0
+      top: 0,
+      allowTop: 0
     };
     return _this;
   }
 
   Popover.prototype.resetPopoverPosition = function resetPopoverPosition() {
-    var node = this.props.node;
+    var _props = this.props,
+        node = _props.node,
+        container = _props.container;
     var _state = this.state,
         left = _state.left,
-        top = _state.top;
+        top = _state.top,
+        allowTop = _state.allowTop;
 
     if (!node) return;
     // this.setState({'left': 10, 'top': 10});
@@ -68,8 +72,19 @@ var Popover = function (_Component) {
     var toTop = nodeTop + nodeHeight - popoverHeight / 2 - nodeHeight / 2;
     var wTop = (0, _jquery2.default)(window).scrollTop();
     var wBottom = wTop + (0, _jquery2.default)(window).height();
-    if (left !== toLeft || top !== toTop) {
-      this.setState({ 'left': toLeft, 'top': toTop });
+    var aTop = (0, _jquery2.default)(this.refs.popover).outerHeight() / 2 - 10;
+    var newToTop = 0;
+    if (container && (0, _jquery2.default)(container).offset().top - wTop + toTop < 0) {
+      newToTop = wTop - (0, _jquery2.default)(container).offset().top + 4;
+    } else if (container && wTop + wBottom < (0, _jquery2.default)(container).offset().top + toTop + popoverHeight) {
+      newToTop = wTop + wBottom - 4 - popoverHeight - (0, _jquery2.default)(container).offset().top;
+    }
+    if (newToTop) {
+      aTop = aTop + (toTop - newToTop);
+      toTop = newToTop;
+    }
+    if (left !== toLeft || top !== toTop || aTop !== allowTop) {
+      this.setState({ 'left': toLeft, 'top': toTop, 'allowTop': aTop });
     }
   };
 
@@ -78,10 +93,11 @@ var Popover = function (_Component) {
   };
 
   Popover.prototype.renderArrow = function renderArrow() {
-    var node = this.props.node;
+    var allowTop = this.state.allowTop;
 
     var style = {
-      top: (0, _jquery2.default)(this.refs.popover).outerHeight() / 2 - 10 + 'px'
+      // top: ($(this.refs.popover).outerHeight() / 2 - 10) + 'px' 
+      top: allowTop + 'px'
     };
     return _react2.default.createElement('div', { className: 'arrow', style: style });
   };
@@ -115,7 +131,8 @@ var Popover = function (_Component) {
 
 Popover.propTypes = {
   node: _react.PropTypes.object,
-  isShow: _react.PropTypes.bool
+  isShow: _react.PropTypes.bool,
+  container: _react.PropTypes.object
 };
 exports.default = Popover;
 //# sourceMappingURL=popover.react.js.map

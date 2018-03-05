@@ -85,11 +85,14 @@ class Main extends Component {
         }
       })
       window.messenger.listenOnRender('downloadCompleted', function(event, arg) {
-        MessageAlertActionCreators.show({title: '下载完成', type: 'success', key: new Date().getTime()})
-      })
+        MessageAlertActionCreators.show({title: '下载完成', type: 'success', key: new Date().getTime()});
+        if (arg && arg.peer) {
+          ActorClient.sendTextMessage(arg.peer, arg.name + ' 文件已下载');
+        }
+      });
       window.messenger.listenOnRender('downloadCancelled', function(event, arg) {
-        MessageAlertActionCreators.show({title: '下载取消', type: 'warning', key: new Date().getTime()})
-      })
+        MessageAlertActionCreators.show({title: '下载取消', type: 'warning', key: new Date().getTime()});
+      });
       this.getDialogStore();
     } else {
       document.addEventListener('visibilitychange', this.onVisibilityChange);
