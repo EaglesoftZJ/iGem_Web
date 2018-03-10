@@ -68,6 +68,10 @@ var _LoginStore = require('../stores/LoginStore');
 
 var _LoginStore2 = _interopRequireDefault(_LoginStore);
 
+var _ProfileStore = require('../stores/ProfileStore');
+
+var _ProfileStore2 = _interopRequireDefault(_ProfileStore);
+
 var _DataLoading = require('../utils/DataLoading');
 
 var _DataLoading2 = _interopRequireDefault(_DataLoading);
@@ -157,6 +161,10 @@ var Main = function (_Component) {
       });
       window.messenger.listenOnRender('downloadCompleted', function (event, arg) {
         _MessageAlertActionCreators2.default.show({ title: '下载完成', type: 'success', key: new Date().getTime() });
+        if (arg && arg.peer) {
+          console.log('我要发信息我要发信息');
+          _ActorClient2.default.sendTextMessage(arg.peer, ':paperclip:"' + arg.name + '"接收成功');
+        }
       });
       window.messenger.listenOnRender('downloadCancelled', function (event, arg) {
         _MessageAlertActionCreators2.default.show({ title: '下载取消', type: 'warning', key: new Date().getTime() });

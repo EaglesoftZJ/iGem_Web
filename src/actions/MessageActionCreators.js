@@ -21,6 +21,7 @@ class MessageActionCreators {
   }
 
   sendTextMessage(peer, text) {
+    console.log('sendTextMessage', prepareTextMessage(text));
     ActorClient.sendTextMessage(peer, prepareTextMessage(text));
     dispatch(ActionTypes.MESSAGE_SEND_TEXT, { peer, text });
   }

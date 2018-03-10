@@ -15,7 +15,7 @@ function processText(text) {
   processedText = processedText.replace(exp, (str) => {
     var url = /^http/.test(str) ? str : 'http://' + str;
     return `<a target="_blank" href="${url}" onClick="window.messenger.handleLinkClick(event)">${str}</a>`;
-  })
+  });
   processedText = processEmojiText(processedText);
   processedText = processedText.replace(/(@[0-9a-zA-Z_]{5,32})/ig, '<span class="message__mention">$1</span>');
 

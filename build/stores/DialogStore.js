@@ -101,6 +101,8 @@ var DialogStore = function (_ReduceStore) {
           for (var i = 0; i < action.dialogs.length; i++) {
             var oldData = _Linq2.default.from(state.dialogs).where('$.key == \'' + action.dialogs[i].key + '\'').toArray()[0];
             var oldArr = [];
+            // 数据过滤
+            action.dialogs[i]['shorts'] = _Linq2.default.from(action.dialogs[i]['shorts']).where('$.peer.title !== "系统管理员" && $.peer.title !== "账号已删除"').toArray();
             if (oldData) {
               oldArr = oldData.shorts;
             }

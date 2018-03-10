@@ -14,11 +14,11 @@ var _PingyinSearchActionCreators = require('./PingyinSearchActionCreators');
 
 var _PingyinSearchActionCreators2 = _interopRequireDefault(_PingyinSearchActionCreators);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _Linq = require('Linq');
 
-/*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
- */
+var _Linq2 = _interopRequireDefault(_Linq);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 exports.default = {
   show: function show() {
@@ -30,8 +30,11 @@ exports.default = {
     _ComposeActionCreators2.default.toggleAutoFocus(true);
   },
   setQuickSearchList: function setQuickSearchList(list) {
+    list = _Linq2.default.from(list).where('$.peerInfo.title.indexOf("系统管理员") == -1 && $.peerInfo.title.indexOf("账号已删除") == -1').toArray();
     (0, _ActorAppDispatcher.dispatch)(_ActorAppConstants.ActionTypes.QUICK_SEARCH_CHANGED, { list: list });
     _PingyinSearchActionCreators2.default.setPingyinSearchList(list);
   }
-};
+}; /*
+    * Copyright (C) 2015 Actor LLC. <https://actor.im>
+    */
 //# sourceMappingURL=QuickSearchActionCreators.js.map

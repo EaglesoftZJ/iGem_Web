@@ -180,6 +180,9 @@ var ComposeSection = function (_Component) {
 
     _this.handleAttachmentClick = function () {
       _ActorClient2.default.sendToElectron('startUploadFile');
+      if (_ActorClient2.default.isElectron()) {
+        _ActorClient2.default.sendToElectron('startUploadFile');
+      }
       console.log('multiple');
       var attachmentInputNode = (0, _reactDom.findDOMNode)(_this.refs.attachment);
       attachmentInputNode.setAttribute('multiple', true);
@@ -187,7 +190,9 @@ var ComposeSection = function (_Component) {
     };
 
     _this.handleComposeAttachmentChange = function () {
-      _ActorClient2.default.sendToElectron('endUploadFile');
+      if (_ActorClient2.default.isElectron()) {
+        _ActorClient2.default.sendToElectron('endUploadFile');
+      }
       var attachmentInputNode = (0, _reactDom.findDOMNode)(_this.refs.attachment);
       console.log('attachmentInputNode', attachmentInputNode);
       if (!attachmentInputNode) {

@@ -12,6 +12,14 @@ var _classnames2 = _interopRequireDefault(_classnames);
 
 var _reactIntl = require('react-intl');
 
+var _DialogStore = require('../../../stores/DialogStore');
+
+var _DialogStore2 = _interopRequireDefault(_DialogStore);
+
+var _ActorClient = require('../../../utils/ActorClient');
+
+var _ActorClient2 = _interopRequireDefault(_ActorClient);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -31,7 +39,12 @@ var Document = function (_Component) {
   function Document() {
     _classCallCheck(this, Document);
 
-    return _possibleConstructorReturn(this, _Component.apply(this, arguments));
+    var _this = _possibleConstructorReturn(this, _Component.call(this));
+
+    _this.state = {
+      peer: _DialogStore2.default.getCurrentPeer()
+    };
+    return _this;
   }
 
   Document.prototype.renderIcon = function renderIcon() {
@@ -78,9 +91,17 @@ var Document = function (_Component) {
     } else {
       return _react2.default.createElement(
         'a',
-        { href: fileUrl },
+        { href: fileUrl, onClick: this.handleDownloadClick.bind(this) },
         _react2.default.createElement(_reactIntl.FormattedMessage, { id: 'message.download' })
       );
+    }
+  };
+
+  Document.prototype.handleDownloadClick = function handleDownloadClick() {
+    var peer = this.state.peer;
+
+    if (_ActorClient2.default.isElectron()) {
+      window.messenger.sendToElectron('will-download-peer', peer);
     }
   };
 

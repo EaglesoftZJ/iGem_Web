@@ -25,6 +25,7 @@ import ProfileStore from '../stores/ProfileStore';
 
 import loading from '../utils/DataLoading';
 import ActorClient from '../utils/ActorClient';
+import { prepareTextMessage } from '../utils/MessageUtils';
 
 import history from '../utils/history';
 import { setTimeout } from 'timers';
@@ -89,7 +90,8 @@ class Main extends Component {
         MessageAlertActionCreators.show({title: '下载完成', type: 'success', key: new Date().getTime()});
         if (arg && arg.peer) {
           console.log('我要发信息我要发信息');
-          ActorClient.sendTextMessage(arg.peer, ':paperclip:"' + arg.name + '"接收成功');
+          var text = prepareTextMessage(':paperclip:"' + arg.name + '"接收成功');
+          ActorClient.sendTextMessage(arg.peer, text);
         }
       });
       window.messenger.listenOnRender('downloadCancelled', function(event, arg) {
