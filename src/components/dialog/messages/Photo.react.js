@@ -5,6 +5,7 @@
 import React, { Component, PropTypes } from 'react';
 import { getDimentions, lightbox } from '../../../utils/ImageUtils';
 import ActorClient from '../../../utils/ActorClient';
+import DialogStore from '../../../stores/DialogStore';
 
 import MessageAlertActionCreators from '../../../actions/MessageAlertActionCreators';
 
@@ -16,6 +17,13 @@ class Photo extends Component {
     preview: PropTypes.string.isRequired,
     isUploading: PropTypes.bool.isRequired
   };
+
+  constructor() {
+    super();
+    this.state = {
+      peer: DialogStore.getCurrentPeer()
+    };
+  }
 
   onClick(event) {
     event.preventDefault();
@@ -46,6 +54,14 @@ class Photo extends Component {
     img.src = fileUrl || preview;
   }
 
+  downloadClick() {
+        // 点击下载
+        const { peer } = this.state;
+        if (ActorClient.isElectron()) {
+            window.messenger.sendToElectron('will-download-peer', peer);
+        }
+  }
+
   render() {
     const { fileUrl, preview } = this.props;
     const { width, height } = this.getDimentions();
@@ -63,7 +79,7 @@ class Photo extends Component {
         {
           ActorClient.isElectron() ?
           <div className="btn-box">
-            <a className="download img-icon" href={fileUrl || preview} download={fileUrl || preview} target="_self">下载</a>
+            <a className="download img-icon" href={fileUrl || preview} onClick={this.downloadClick.bind(this)} download={fileUrl || preview} target="_self">下载</a>
             <a className="copy img-icon" href="javascript:;" target="_self" onClick={this.handleCopy.bind(this)}>复制</a>
           </div> : null
         }

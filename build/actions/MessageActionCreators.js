@@ -36,6 +36,7 @@ var MessageActionCreators = function () {
   };
 
   MessageActionCreators.prototype.sendTextMessage = function sendTextMessage(peer, text) {
+    console.log('sendTextMessage', (0, _MessageUtils.prepareTextMessage)(text));
     _ActorClient2.default.sendTextMessage(peer, (0, _MessageUtils.prepareTextMessage)(text));
     (0, _ActorAppDispatcher.dispatch)(_ActorAppConstants.ActionTypes.MESSAGE_SEND_TEXT, { peer: peer, text: text });
   };

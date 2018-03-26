@@ -80,6 +80,8 @@ var _ActorClient = require('../utils/ActorClient');
 
 var _ActorClient2 = _interopRequireDefault(_ActorClient);
 
+var _MessageUtils = require('../utils/MessageUtils');
+
 var _history = require('../utils/history');
 
 var _history2 = _interopRequireDefault(_history);
@@ -163,7 +165,8 @@ var Main = function (_Component) {
         _MessageAlertActionCreators2.default.show({ title: '下载完成', type: 'success', key: new Date().getTime() });
         if (arg && arg.peer) {
           console.log('我要发信息我要发信息');
-          _ActorClient2.default.sendTextMessage(arg.peer, ':paperclip:"' + arg.name + '"接收成功');
+          var text = (0, _MessageUtils.prepareTextMessage)(':paperclip:"' + arg.name + '"接收成功');
+          _ActorClient2.default.sendTextMessage(arg.peer, text);
         }
       });
       window.messenger.listenOnRender('downloadCancelled', function (event, arg) {
