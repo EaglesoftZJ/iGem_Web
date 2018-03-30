@@ -3,19 +3,26 @@
  */
 
 import React, { Component, PropTypes } from 'react';
+import MarkdownIt from 'markdown-it';
 import ActorClient from '../../../utils/ActorClient';
 
 import { processEmojiText } from '../../../utils/EmojiUtils';
 
 function processText(text) {
   let processedText = text;
+  var md = new MarkdownIt({
+    linkify: true
+  });
+  processedText = md.render(processedText);
   // processedText = ActorClient.renderMarkdown(processedText);
   // 链接匹配
-  var exp = /(((^https?:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)$/g
-  processedText = processedText.replace(exp, (str) => {
-    var url = /^http/.test(str) ? str : 'http://' + str;
-    return `<a target="_blank" href="${url}" onClick="window.messenger.handleLinkClick(event)">${str}</a>`;
-  });
+//   var exp = /(((^https?:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)$/g
+//   processedText = processedText.replace(exp, (str) => {
+//     var url = /^http/.test(str) ? str : 'http://' + str;
+//     return `<a target="_blank" href="${url}" onClick="window.messenger.handleLinkClick(event)">${str}</a>`;
+//   });
+
+
   processedText = processEmojiText(processedText);
   processedText = processedText.replace(/(@[0-9a-zA-Z_]{5,32})/ig, '<span class="message__mention">$1</span>');
 

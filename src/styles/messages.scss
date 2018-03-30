@@ -603,6 +603,7 @@ $sticker-max-size: 180px;
     margin: 0;
 
     color: $message-text-color;
+    word-wrap: break-word;
 
     // Styles for markdown
     p {
