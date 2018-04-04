@@ -106,7 +106,7 @@ class CreateGroupForm extends Component {
       return results;
     }
 
-    if (search === "*") {
+    if (search === '*') {
       return yh_data.slice(0, 300);
     }
     
@@ -183,6 +183,10 @@ class CreateGroupForm extends Component {
     });
     isSelected && this.setState({'shouldScroll': true});
     onContactToggle && onContactToggle(userIds);
+  }
+
+  handleKeyDown(event) {
+    event.nativeEvent.stopImmediatePropagation();
   }
 
   handleNameChange(event) {
@@ -282,6 +286,7 @@ class CreateGroupForm extends Component {
       <div className="small-search">
         <i className="material-icons">search</i>
         <input
+            onKeyDown={this.handleKeyDown}
           className="input"
           onChange={this.handleSearchChange}
           placeholder={intl.messages['invite.search']}

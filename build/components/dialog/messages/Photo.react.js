@@ -12,6 +12,10 @@ var _ActorClient = require('../../../utils/ActorClient');
 
 var _ActorClient2 = _interopRequireDefault(_ActorClient);
 
+var _DialogStore = require('../../../stores/DialogStore');
+
+var _DialogStore2 = _interopRequireDefault(_DialogStore);
+
 var _MessageAlertActionCreators = require('../../../actions/MessageAlertActionCreators');
 
 var _MessageAlertActionCreators2 = _interopRequireDefault(_MessageAlertActionCreators);
@@ -32,7 +36,12 @@ var Photo = function (_Component) {
   function Photo() {
     _classCallCheck(this, Photo);
 
-    return _possibleConstructorReturn(this, _Component.apply(this, arguments));
+    var _this = _possibleConstructorReturn(this, _Component.call(this));
+
+    _this.state = {
+      peer: _DialogStore2.default.getCurrentPeer()
+    };
+    return _this;
   }
 
   Photo.prototype.onClick = function onClick(event) {
@@ -69,6 +78,15 @@ var Photo = function (_Component) {
     img.src = fileUrl || preview;
   };
 
+  Photo.prototype.downloadClick = function downloadClick() {
+    // 点击下载
+    var peer = this.state.peer;
+
+    if (_ActorClient2.default.isElectron()) {
+      window.messenger.sendToElectron('will-download-peer', peer);
+    }
+  };
+
   Photo.prototype.render = function render() {
     var _props3 = this.props,
         fileUrl = _props3.fileUrl,
@@ -95,7 +113,7 @@ var Photo = function (_Component) {
         { className: 'btn-box' },
         _react2.default.createElement(
           'a',
-          { className: 'download img-icon', href: fileUrl || preview, download: fileUrl || preview, target: '_self' },
+          { className: 'download img-icon', href: fileUrl || preview, onClick: this.downloadClick.bind(this), download: fileUrl || preview, target: '_self' },
           '\u4E0B\u8F7D'
         ),
         _react2.default.createElement(

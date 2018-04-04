@@ -14,6 +14,12 @@ function processText(text) {
     linkify: true
   });
   processedText = md.render(processedText);
+
+  processedText = processedText.replace(/<a[\w\s]*href=/g, (str) => {
+    str = str.slice(0, 2) + ' target="_blank" onClick="window.messenger.handleLinkClick(event)"' + str.slice(2);
+    return str;
+  });
+
   // processedText = ActorClient.renderMarkdown(processedText);
   // 链接匹配
 //   var exp = /(((^https?:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)$/g

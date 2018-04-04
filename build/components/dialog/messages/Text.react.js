@@ -6,6 +6,10 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _markdownIt = require('markdown-it');
+
+var _markdownIt2 = _interopRequireDefault(_markdownIt);
+
 var _ActorClient = require('../../../utils/ActorClient');
 
 var _ActorClient2 = _interopRequireDefault(_ActorClient);
@@ -24,13 +28,25 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function processText(text) {
   var processedText = text;
+  var md = new _markdownIt2.default({
+    linkify: true
+  });
+  processedText = md.render(processedText);
+
+  processedText = processedText.replace(/<a[\w\s]*href=/g, function (str) {
+    str = str.slice(0, 2) + ' target="_blank" onClick="window.messenger.handleLinkClick(event)"' + str.slice(2);
+    return str;
+  });
+
   // processedText = ActorClient.renderMarkdown(processedText);
   // 链接匹配
-  var exp = /(((^https?:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)$/g;
-  processedText = processedText.replace(exp, function (str) {
-    var url = /^http/.test(str) ? str : 'http://' + str;
-    return '<a target="_blank" href="' + url + '" onClick="window.messenger.handleLinkClick(event)">' + str + '</a>';
-  });
+  //   var exp = /(((^https?:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)$/g
+  //   processedText = processedText.replace(exp, (str) => {
+  //     var url = /^http/.test(str) ? str : 'http://' + str;
+  //     return `<a target="_blank" href="${url}" onClick="window.messenger.handleLinkClick(event)">${str}</a>`;
+  //   });
+
+
   processedText = (0, _EmojiUtils.processEmojiText)(processedText);
   processedText = processedText.replace(/(@[0-9a-zA-Z_]{5,32})/ig, '<span class="message__mention">$1</span>');
 
