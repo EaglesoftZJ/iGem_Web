@@ -41,6 +41,8 @@ export default {
       preferences: '设置',
       signOut: '退出登录',
       homePage: '开发公司主页',
+      updateDetial: '查看更新日志',
+      clearCache: '清除缓存',
       facebook: 'Like us on Facebook'
     },
 
@@ -204,6 +206,7 @@ export default {
       },
       'confirm': {
         'logout': '确定登出吗?',
+        'clearCache': '清缓存需要退出登陆，确定继续吗？',
         'user': {
           'clear': '确定清空与 <strong>{name}</strong>的聊天记录吗?',
           'delete': '确定删除 <strong>{name}</strong>吗?',

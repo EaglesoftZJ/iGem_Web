@@ -138,6 +138,24 @@ class UserMenu extends Component {
     );
   }
 
+  openUpdateDetial() {
+    // 显示更新日志
+    if (ActorClient.isElectron()) {
+        ActorClient.sendToElectron ('showUpdateDetial');
+    }
+  }
+
+  clearCache() {
+    // 清除缓存
+    if (ActorClient.isElectron()) {
+        confirm(<FormattedMessage id="modal.confirm.clearCache"/>).then(
+            () => LoginActionCreators.setLoggedOut(),
+            () => {}
+        );
+        ActorClient.sendToElectron('clearCache');
+    }
+  }
+
   renderTwitterLink() {
     const { twitter } = SharedContainer.get();
     if (!twitter) return null;
@@ -225,6 +243,7 @@ class UserMenu extends Component {
             <i className="material-icons">group_add</i>
             <FormattedMessage id="menu.createGroup"/>
           </li>
+          
 
           <li className="dropdown__menu__separator"/>
 
@@ -236,6 +255,16 @@ class UserMenu extends Component {
           {this.renderTwitterLink()}
           {this.renderFacebookLink()} */}
           {this.renderHomeLink()}
+
+          <li className="dropdown__menu__item" onClick={this.openUpdateDetial}>
+            <i className="material-icons">description</i>
+            <FormattedMessage id="menu.updateDetial"/>
+          </li>
+
+          <li className="dropdown__menu__item" onClick={this.clearCache}>
+            <i className="material-icons">cached</i>
+            <FormattedMessage id="menu.clearCache"/>
+          </li>
 
           <li className="dropdown__menu__separator"/>
 
