@@ -7,17 +7,30 @@ import { isFunction, throttle } from 'lodash';
 import React, { Component, PropTypes } from 'react';
 
 import { FormattedMessage } from 'react-intl';
+import { Container } from 'flux/utils';
+import EventListener from 'fbjs/lib/EventListener';
 import { MessageChangeReason } from '../../constants/ActorAppConstants';
 
 import PeerUtils from '../../utils/PeerUtils';
 import { getMessageState, isLastMessageMine } from '../../utils/MessageUtils';
 import Scroller from '../common/Scroller.react';
 
+import DocumentRecordStore from '../../stores/DocumentRecordStore.js';
+import RingStore from '../../stores/RingStore.js';
+
+import DocumentRecordCreators from '../../actions/DocumentRecordCreators';
+import RingActionCreators from '../../actions/RingActionCreators'
+
 import DefaultMessageItem from './messages/MessageItem.react';
 import DefaultWelcome from './messages/Welcome.react';
 import Loading from './messages/Loading.react';
+import Popover from '../common/Popover.react';
+import $ from 'jquery';
 
 class MessagesList extends Component {
+    static getStores() {
+        return [DocumentRecordStore, RingStore];
+    }
   static contextTypes = {
     delegate: PropTypes.object.isRequired
   };
@@ -48,24 +61,23 @@ class MessagesList extends Component {
     onEdit: PropTypes.func.isRequired
   };
 
+  static calculateState() {
+    return {
+      isShow: DocumentRecordStore.getShowState(),
+      record: DocumentRecordStore.getCurrentRecord(),
+      node: DocumentRecordStore.getCurrentNode(),
+      ringDomId: RingStore.getRingDomId()
+    }
+  }
+
   constructor(props, context) {
     super(props, context);
 
-    const { dialog } = context.delegate.components;
-    if (dialog && dialog.messages) {
-      this.components = {
-        MessageItem: isFunction(dialog.messages.message) ? dialog.messages.message : DefaultMessageItem,
-        Welcome: isFunction(dialog.messages.welcome) ? dialog.messages.welcome : DefaultWelcome
-      };
-    } else {
-      this.components = {
-        MessageItem: DefaultMessageItem,
-        Welcome: DefaultWelcome
-      };
-    }
+    console.log('messageList', props, context);
 
     this.state = {
-      showScrollToBottom: false
+      showScrollToBottom: false,
+      updateRecord: false
     };
 
     this.dimensions = null;
@@ -80,14 +92,47 @@ class MessagesList extends Component {
     return nextProps.peer !== this.props.peer ||
            nextProps.messages !== this.props.messages ||
            nextProps.isMember !== this.props.isMember ||
-           nextState.showScrollToBottom !== this.state.showScrollToBottom;
+           nextState.showScrollToBottom !== this.state.showScrollToBottom
+  }
+
+  componentWillMount() {
+    // 渲染前
+      const { dialog } = this.context.delegate.components;
+      console.log('delegate components', this.context.delegate.components);
+    if (dialog && dialog.messages) {
+      this.components = {
+        MessageItem: isFunction(dialog.messages.message) ? dialog.messages.message : DefaultMessageItem,
+        Welcome: isFunction(dialog.messages.welcome) ? dialog.messages.welcome : DefaultWelcome
+      };
+    } else {
+    this.components = {
+        MessageItem: DefaultMessageItem,
+        Welcome: DefaultWelcome
+        };
+    }
   }
 
   componentDidMount() {
     this.restoreScroll();
+    // this.setListeners();
+  }
+
+  componentWillUnmount() {
+    this.cleanListeners();
   }
 
   componentWillReceiveProps(nextProps) {
+      const { messages: { messages } } = this.props;
+        console.log('message change', messages.length , nextProps.messages.messages.length, messages.slice(-1)[0] && messages.slice(-1)[0].rid, nextProps.messages.messages.slice(-2)[0] && nextProps.messages.messages.slice(-2)[0].rid)
+    //   if (messages.length +  1 === nextProps.messages.messages.length && 
+    //     messages.slice(-1)[0].rid === nextProps.messages.messages.slice(-2)[0].rid &&
+    //     nextProps.messages.messages.slice(-1)[0].content.content === 'text') {
+    //         // 新的消息
+    //         console.log('新消息新消息');
+    //         setTimeout(function() {
+    //             RingActionCreators.setNew(true);
+    //         }, 1);
+    //   }
     if (!PeerUtils.equals(nextProps.peer, this.props.peer)) {
       this.dimensions = null;
       this.isLoading = false;
@@ -96,11 +141,23 @@ class MessagesList extends Component {
     }
   }
 
+    // componentWillUpdate(nextProps, nextState) {
+    //     const { message } = this.state;
+    //     if (nextState.message != message) {
+    //         this.setState({updateRecord: true});
+    //     }
+    // }
+  
   componentDidUpdate(prevProps, prevState) {
-    if (prevState.showScrollToBottom !== this.state.showScrollToBottom) {
+
+    const { isShow, record } = this.state; 
+    console.log('更新更新', prevState.isShow, isShow, prevState, this.state, prevProps, this.props);
+    if (!prevState.isShow && isShow) {
+        this.setListeners();
+    }
+    if (prevState.showScrollToBottom !== this.state.showScrollToBottom || prevState.record !== record || prevState.isShow !== isShow) {
       return;
     }
-
     const { dimensions, refs: { scroller }, props: { uid, messages } } = this;
 
     if (messages.unreadId && messages.unreadId !== prevProps.messages.unreadId) {
@@ -126,9 +183,32 @@ class MessagesList extends Component {
     }
   }
 
+  setListeners() {
+    this.cleanListeners();
+    this.listeners = [
+      // EventListener.listen(document, 'keydown', this.handleKeyDown),
+      EventListener.listen(document, 'click', this.popoverHide.bind(this))
+    ];
+  }
+
+  cleanListeners() {
+    if (this.listeners) {
+      this.listeners.forEach((listener) => listener.remove());
+      this.listeners = null;
+    }
+  }
+
+  popoverHide() {
+    DocumentRecordCreators.hide();
+    DocumentRecordCreators.setRecord([]);
+    this.cleanListeners();
+  }
+
   onScroll() {
+      const { isShow } = this.state;
     const dimensions = this.refs.scroller.getDimensions();
     this.updateDimensions(dimensions);
+    isShow && this.popoverHide();
     if (!this.isLoading && dimensions.scrollTop < 100) {
       this.isLoading = true;
       this.props.onLoadMore();
@@ -156,6 +236,25 @@ class MessagesList extends Component {
 
   handleScrollToBottom() {
     this.refs.scroller.scrollToBottom();
+  }
+
+  handleScrollToMessage() {
+      const { ringDomId } = this.state;
+      var span = document.getElementById(ringDomId);
+      if (ringDomId && span) {
+          console.log('new text', $(span).parents('.message').get(0));
+          setTimeout((() => {
+            this.refs.scroller.scrollToNode($(span).parents('.message').get(0));
+          }), 100);
+        
+      }
+        RingActionCreators.setRingDomId('');
+    
+       
+  }
+
+  handleTableClick(event) {
+    event.nativeEvent.stopImmediatePropagation();
   }
 
   renderHeader() {
@@ -230,15 +329,59 @@ class MessagesList extends Component {
     }
 
     return (
-      <div className="chat__scroll-to-bottom" onClick={this.handleScrollToBottom}>
-        <i className="material-icons">keyboard_arrow_down</i>
-      </div>
+        <div className="chat__scroll-to-bottom" onClick={this.handleScrollToBottom}>
+            <i className="material-icons">keyboard_arrow_down</i>
+        </div>
     );
+  }
+  renderScrollToMessage() {
+      console.log('renderScrollToMessage==================')
+    const { ringDomId } = this.state;
+    console.log('重新渲染数据', ringDomId);
+    if (!ringDomId) {
+        return null; 
+    }
+      return (
+        <div className="chat__scroll-to-bottom chat__scroll-to-message" onClick={this.handleScrollToMessage.bind(this)}>
+            <i>@</i>    
+        </div>
+      )
+  }
+
+  renderInfo() {
+    // 渲染下载详情
+    const { record } = this.state;
+    if (!record || record.length === 0) {
+        return null;
+    }
+    var tr = record.map((item, index) => {
+       return(
+            <tr key={ index }>
+                <td>{ item.userName }</td>
+                <td>于{ item.time }下载</td>
+            </tr>
+       );
+    })
+    return (
+        <table className="message_record_table" onClick={this.handleTableClick}>
+            <tbody>
+            { tr } 
+           </tbody>
+        </table>
+    )
   }
 
   render() {
+      const { node, isShow } = this.state;
+      var addLeft = this.refs.outer ? 240 - this.refs.outer.clientWidth : 0;
+      var addTop = ($(node).height() - 22) / 2;
+      console.log('偏移量', addLeft, addTop);
+      console.log('node isShow', node, isShow);
     return (
-      <div className="chat__container">
+      <div className="chat__container" ref="outer">
+        <Popover node={node} isShow={isShow} container={this.refs.outer} addLeft={addLeft} addTop={addTop} maxHeight={ 300 } emptyMsg="message.documentRecord">
+            { this.renderInfo() }
+        </Popover>
         <Scroller
           className="chat__messages"
           ref="scroller"
@@ -248,7 +391,10 @@ class MessagesList extends Component {
           {this.renderHeader()}
           {this.renderMessages()}
         </Scroller>
-        {this.renderScrollToBottomButton()}
+        <div className="chat__scroll-to-box">
+            {this.renderScrollToMessage()}
+            {this.renderScrollToBottomButton()}
+        </div>
       </div>
     )
   }
@@ -278,4 +424,5 @@ class MessagesList extends Component {
   }
 }
 
-export default MessagesList;
+export default Container.create(MessagesList, {withProps: true, withContext: true});
+;

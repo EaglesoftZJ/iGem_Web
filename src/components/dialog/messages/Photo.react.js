@@ -17,9 +17,13 @@ class Photo extends Component {
     preview: PropTypes.string.isRequired,
     isUploading: PropTypes.bool.isRequired
   };
+  
+  static contextTypes = {
+    message: PropTypes.object
+  }
 
-  constructor() {
-    super();
+  constructor(props, context) {
+    super(props, context);
     this.state = {
       peer: DialogStore.getCurrentPeer()
     };
@@ -57,8 +61,9 @@ class Photo extends Component {
   downloadClick() {
         // 点击下载
         const { peer } = this.state;
+        const { message } = this.context;
         if (ActorClient.isElectron()) {
-            window.messenger.sendToElectron('will-download-peer', peer);
+            window.messenger.sendToElectron('will-download-info', {rid: message.rid, ...peer});
         }
   }
 

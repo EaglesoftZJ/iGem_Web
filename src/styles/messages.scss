@@ -1122,7 +1122,7 @@ $sticker-max-size: 180px;
     padding: 2px 1px;
 
     border-radius: 2px;
-    background-color: #fffbe9;
+    background-color: #ffeb3b;
   }
 }
 .message__photo__box {
@@ -1188,4 +1188,18 @@ $sticker-max-size: 180px;
 .message__animation__state--playing {
   opacity: 0;
   transition: opacity 100ms ease-in;
+}
+.message_record_table {
+    border-collapse: collapse;
+    table-layout: fixed;
+    font-size: 14px;
+    color: #636363;
+    line-height: 26px;
+    // border: 1px solid #aaa;
+    // border-width: 1px 0 0 1px;
+}
+.message_record_table th, .message_record_table td {
+    // border: 1px solid #aaa;
+    // border-width: 0px 1px 1px 0px;
+    padding: 0 5px;
 }

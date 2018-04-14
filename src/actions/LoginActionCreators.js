@@ -4,6 +4,7 @@
 
 import { dispatch, dispatchAsync } from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes } from '../constants/ActorAppConstants';
+import $ from 'jquery';
 
 import ActorClient from '../utils/ActorClient';
 import history from '../utils/history';
@@ -186,15 +187,60 @@ class LoginActionCreators extends ActionCreators {
 
     dispatch(ActionTypes.AUTH_SET_LOGGED_IN);
 
-    ActorClient.postOAWebservice({
-      //url: 'http://g.portzhoushan.com/MoaService/MoaService.asmx/GetAllUserFullData',
-      url: 'http://61.175.100.14:8004/WebServiceSSO.asmx/GetAllUserFullData',
-      // url: 'http://220.189.207.21:8709/WebServiceSSO.asmx/GetAllUserFullData',
-      data: 'k=eagleSoftWebService',
-      success: res => {
-        DepartmentActionCreators.setRes({res});
-      }
-    });
+    function getDepartment() {
+        ActorClient.postOAWebservice({
+            //url: 'http://g.portzhoushan.com/MoaService/MoaService.asmx/GetAllUserFullData',
+            url: 'http://61.175.100.14:8004/WebServiceSSO.asmx/GetAllUserFullData',
+            // url: 'http://220.189.207.21:8709/WebServiceSSO.asmx/GetAllUserFullData',
+            data: 'k=eagleSoftWebService',
+            success: res => {
+                DepartmentActionCreators.setRes({res});
+            }
+        });
+    }
+
+
+    // 创建webservicee请求
+    function ajaxFunc() {
+        var url = 'http://61.175.100.14:8012/ActorServices-Maven/services/ActorService';
+        var method = 'selectXzrz';
+        var data = '<v:Envelope xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns:d="http://www.w3.org/2001/XMLSchema" xmlns:c="http://schemas.xmlsoap.org/soap/encoding/" xmlns:v="http://schemas.xmlsoap.org/soap/envelope/"><v:Header /><v:Body><n0:queryGroup id="o0" c:root="1" xmlns:n0="http://eaglesoft"><id i:type="d:string">673080096</id></n0:queryGroup></v:Body></v:Envelope>'
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.onreadystatechange = function() {
+            if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
+                console.log(xmlhttp.responseText);
+            }
+        }
+        xmlhttp.open('POST', url + '/' + method, true);
+        xmlhttp.setRequestHeader('Content-Type', 'text/xml;charset=UTF-8');
+        xmlhttp.setRequestHeader('SOAPActrin', 'http://eaglesoft/' + method);
+        xmlhttp.send(data);
+    }
+
+    // ajaxFunc();
+
+
+
+    // ActorClient.postOAWebservice({
+    //     //url: 'http://g.portzhoushan.com/MoaService/MoaService.asmx/GetAllUserFullData',
+    //     url: 'http://61.175.100.14:8012/ActorServices-Maven/services/ActorService',
+    //     // url: 'http://220.189.207.21:8709/WebServiceSSO.asmx/GetAllUserFullData',
+    //     data: 'messageId=123',
+    //     success: res => {
+    //         DepartmentActionCreators.setRes({res});
+    //     }
+    // });
+
+    getDepartment();
+    var start = new Date().getTime();
+    // 定时更新
+    setInterval(() => {
+        var now = new Date().getTime();
+        if ((now - start) / 1000 / 60 / 60 >= 6) {
+            start = now;
+            getDepartment(); 
+        }
+    }, 360000);
     // JoinGroupActions.joinAfterLogin();
   }
 

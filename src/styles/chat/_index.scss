@@ -5,6 +5,16 @@ $chat-min-width: 300px;
 $chat-max-width: 800px;
 $chat-footer-height: 100px;
 
+@keyframes ring {
+    0%, 50%{
+        color: white;
+        background-color: $dark-sky-blue2;
+    }
+    51%, 100% {
+        color: #5191db;
+        background: transparent;
+    }
+}
 .chat {
   display: flex;
   flex-direction: column;
@@ -48,13 +58,18 @@ $chat-footer-height: 100px;
       min-height: min-content;
     }
   }
-
-  &__scroll-to-bottom {
+  &__scroll-to-box {
     position: absolute;
     right: 32px;
     bottom: 0;
+  }
+  
 
+  &__scroll-to-bottom {
+    
     padding: 4px;
+    width: 26px;
+    height: 26px;
 
     cursor: pointer;
     transition: 200ms;
@@ -66,6 +81,18 @@ $chat-footer-height: 100px;
     &:hover {
       color: white;
       background-color: $dark-sky-blue2;
+    }
+    & + & {
+        margin-top: 5px;
+    }
+  }
+  &__scroll-to-message {
+      font-style: normal;
+    text-align: center;
+    line-height: 26px;
+    animation: ring 1s linear infinite;
+    i {
+        font-style: normal;
     }
   }
 }

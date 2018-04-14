@@ -12,6 +12,7 @@ import PeerUtils from '../../../utils/PeerUtils';
 import DialogActionCreators from '../../../actions/DialogActionCreators';
 import ActivityActionCreators from '../../../actions/ActivityActionCreators';
 import DropdownActionCreators from '../../../actions/DropdownActionCreators';
+import DocumentRecordCreators from '../../../actions/DocumentRecordCreators';
 
 import DropdownStore from '../../../stores/DropdownStore';
 import GroupStore from '../../../stores/GroupStore';
@@ -43,6 +44,19 @@ class MessageItem extends Component {
     onSelect: noop
   };
 
+  static childContextTypes = {
+      showDocumentRecord: PropTypes.func,
+      message: PropTypes.object
+  };
+
+  getChildContext() {
+      const { message } = this.props;
+    return {
+        showDocumentRecord: this.showDocumentRecord.bind(this),
+        message
+    };
+  }
+
   static getStores() {
     return [DropdownStore];
   }
@@ -57,6 +71,14 @@ class MessageItem extends Component {
     super(props, context);
 
     this.onClick = this.onClick.bind(this);
+  }
+
+  showDocumentRecord() {
+      // 显示文档下载记录弹窗
+      console.log('showDocumentRecord');
+      const { message } = this.props
+      DocumentRecordCreators.show(message, this.refs.messageItem);
+
   }
 
   shouldComponentUpdate(nextProps) {
@@ -204,7 +226,7 @@ class MessageItem extends Component {
     });
 
     return (
-      <div className={messageClassName}>
+      <div className={messageClassName} ref="messageItem">
         {this.renderLeftBlock()}
         <div className="message__body">
           {this.renderHeader()}

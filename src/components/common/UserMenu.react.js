@@ -125,7 +125,8 @@ class UserMenu extends Component {
 
     event.preventDefault();
     if (ActorClient.isElectron()) {
-      ActorClient.handleLinkClick(event);
+        window.messenger.sendToElectron('openLink', {url: page});
+    //   ActorClient.handleLinkClick(event);
     } else {
       window.open(page, '_blank');
     }
@@ -190,7 +191,7 @@ class UserMenu extends Component {
 
     return (
       <li className="dropdown__menu__item">
-        <a href={homePage} onClick={this.openHomePage}>
+        <a href="javascript:;" onClick={this.openHomePage}>
           <i className="material-icons">public</i>
           <FormattedMessage id="menu.homePage"/>
         </a>

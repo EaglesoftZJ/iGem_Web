@@ -5,6 +5,7 @@
 import React, { Component, PropTypes } from 'react';
 import classnames from 'classnames';
 import { FormattedMessage } from 'react-intl';
+import Tooltip from 'rc-tooltip';
 import DialogStore from '../../../stores/DialogStore';
 import ActorClient from '../../../utils/ActorClient';
 
@@ -19,11 +20,19 @@ class Document extends Component {
     fileSize: PropTypes.string.isRequired,
     fileExtension: PropTypes.string.isRequired,
     isUploading: PropTypes.bool.isRequired,
-    className: PropTypes.string
+    className: PropTypes.string,
+    sortKey: PropTypes.string,
+    container: PropTypes.object,
   }
+  
+  static contextTypes = {
+    showDocumentRecord: PropTypes.func,
+    message: PropTypes.object
+  }
+  
 
-  constructor() {
-    super();
+  constructor(props, context) {
+    super(props, context);
     this.state = {
       peer: DialogStore.getCurrentPeer()
     };
@@ -56,16 +65,37 @@ class Document extends Component {
       );
     } else {
       return (
-        <a href={fileUrl} onClick={this.handleDownloadClick.bind(this)}><FormattedMessage id="message.download"/></a>
+        <div className="btn-group">
+            <a href={fileUrl} onClick={this.handleDownloadClick.bind(this)}><FormattedMessage id="message.download"/></a>
+            <Tooltip
+                placement="top"
+                mouseEnterDelay={0.15}
+                mouseLeaveDelay={0}
+                overlay={<FormattedMessage id="tooltip.documentRecord"/>}>
+                <button onMouseMove={this.handleMouseMove} onClick={this.handleOpenRecord.bind(this)} className="button button--icon" style={{padding: 0, height: 24, marginTop: -2, marginLeft: 5, color: '#468ee5'}}><i style={{fontSize: 20}} className="material-icons">history</i></button>
+            </Tooltip>
+            {/* <a href={fileUrl} style={{'paddingLeft': 5}} onMouseMove={this.handleMouseMove} onMouseEnter={this.handleOpenRecord.bind(this)}><FormattedMessage id="message.downloadDetial"/></a> */}
+        </div>
       );
     }
   }
   
   handleDownloadClick() {
     const { peer } = this.state;
+    const { message } = this.context;
     if (ActorClient.isElectron()) {
-      window.messenger.sendToElectron('will-download-peer', peer);
+      window.messenger.sendToElectron('will-download-info', {rid: message.rid, ...peer});
     }
+  }
+
+  handleOpenRecord(event) {
+    const { showDocumentRecord } = this.context;
+    showDocumentRecord();
+    event.nativeEvent.stopImmediatePropagation();
+  }
+
+  handleMouseMove(event) {
+    event.nativeEvent.stopImmediatePropagation();
   }
 
   render() {
@@ -74,7 +104,7 @@ class Document extends Component {
     const documentClassName = classnames(className, 'row');
 
     return (
-      <div className={documentClassName}>
+      <div className={documentClassName} ref>
         <div className="document row">
           {this.renderIcon()}
           <div className="col-xs">

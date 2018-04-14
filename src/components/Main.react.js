@@ -29,6 +29,7 @@ import { prepareTextMessage } from '../utils/MessageUtils';
 
 import history from '../utils/history';
 import { setTimeout } from 'timers';
+import $ from 'jquery';
 
 class Main extends Component {
   static propTypes = {
@@ -88,10 +89,32 @@ class Main extends Component {
       })
       window.messenger.listenOnRender('downloadCompleted', function(event, arg) {
         MessageAlertActionCreators.show({title: '下载完成', type: 'success', key: new Date().getTime()});
-        if (arg && arg.peer) {
+        if (arg && arg.info) {
           console.log('我要发信息我要发信息');
-          var text = prepareTextMessage(':paperclip:"' + arg.name + '"接收成功');
-          ActorClient.sendTextMessage(arg.peer, text);
+          const {profile: {name, id}} = ProfileStore.getState();
+        //   var text = prepareTextMessage(':paperclip:"' + arg.name + '"接收成功');
+        //   ActorClient.sendTextMessage(arg.info, text);
+            var spapdata = `<v:Envelope xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns:d="http://www.w3.org/2001/XMLSchema" xmlns:c="http://schemas.xmlsoap.org/soap/encoding/" xmlns:v="http://schemas.xmlsoap.org/soap/envelope/">
+                            <v:Header />
+                            <v:Body>
+                                <n0:insertXzrz id="o0" c:root="1" xmlns:n0="http://eaglesoft">
+                                    <json i:type="d:string">{'messageId': '${ arg.info.rid }','userId': '${ id }','userName':'${ name }'}</json>
+                                </n0:insertXzrz>
+                            </v:Body>
+                        </v:Envelope>`;
+            var method = 'selectXzrz';  
+            $.ajax({
+                url: 'http://61.175.100.14:8012/ActorServices-Maven/services/ActorService',
+                type: 'post',
+                data: spapdata,
+                beforeSend(request) {
+                    console.log('beforeSend', request);
+                    request.setRequestHeader('Content-Type', 'text/xml;charset=UTF-8');
+                    request.setRequestHeader('SOAPActrin', 'http://eaglesoft/' + method);
+                },
+                success(res) {
+                }
+            });
         }
       });
       window.messenger.listenOnRender('downloadCancelled', function(event, arg) {

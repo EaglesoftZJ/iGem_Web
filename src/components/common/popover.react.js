@@ -13,7 +13,16 @@ class Popover extends Component {
     node: PropTypes.object,
     isShow: PropTypes.bool,
     container: PropTypes.object,
+    addLeft: PropTypes.number,
+    addTop: PropTypes.number,
+    emptyMsg: PropTypes.string,
+    maxHeight: PropTypes.number,
   };
+
+  static defaultProps = {
+    addLeft: 0,
+    addTop: 0
+  }
   componentDidMount() {
   }
   componentDidUpdate() {
@@ -33,7 +42,7 @@ class Popover extends Component {
   }
 
   resetPopoverPosition() {
-    const { node, container } = this.props;
+    const { node, container, addLeft, addTop } = this.props;
     const { left, top, allowTop } = this.state; 
     if (!node) return;
     // this.setState({'left': 10, 'top': 10});
@@ -42,8 +51,8 @@ class Popover extends Component {
     let nodeLeft = $(node).position().left;
     let nodeWidth = $(node).outerWidth(true);
     let nodeHeight = $(node).outerHeight(true);
-    let toLeft = nodeLeft + nodeWidth + 10;
-    let toTop = nodeTop + nodeHeight - popoverHeight / 2 - nodeHeight / 2;
+    let toLeft = nodeLeft + nodeWidth + 10 + addLeft;
+    let toTop = nodeTop + nodeHeight - popoverHeight / 2 - nodeHeight / 2 + addTop;
     let wTop = $(window).scrollTop();
     let wBottom = wTop + $(window).height();
     let aTop = $(this.refs.popover).outerHeight() / 2 - 10;
@@ -77,21 +86,27 @@ class Popover extends Component {
     )
   }
   renderInfo() {
-    const { children } = this.props;
+    const { children, emptyMsg } = this.props;
+    var msg = emptyMsg;
+    if (!emptyMsg) {
+        msg = 'modal.quickSearch.notHaveInfo';
+    }
     if (!children) {
-      return <FormattedHTMLMessage id="modal.quickSearch.notHaveInfo"/>
+      return <FormattedHTMLMessage id={ msg }/>
     }
     return children;
   }
 
   render() {
-    const { isShow } = this.props;
+    const { isShow, maxHeight } = this.props;
     const { left, top } = this.state;
     let popoverClassName = classnames('popover-con', {'hide': !isShow});
    return (
       <div ref="popover" onMouseMove={this.handleMouseMove} className={popoverClassName} style={{left: left + 'px', top: top + 'px'}}>
-        { this.renderInfo() }
-        { this.renderArrow() }
+        <div className="popover-scroll" style={{maxHeight}}>
+            { this.renderInfo() }
+            { this.renderArrow() }
+        </div>
       </div>
     );
   }

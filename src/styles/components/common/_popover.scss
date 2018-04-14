@@ -15,10 +15,10 @@
     }
     .arrow{
       position: absolute;
-      width: 10px; 
-      height: 20px; 
-      left: -10px;
-      &:after{
+      width: 11px; 
+      height: 22px; 
+      left: -11px;
+      &::after, &::before{
         display: block;
         width: 0px;
         height: 0px;
@@ -27,6 +27,19 @@
         border-left-width: 0px;
         border-right: 10px solid #fff;
       }
+      &::before{
+        border-width: 11px 11px 11px 0;
+        border-right: 11px solid rgba(0, 0, 0, 0.3);
+      }
+      &::after {
+          position: absolute;
+          z-index: 1;
+          right: 0px;
+          top: 1px;
+      }
     }
+  }
+  &-scroll {
+    overflow: auto;
   }
 }

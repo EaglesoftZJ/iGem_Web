@@ -193,6 +193,23 @@ var UserMenu = function (_Component) {
     }, function () {});
   };
 
+  UserMenu.prototype.openUpdateDetial = function openUpdateDetial() {
+    // 显示更新日志
+    if (_ActorClient2.default.isElectron()) {
+      _ActorClient2.default.sendToElectron('showUpdateDetial');
+    }
+  };
+
+  UserMenu.prototype.clearCache = function clearCache() {
+    // 清除缓存
+    if (_ActorClient2.default.isElectron()) {
+      (0, _confirm2.default)(_react2.default.createElement(_reactIntl.FormattedMessage, { id: 'modal.confirm.clearCache' })).then(function () {
+        return _LoginActionCreators2.default.setLoggedOut();
+      }, function () {});
+      _ActorClient2.default.sendToElectron('clearCache');
+    }
+  };
+
   UserMenu.prototype.renderTwitterLink = function renderTwitterLink() {
     var _SharedContainer$get4 = _SharedContainer2.default.get(),
         twitter = _SharedContainer$get4.twitter;
@@ -331,6 +348,26 @@ var UserMenu = function (_Component) {
           _react2.default.createElement(_reactIntl.FormattedMessage, { id: 'menu.preferences' })
         ),
         this.renderHomeLink(),
+        _react2.default.createElement(
+          'li',
+          { className: 'dropdown__menu__item', onClick: this.openUpdateDetial },
+          _react2.default.createElement(
+            'i',
+            { className: 'material-icons' },
+            'description'
+          ),
+          _react2.default.createElement(_reactIntl.FormattedMessage, { id: 'menu.updateDetial' })
+        ),
+        _react2.default.createElement(
+          'li',
+          { className: 'dropdown__menu__item', onClick: this.clearCache },
+          _react2.default.createElement(
+            'i',
+            { className: 'material-icons' },
+            'cached'
+          ),
+          _react2.default.createElement(_reactIntl.FormattedMessage, { id: 'menu.clearCache' })
+        ),
         _react2.default.createElement('li', { className: 'dropdown__menu__separator' }),
         _react2.default.createElement(
           'li',

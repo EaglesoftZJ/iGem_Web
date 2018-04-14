@@ -4,9 +4,15 @@
 
 import React, { Component, PropTypes } from 'react';
 import MarkdownIt from 'markdown-it';
+import linq from 'linq';
 import ActorClient from '../../../utils/ActorClient';
 
 import { processEmojiText } from '../../../utils/EmojiUtils';
+import QuickSearchStore from '../../../stores/QuickSearchStore';
+import RingStore from '../../../stores/RingStore';
+import ProfileStore from '../../../stores/ProfileStore';
+
+import RingActionCreators from '../../../actions/RingActionCreators'
 
 function processText(text) {
   let processedText = text;
@@ -30,7 +36,29 @@ function processText(text) {
 
 
   processedText = processEmojiText(processedText);
-  processedText = processedText.replace(/(@[0-9a-zA-Z_]{5,32})/ig, '<span class="message__mention">$1</span>');
+  var list = QuickSearchStore.getState();
+  var id = '';
+  var name = '';
+  processedText = processedText.replace(/(@[0-9a-zA-Z_]{1,32})/ig, (str) => {
+    // var item = linq.from(list).where(`$.peerInfo.userName == '${str.slice(1)}'`).toArray()[0];
+    // if (item) {
+    //     name = item.peerInfo.title;
+    // }
+    
+    if (ProfileStore.getState().profile.nick === str.slice(1)) {
+        id = 'ring_' + new Date().getTime();
+        // name = ProfileStore.getState().profile.name;
+    }
+    return '<span class="message__mention" id="' + id + '">' + (name ? '@' + name : str) + '</span>';
+  });
+
+//   setTimeout(function() {
+//     if (RingStore.isNewMessage()) {
+//         RingActionCreators.setNew(false);
+//         id && RingActionCreators.setRingDomId(id);
+//         console.log('设置id设置id')
+//     }
+// }, 1);  
 
   return processedText;
 }

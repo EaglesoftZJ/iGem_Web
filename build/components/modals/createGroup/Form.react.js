@@ -151,7 +151,7 @@ var CreateGroupForm = function (_Component) {
       return results;
     }
 
-    if (search === "*") {
+    if (search === '*') {
       return yh_data.slice(0, 300);
     }
 
@@ -248,6 +248,10 @@ var CreateGroupForm = function (_Component) {
     });
     isSelected && this.setState({ 'shouldScroll': true });
     onContactToggle && onContactToggle(userIds);
+  };
+
+  CreateGroupForm.prototype.handleKeyDown = function handleKeyDown(event) {
+    event.nativeEvent.stopImmediatePropagation();
   };
 
   CreateGroupForm.prototype.handleNameChange = function handleNameChange(event) {
@@ -394,6 +398,7 @@ var CreateGroupForm = function (_Component) {
         'search'
       ),
       _react2.default.createElement('input', {
+        onKeyDown: this.handleKeyDown,
         className: 'input',
         onChange: this.handleSearchChange,
         placeholder: intl.messages['invite.search'],
