@@ -87,6 +87,15 @@ var ActionTypes = exports.ActionTypes = (0, _keymirror2.default)({
   MESSAGES_EDIT_START: null,
   MESSAGES_EDIT_END: null,
 
+  DOCUMENT_RECORD_SHOW: null,
+  DOCUMENT_RECORD_HIDE: null,
+  DOCUMENT_RECORD_CHANGE: null,
+  //   DOCUMENT_RECORD_MESSAGE_CHNAGE: null,
+  //   DOCUMENT_RECORD_NODE_CHNAGE: null,
+
+  RING_DOM_ID_CHANGE: null,
+  RING_NEW_CHANGE: null,
+
   ACTIVITY_SHOW: null,
   ACTIVITY_HIDE: null,
 

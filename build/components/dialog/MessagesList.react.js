@@ -10,6 +10,12 @@ var _react2 = _interopRequireDefault(_react);
 
 var _reactIntl = require('react-intl');
 
+var _utils = require('flux/utils');
+
+var _EventListener = require('fbjs/lib/EventListener');
+
+var _EventListener2 = _interopRequireDefault(_EventListener);
+
 var _ActorAppConstants = require('../../constants/ActorAppConstants');
 
 var _PeerUtils = require('../../utils/PeerUtils');
@@ -22,6 +28,22 @@ var _Scroller = require('../common/Scroller.react');
 
 var _Scroller2 = _interopRequireDefault(_Scroller);
 
+var _DocumentRecordStore = require('../../stores/DocumentRecordStore.js');
+
+var _DocumentRecordStore2 = _interopRequireDefault(_DocumentRecordStore);
+
+var _RingStore = require('../../stores/RingStore.js');
+
+var _RingStore2 = _interopRequireDefault(_RingStore);
+
+var _DocumentRecordCreators = require('../../actions/DocumentRecordCreators');
+
+var _DocumentRecordCreators2 = _interopRequireDefault(_DocumentRecordCreators);
+
+var _RingActionCreators = require('../../actions/RingActionCreators');
+
+var _RingActionCreators2 = _interopRequireDefault(_RingActionCreators);
+
 var _MessageItem = require('./messages/MessageItem.react');
 
 var _MessageItem2 = _interopRequireDefault(_MessageItem);
@@ -33,6 +55,14 @@ var _Welcome2 = _interopRequireDefault(_Welcome);
 var _Loading = require('./messages/Loading.react');
 
 var _Loading2 = _interopRequireDefault(_Loading);
+
+var _Popover = require('../common/Popover.react');
+
+var _Popover2 = _interopRequireDefault(_Popover);
+
+var _jquery = require('jquery');
+
+var _jquery2 = _interopRequireDefault(_jquery);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -47,27 +77,29 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var MessagesList = function (_Component) {
   _inherits(MessagesList, _Component);
 
+  MessagesList.getStores = function getStores() {
+    return [_DocumentRecordStore2.default, _RingStore2.default];
+  };
+
+  MessagesList.calculateState = function calculateState() {
+    return {
+      isShow: _DocumentRecordStore2.default.getShowState(),
+      record: _DocumentRecordStore2.default.getCurrentRecord(),
+      node: _DocumentRecordStore2.default.getCurrentNode(),
+      ringDomId: _RingStore2.default.getRingDomId()
+    };
+  };
+
   function MessagesList(props, context) {
     _classCallCheck(this, MessagesList);
 
     var _this = _possibleConstructorReturn(this, _Component.call(this, props, context));
 
-    var dialog = context.delegate.components.dialog;
-
-    if (dialog && dialog.messages) {
-      _this.components = {
-        MessageItem: (0, _lodash.isFunction)(dialog.messages.message) ? dialog.messages.message : _MessageItem2.default,
-        Welcome: (0, _lodash.isFunction)(dialog.messages.welcome) ? dialog.messages.welcome : _Welcome2.default
-      };
-    } else {
-      _this.components = {
-        MessageItem: _MessageItem2.default,
-        Welcome: _Welcome2.default
-      };
-    }
+    console.log('messageList', props, context);
 
     _this.state = {
-      showScrollToBottom: false
+      showScrollToBottom: false,
+      updateRecord: false
     };
 
     _this.dimensions = null;
@@ -83,11 +115,46 @@ var MessagesList = function (_Component) {
     return nextProps.peer !== this.props.peer || nextProps.messages !== this.props.messages || nextProps.isMember !== this.props.isMember || nextState.showScrollToBottom !== this.state.showScrollToBottom;
   };
 
+  MessagesList.prototype.componentWillMount = function componentWillMount() {
+    // 渲染前
+    var dialog = this.context.delegate.components.dialog;
+
+    console.log('delegate components', this.context.delegate.components);
+    if (dialog && dialog.messages) {
+      this.components = {
+        MessageItem: (0, _lodash.isFunction)(dialog.messages.message) ? dialog.messages.message : _MessageItem2.default,
+        Welcome: (0, _lodash.isFunction)(dialog.messages.welcome) ? dialog.messages.welcome : _Welcome2.default
+      };
+    } else {
+      this.components = {
+        MessageItem: _MessageItem2.default,
+        Welcome: _Welcome2.default
+      };
+    }
+  };
+
   MessagesList.prototype.componentDidMount = function componentDidMount() {
     this.restoreScroll();
+    // this.setListeners();
+  };
+
+  MessagesList.prototype.componentWillUnmount = function componentWillUnmount() {
+    this.cleanListeners();
   };
 
   MessagesList.prototype.componentWillReceiveProps = function componentWillReceiveProps(nextProps) {
+    var messages = this.props.messages.messages;
+
+    console.log('message change', messages.length, nextProps.messages.messages.length, messages.slice(-1)[0] && messages.slice(-1)[0].rid, nextProps.messages.messages.slice(-2)[0] && nextProps.messages.messages.slice(-2)[0].rid);
+    //   if (messages.length +  1 === nextProps.messages.messages.length && 
+    //     messages.slice(-1)[0].rid === nextProps.messages.messages.slice(-2)[0].rid &&
+    //     nextProps.messages.messages.slice(-1)[0].content.content === 'text') {
+    //         // 新的消息
+    //         console.log('新消息新消息');
+    //         setTimeout(function() {
+    //             RingActionCreators.setNew(true);
+    //         }, 1);
+    //   }
     if (!_PeerUtils2.default.equals(nextProps.peer, this.props.peer)) {
       this.dimensions = null;
       this.isLoading = false;
@@ -96,11 +163,25 @@ var MessagesList = function (_Component) {
     }
   };
 
+  // componentWillUpdate(nextProps, nextState) {
+  //     const { message } = this.state;
+  //     if (nextState.message != message) {
+  //         this.setState({updateRecord: true});
+  //     }
+  // }
+
   MessagesList.prototype.componentDidUpdate = function componentDidUpdate(prevProps, prevState) {
-    if (prevState.showScrollToBottom !== this.state.showScrollToBottom) {
+    var _state = this.state,
+        isShow = _state.isShow,
+        record = _state.record;
+
+    console.log('更新更新', prevState.isShow, isShow, prevState, this.state, prevProps, this.props);
+    if (!prevState.isShow && isShow) {
+      this.setListeners();
+    }
+    if (prevState.showScrollToBottom !== this.state.showScrollToBottom || prevState.record !== record || prevState.isShow !== isShow) {
       return;
     }
-
     var dimensions = this.dimensions,
         scroller = this.refs.scroller,
         _props = this.props,
@@ -131,9 +212,34 @@ var MessagesList = function (_Component) {
     }
   };
 
+  MessagesList.prototype.setListeners = function setListeners() {
+    this.cleanListeners();
+    this.listeners = [
+    // EventListener.listen(document, 'keydown', this.handleKeyDown),
+    _EventListener2.default.listen(document, 'click', this.popoverHide.bind(this))];
+  };
+
+  MessagesList.prototype.cleanListeners = function cleanListeners() {
+    if (this.listeners) {
+      this.listeners.forEach(function (listener) {
+        return listener.remove();
+      });
+      this.listeners = null;
+    }
+  };
+
+  MessagesList.prototype.popoverHide = function popoverHide() {
+    _DocumentRecordCreators2.default.hide();
+    _DocumentRecordCreators2.default.setRecord([]);
+    this.cleanListeners();
+  };
+
   MessagesList.prototype.onScroll = function onScroll() {
+    var isShow = this.state.isShow;
+
     var dimensions = this.refs.scroller.getDimensions();
     this.updateDimensions(dimensions);
+    isShow && this.popoverHide();
     if (!this.isLoading && dimensions.scrollTop < 100) {
       this.isLoading = true;
       this.props.onLoadMore();
@@ -163,6 +269,25 @@ var MessagesList = function (_Component) {
 
   MessagesList.prototype.handleScrollToBottom = function handleScrollToBottom() {
     this.refs.scroller.scrollToBottom();
+  };
+
+  MessagesList.prototype.handleScrollToMessage = function handleScrollToMessage() {
+    var _this2 = this;
+
+    var ringDomId = this.state.ringDomId;
+
+    var span = document.getElementById(ringDomId);
+    if (ringDomId && span) {
+      console.log('new text', (0, _jquery2.default)(span).parents('.message').get(0));
+      setTimeout(function () {
+        _this2.refs.scroller.scrollToNode((0, _jquery2.default)(span).parents('.message').get(0));
+      }, 100);
+    }
+    _RingActionCreators2.default.setRingDomId('');
+  };
+
+  MessagesList.prototype.handleTableClick = function handleTableClick(event) {
+    event.nativeEvent.stopImmediatePropagation();
   };
 
   MessagesList.prototype.renderHeader = function renderHeader() {
@@ -273,10 +398,78 @@ var MessagesList = function (_Component) {
     );
   };
 
-  MessagesList.prototype.render = function render() {
+  MessagesList.prototype.renderScrollToMessage = function renderScrollToMessage() {
+    console.log('renderScrollToMessage==================');
+    var ringDomId = this.state.ringDomId;
+
+    console.log('重新渲染数据', ringDomId);
+    if (!ringDomId) {
+      return null;
+    }
     return _react2.default.createElement(
       'div',
-      { className: 'chat__container' },
+      { className: 'chat__scroll-to-bottom chat__scroll-to-message', onClick: this.handleScrollToMessage.bind(this) },
+      _react2.default.createElement(
+        'i',
+        null,
+        '@'
+      )
+    );
+  };
+
+  MessagesList.prototype.renderInfo = function renderInfo() {
+    // 渲染下载详情
+    var record = this.state.record;
+
+    if (!record || record.length === 0) {
+      return null;
+    }
+    var tr = record.map(function (item, index) {
+      return _react2.default.createElement(
+        'tr',
+        { key: index },
+        _react2.default.createElement(
+          'td',
+          null,
+          item.userName
+        ),
+        _react2.default.createElement(
+          'td',
+          null,
+          '\u4E8E',
+          item.time,
+          '\u4E0B\u8F7D'
+        )
+      );
+    });
+    return _react2.default.createElement(
+      'table',
+      { className: 'message_record_table', onClick: this.handleTableClick },
+      _react2.default.createElement(
+        'tbody',
+        null,
+        tr
+      )
+    );
+  };
+
+  MessagesList.prototype.render = function render() {
+    var _state2 = this.state,
+        node = _state2.node,
+        isShow = _state2.isShow;
+
+    var addLeft = this.refs.outer ? 240 - this.refs.outer.clientWidth : 0;
+    var addTop = ((0, _jquery2.default)(node).height() - 22) / 2;
+    console.log('偏移量', addLeft, addTop);
+    console.log('node isShow', node, isShow);
+    return _react2.default.createElement(
+      'div',
+      { className: 'chat__container', ref: 'outer' },
+      _react2.default.createElement(
+        _Popover2.default,
+        { node: node, isShow: isShow, container: this.refs.outer, addLeft: addLeft, addTop: addTop, maxHeight: 300, emptyMsg: 'message.documentRecord' },
+        this.renderInfo()
+      ),
       _react2.default.createElement(
         _Scroller2.default,
         {
@@ -288,7 +481,12 @@ var MessagesList = function (_Component) {
         this.renderHeader(),
         this.renderMessages()
       ),
-      this.renderScrollToBottomButton()
+      _react2.default.createElement(
+        'div',
+        { className: 'chat__scroll-to-box' },
+        this.renderScrollToMessage(),
+        this.renderScrollToBottomButton()
+      )
     );
   };
 
@@ -344,5 +542,7 @@ MessagesList.propTypes = {
   onLoadMore: _react.PropTypes.func.isRequired,
   onEdit: _react.PropTypes.func.isRequired
 };
-exports.default = MessagesList;
+exports.default = _utils.Container.create(MessagesList, { withProps: true, withContext: true });
+
+;
 //# sourceMappingURL=MessagesList.react.js.map

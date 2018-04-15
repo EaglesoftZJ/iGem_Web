@@ -10,11 +10,31 @@ var _markdownIt = require('markdown-it');
 
 var _markdownIt2 = _interopRequireDefault(_markdownIt);
 
+var _linq = require('linq');
+
+var _linq2 = _interopRequireDefault(_linq);
+
 var _ActorClient = require('../../../utils/ActorClient');
 
 var _ActorClient2 = _interopRequireDefault(_ActorClient);
 
 var _EmojiUtils = require('../../../utils/EmojiUtils');
+
+var _QuickSearchStore = require('../../../stores/QuickSearchStore');
+
+var _QuickSearchStore2 = _interopRequireDefault(_QuickSearchStore);
+
+var _RingStore = require('../../../stores/RingStore');
+
+var _RingStore2 = _interopRequireDefault(_RingStore);
+
+var _ProfileStore = require('../../../stores/ProfileStore');
+
+var _ProfileStore2 = _interopRequireDefault(_ProfileStore);
+
+var _RingActionCreators = require('../../../actions/RingActionCreators');
+
+var _RingActionCreators2 = _interopRequireDefault(_RingActionCreators);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -48,7 +68,29 @@ function processText(text) {
 
 
   processedText = (0, _EmojiUtils.processEmojiText)(processedText);
-  processedText = processedText.replace(/(@[0-9a-zA-Z_]{5,32})/ig, '<span class="message__mention">$1</span>');
+  var list = _QuickSearchStore2.default.getState();
+  var id = '';
+  var name = '';
+  processedText = processedText.replace(/(@[0-9a-zA-Z_]{1,32})/ig, function (str) {
+    // var item = linq.from(list).where(`$.peerInfo.userName == '${str.slice(1)}'`).toArray()[0];
+    // if (item) {
+    //     name = item.peerInfo.title;
+    // }
+
+    if (_ProfileStore2.default.getState().profile.nick === str.slice(1)) {
+      id = 'ring_' + new Date().getTime();
+      // name = ProfileStore.getState().profile.name;
+    }
+    return '<span class="message__mention" id="' + id + '">' + (name ? '@' + name : str) + '</span>';
+  });
+
+  //   setTimeout(function() {
+  //     if (RingStore.isNewMessage()) {
+  //         RingActionCreators.setNew(false);
+  //         id && RingActionCreators.setRingDomId(id);
+  //         console.log('设置id设置id')
+  //     }
+  // }, 1);  
 
   return processedText;
 }

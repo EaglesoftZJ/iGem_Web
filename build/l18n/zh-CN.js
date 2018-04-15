@@ -80,6 +80,7 @@ exports.default = {
       'reply': '回复',
       'forward': '前进',
       'download': '下载',
+      'downloadDetial': '查看记录',
       'delete': '删除',
       'quote': '引用',
       'uploading': '上传中...',
@@ -96,7 +97,8 @@ exports.default = {
         }
       },
       'loading': '加载更多更早的聊天记录',
-      'unread': '新的消息'
+      'unread': '新的消息',
+      'documentRecord': '未查询到下载记录'
     },
 
     // Connection state
@@ -396,7 +398,8 @@ exports.default = {
         privatesCreate: '添加新联系人'
       },
       quicksearch: '查看所有联系人',
-      department: '通过组织结构选择联系人'
+      department: '通过组织结构选择联系人',
+      documentRecord: '查看下载记录'
     },
 
     context: {

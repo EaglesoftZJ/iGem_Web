@@ -88,6 +88,10 @@ var _history2 = _interopRequireDefault(_history);
 
 var _timers = require('timers');
 
+var _jquery = require('jquery');
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -163,10 +167,30 @@ var Main = function (_Component) {
       });
       window.messenger.listenOnRender('downloadCompleted', function (event, arg) {
         _MessageAlertActionCreators2.default.show({ title: '下载完成', type: 'success', key: new Date().getTime() });
-        if (arg && arg.peer) {
+        if (arg && arg.info) {
           console.log('我要发信息我要发信息');
-          var text = (0, _MessageUtils.prepareTextMessage)(':paperclip:"' + arg.name + '"接收成功');
-          _ActorClient2.default.sendTextMessage(arg.peer, text);
+
+          var _ProfileStore$getStat = _ProfileStore2.default.getState(),
+              _ProfileStore$getStat2 = _ProfileStore$getStat.profile,
+              name = _ProfileStore$getStat2.name,
+              id = _ProfileStore$getStat2.id;
+          //   var text = prepareTextMessage(':paperclip:"' + arg.name + '"接收成功');
+          //   ActorClient.sendTextMessage(arg.info, text);
+
+
+          var spapdata = '<v:Envelope xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns:d="http://www.w3.org/2001/XMLSchema" xmlns:c="http://schemas.xmlsoap.org/soap/encoding/" xmlns:v="http://schemas.xmlsoap.org/soap/envelope/">\n                            <v:Header />\n                            <v:Body>\n                                <n0:insertXzrz id="o0" c:root="1" xmlns:n0="http://eaglesoft">\n                                    <json i:type="d:string">{\'messageId\': \'' + arg.info.rid + '\',\'userId\': \'' + id + '\',\'userName\':\'' + name + '\'}</json>\n                                </n0:insertXzrz>\n                            </v:Body>\n                        </v:Envelope>';
+          var method = 'selectXzrz';
+          _jquery2.default.ajax({
+            url: 'http://61.175.100.14:8012/ActorServices-Maven/services/ActorService',
+            type: 'post',
+            data: spapdata,
+            beforeSend: function beforeSend(request) {
+              console.log('beforeSend', request);
+              request.setRequestHeader('Content-Type', 'text/xml;charset=UTF-8');
+              request.setRequestHeader('SOAPActrin', 'http://eaglesoft/' + method);
+            },
+            success: function success(res) {}
+          });
         }
       });
       window.messenger.listenOnRender('downloadCancelled', function (event, arg) {

@@ -55,7 +55,9 @@ var Popover = function (_Component) {
   Popover.prototype.resetPopoverPosition = function resetPopoverPosition() {
     var _props = this.props,
         node = _props.node,
-        container = _props.container;
+        container = _props.container,
+        addLeft = _props.addLeft,
+        addTop = _props.addTop;
     var _state = this.state,
         left = _state.left,
         top = _state.top,
@@ -68,8 +70,8 @@ var Popover = function (_Component) {
     var nodeLeft = (0, _jquery2.default)(node).position().left;
     var nodeWidth = (0, _jquery2.default)(node).outerWidth(true);
     var nodeHeight = (0, _jquery2.default)(node).outerHeight(true);
-    var toLeft = nodeLeft + nodeWidth + 10;
-    var toTop = nodeTop + nodeHeight - popoverHeight / 2 - nodeHeight / 2;
+    var toLeft = nodeLeft + nodeWidth + 10 + addLeft;
+    var toTop = nodeTop + nodeHeight - popoverHeight / 2 - nodeHeight / 2 + addTop;
     var wTop = (0, _jquery2.default)(window).scrollTop();
     var wBottom = wTop + (0, _jquery2.default)(window).height();
     var aTop = (0, _jquery2.default)(this.refs.popover).outerHeight() / 2 - 10;
@@ -103,16 +105,24 @@ var Popover = function (_Component) {
   };
 
   Popover.prototype.renderInfo = function renderInfo() {
-    var children = this.props.children;
+    var _props2 = this.props,
+        children = _props2.children,
+        emptyMsg = _props2.emptyMsg;
 
+    var msg = emptyMsg;
+    if (!emptyMsg) {
+      msg = 'modal.quickSearch.notHaveInfo';
+    }
     if (!children) {
-      return _react2.default.createElement(_reactIntl.FormattedHTMLMessage, { id: 'modal.quickSearch.notHaveInfo' });
+      return _react2.default.createElement(_reactIntl.FormattedHTMLMessage, { id: msg });
     }
     return children;
   };
 
   Popover.prototype.render = function render() {
-    var isShow = this.props.isShow;
+    var _props3 = this.props,
+        isShow = _props3.isShow,
+        maxHeight = _props3.maxHeight;
     var _state2 = this.state,
         left = _state2.left,
         top = _state2.top;
@@ -121,8 +131,12 @@ var Popover = function (_Component) {
     return _react2.default.createElement(
       'div',
       { ref: 'popover', onMouseMove: this.handleMouseMove, className: popoverClassName, style: { left: left + 'px', top: top + 'px' } },
-      this.renderInfo(),
-      this.renderArrow()
+      _react2.default.createElement(
+        'div',
+        { className: 'popover-scroll', style: { maxHeight: maxHeight } },
+        this.renderInfo(),
+        this.renderArrow()
+      )
     );
   };
 
@@ -132,7 +146,15 @@ var Popover = function (_Component) {
 Popover.propTypes = {
   node: _react.PropTypes.object,
   isShow: _react.PropTypes.bool,
-  container: _react.PropTypes.object
+  container: _react.PropTypes.object,
+  addLeft: _react.PropTypes.number,
+  addTop: _react.PropTypes.number,
+  emptyMsg: _react.PropTypes.string,
+  maxHeight: _react.PropTypes.number
+};
+Popover.defaultProps = {
+  addLeft: 0,
+  addTop: 0
 };
 exports.default = Popover;
 //# sourceMappingURL=popover.react.js.map

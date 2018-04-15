@@ -32,6 +32,10 @@ var _DropdownActionCreators = require('../../../actions/DropdownActionCreators')
 
 var _DropdownActionCreators2 = _interopRequireDefault(_DropdownActionCreators);
 
+var _DocumentRecordCreators = require('../../../actions/DocumentRecordCreators');
+
+var _DocumentRecordCreators2 = _interopRequireDefault(_DocumentRecordCreators);
+
 var _DropdownStore = require('../../../stores/DropdownStore');
 
 var _DropdownStore2 = _interopRequireDefault(_DropdownStore);
@@ -73,6 +77,15 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var MessageItem = function (_Component) {
   _inherits(MessageItem, _Component);
 
+  MessageItem.prototype.getChildContext = function getChildContext() {
+    var message = this.props.message;
+
+    return {
+      showDocumentRecord: this.showDocumentRecord.bind(this),
+      message: message
+    };
+  };
+
   MessageItem.getStores = function getStores() {
     return [_DropdownStore2.default];
   };
@@ -105,6 +118,14 @@ var MessageItem = function (_Component) {
     _this.onClick = _this.onClick.bind(_this);
     return _this;
   }
+
+  MessageItem.prototype.showDocumentRecord = function showDocumentRecord() {
+    // 显示文档下载记录弹窗
+    console.log('showDocumentRecord');
+    var message = this.props.message;
+
+    _DocumentRecordCreators2.default.show(message, this.refs.messageItem);
+  };
 
   MessageItem.prototype.shouldComponentUpdate = function shouldComponentUpdate(nextProps) {
     return this.props.message !== nextProps.message || this.props.isShort !== nextProps.isShort;
@@ -269,7 +290,7 @@ var MessageItem = function (_Component) {
 
     return _react2.default.createElement(
       'div',
-      { className: messageClassName },
+      { className: messageClassName, ref: 'messageItem' },
       this.renderLeftBlock(),
       _react2.default.createElement(
         'div',
@@ -300,6 +321,10 @@ MessageItem.propTypes = {
 MessageItem.defaultProps = {
   isSelected: false,
   onSelect: _lodash.noop
+};
+MessageItem.childContextTypes = {
+  showDocumentRecord: _react.PropTypes.func,
+  message: _react.PropTypes.object
 };
 exports.default = _utils.Container.create(MessageItem, { withProps: true });
 //# sourceMappingURL=MessageItem.react.js.map

@@ -2,6 +2,8 @@
 
 exports.__esModule = true;
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
@@ -11,6 +13,10 @@ var _classnames = require('classnames');
 var _classnames2 = _interopRequireDefault(_classnames);
 
 var _reactIntl = require('react-intl');
+
+var _rcTooltip = require('rc-tooltip');
+
+var _rcTooltip2 = _interopRequireDefault(_rcTooltip);
 
 var _DialogStore = require('../../../stores/DialogStore');
 
@@ -36,10 +42,10 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var Document = function (_Component) {
   _inherits(Document, _Component);
 
-  function Document() {
+  function Document(props, context) {
     _classCallCheck(this, Document);
 
-    var _this = _possibleConstructorReturn(this, _Component.call(this));
+    var _this = _possibleConstructorReturn(this, _Component.call(this, props, context));
 
     _this.state = {
       peer: _DialogStore2.default.getCurrentPeer()
@@ -90,19 +96,52 @@ var Document = function (_Component) {
       );
     } else {
       return _react2.default.createElement(
-        'a',
-        { href: fileUrl, onClick: this.handleDownloadClick.bind(this) },
-        _react2.default.createElement(_reactIntl.FormattedMessage, { id: 'message.download' })
+        'div',
+        { className: 'btn-group' },
+        _react2.default.createElement(
+          'a',
+          { href: fileUrl, onClick: this.handleDownloadClick.bind(this) },
+          _react2.default.createElement(_reactIntl.FormattedMessage, { id: 'message.download' })
+        ),
+        _react2.default.createElement(
+          _rcTooltip2.default,
+          {
+            placement: 'top',
+            mouseEnterDelay: 0.15,
+            mouseLeaveDelay: 0,
+            overlay: _react2.default.createElement(_reactIntl.FormattedMessage, { id: 'tooltip.documentRecord' }) },
+          _react2.default.createElement(
+            'button',
+            { onMouseMove: this.handleMouseMove, onClick: this.handleOpenRecord.bind(this), className: 'button button--icon', style: { padding: 0, height: 24, marginTop: -2, marginLeft: 5, color: '#468ee5' } },
+            _react2.default.createElement(
+              'i',
+              { style: { fontSize: 20 }, className: 'material-icons' },
+              'history'
+            )
+          )
+        )
       );
     }
   };
 
   Document.prototype.handleDownloadClick = function handleDownloadClick() {
     var peer = this.state.peer;
+    var message = this.context.message;
 
     if (_ActorClient2.default.isElectron()) {
-      window.messenger.sendToElectron('will-download-peer', peer);
+      window.messenger.sendToElectron('will-download-info', _extends({ rid: message.rid }, peer));
     }
+  };
+
+  Document.prototype.handleOpenRecord = function handleOpenRecord(event) {
+    var showDocumentRecord = this.context.showDocumentRecord;
+
+    showDocumentRecord();
+    event.nativeEvent.stopImmediatePropagation();
+  };
+
+  Document.prototype.handleMouseMove = function handleMouseMove(event) {
+    event.nativeEvent.stopImmediatePropagation();
   };
 
   Document.prototype.render = function render() {
@@ -117,7 +156,7 @@ var Document = function (_Component) {
 
     return _react2.default.createElement(
       'div',
-      { className: documentClassName },
+      { className: documentClassName, ref: true },
       _react2.default.createElement(
         'div',
         { className: 'document row' },
@@ -164,7 +203,13 @@ Document.propTypes = {
   fileSize: _react.PropTypes.string.isRequired,
   fileExtension: _react.PropTypes.string.isRequired,
   isUploading: _react.PropTypes.bool.isRequired,
-  className: _react.PropTypes.string
+  className: _react.PropTypes.string,
+  sortKey: _react.PropTypes.string,
+  container: _react.PropTypes.object
+};
+Document.contextTypes = {
+  showDocumentRecord: _react.PropTypes.func,
+  message: _react.PropTypes.object
 };
 exports.default = Document;
 //# sourceMappingURL=Document.react.js.map

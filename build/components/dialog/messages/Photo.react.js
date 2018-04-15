@@ -2,6 +2,8 @@
 
 exports.__esModule = true;
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
@@ -33,10 +35,10 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var Photo = function (_Component) {
   _inherits(Photo, _Component);
 
-  function Photo() {
+  function Photo(props, context) {
     _classCallCheck(this, Photo);
 
-    var _this = _possibleConstructorReturn(this, _Component.call(this));
+    var _this = _possibleConstructorReturn(this, _Component.call(this, props, context));
 
     _this.state = {
       peer: _DialogStore2.default.getCurrentPeer()
@@ -81,9 +83,10 @@ var Photo = function (_Component) {
   Photo.prototype.downloadClick = function downloadClick() {
     // 点击下载
     var peer = this.state.peer;
+    var message = this.context.message;
 
     if (_ActorClient2.default.isElectron()) {
-      window.messenger.sendToElectron('will-download-peer', peer);
+      window.messenger.sendToElectron('will-download-info', _extends({ rid: message.rid }, peer));
     }
   };
 
@@ -134,6 +137,9 @@ Photo.propTypes = {
   h: _react.PropTypes.number.isRequired,
   preview: _react.PropTypes.string.isRequired,
   isUploading: _react.PropTypes.bool.isRequired
+};
+Photo.contextTypes = {
+  message: _react.PropTypes.object
 };
 exports.default = Photo;
 //# sourceMappingURL=Photo.react.js.map

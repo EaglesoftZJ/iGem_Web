@@ -181,7 +181,8 @@ var UserMenu = function (_Component) {
 
     event.preventDefault();
     if (_ActorClient2.default.isElectron()) {
-      _ActorClient2.default.handleLinkClick(event);
+      window.messenger.sendToElectron('openLink', { url: page });
+      //   ActorClient.handleLinkClick(event);
     } else {
       window.open(page, '_blank');
     }
@@ -256,7 +257,7 @@ var UserMenu = function (_Component) {
       { className: 'dropdown__menu__item' },
       _react2.default.createElement(
         'a',
-        { href: homePage, onClick: this.openHomePage },
+        { href: 'javascript:;', onClick: this.openHomePage },
         _react2.default.createElement(
           'i',
           { className: 'material-icons' },
