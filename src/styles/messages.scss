@@ -1129,32 +1129,43 @@ $sticker-max-size: 180px;
   position: relative;
   display: inline-block;
   font-size: 12px;
-  .img-icon{
-    display: none;
-    position: absolute;
-    z-index: 3;
-    bottom: 5px;
+  img-icon {
+      display: none;
+      position: absolute;
+        z-index: 3;
+        bottom: 5px;
+  }
+    .img-icon.download {
+        right: -26px;
+    }
+    .img-icon.copy {
+        right: -50px;
+    }
+}
+.img-icon{
+    display: inline-block;
     width: 18px;
     height: 18px;
-    text-indent: -9999px;
+    text-indent: 9999px;
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
     overflow: hidden;
     opacity: 0.6;
     transition: opacity 0.5s ease-out;
+    vertical-align: middle;
+    &+.img-icon {
+        margin-left: 10px;
+    }
   }
-  .download {
-    right: -26px;
-    background-image: url('/assets/images/download.png');
-  }
-  .copy {
-    right: -50px;
-    background-image: url('/assets/images/copy.png');
-  }
-  a:hover {
+.img-icon:hover {
     opacity: 1;
-  }
+}
+.img-icon.download {
+    background-image: url('/assets/images/download.png');
+}
+.img-icon.copy {
+    background-image: url('/assets/images/copy.png');
 }
 .message__photo {
   cursor: pointer;

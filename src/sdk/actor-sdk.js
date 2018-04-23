@@ -23,7 +23,7 @@ import { endpoints, rootElement, helpPhone, appName } from '../constants/ActorAp
 import history from '../utils/history';
 import RouterHooks from '../utils/RouterHooks';
 import { IntlProvider } from 'react-intl';
-import { lightbox } from '../utils/ImageUtils'
+import { lightbox, handleCopy, downloadClick } from '../utils/ImageUtils'
 
 import LoginActionCreators from '../actions/LoginActionCreators';
 import defaultLogHandler from '../utils/defaultLogHandler';
@@ -41,6 +41,18 @@ import DefaultArchive from '../components/Archive.react';
 import DefaultDialog from '../components/Dialog.react';
 import DefaultEmpty from '../components/Empty.react';
 import Department from '../components/Department.react';
+import eventDrag from 'jquery.event.drag';
+eventDrag($);
+import 'jquery.mousewheel';
+import 'screenfull';
+import '../../assets/scripts/mag-analytics.js';
+import '../../assets/scripts/mag.js';
+import '../../assets/scripts/mag-jquery.js';
+import '../../assets/scripts/mag-control.js';
+
+
+console.log('滚动测试', $('img').mag);
+// console.log('显示！！！');
 
 import { extendL18n, getIntlData } from '../l18n';
 
@@ -50,13 +62,32 @@ const ACTOR_INIT_EVENT = 'INIT';
 Pace.start({
   ajax: false,
   restartOnRequestAfter: false,
-  restartOnPushState: false
+  restartOnPushState: false,
 });
 
 // Init lightbox
 lightbox.load({
-  animation: false,
-  controlClose: '<i class="material-icons">close</i>'
+  animation: 500,
+    asyn: true,
+    carousel: false,
+    controlClose: '<i class="material-icons">close</i>',
+    btns: [
+        '<a class="download img-icon" href="javascript:;" target="_self">下载</a>',
+        '<a class="copy img-icon" href="javascript:;" target="_self">复制</a>'
+    ],
+    funs: [downloadClick, handleCopy],
+    onload() {
+        setTimeout(() => {
+            var $host = $('[mag-thumb=drag]');
+            console.log('初始化img',  $host);
+            $host.mag({
+                position: 'drag',
+                zoomMin: 0.5,
+                toggle: false
+            });
+        }, 100);
+      
+  }
 });
 
 window.isJsAppLoaded = false;
@@ -183,7 +214,7 @@ class ActorSDK {
 
     if (window.location.hash !== '#/deactivated') {
       if (!ActorClient.isElectron() && LoginStore.isLoggedIn()) {
-        console.log("sdk loggedin");
+        console.log('sdk loggedin');
         LoginActionCreators.setLoggedIn({ redirect: false });
       }
     }

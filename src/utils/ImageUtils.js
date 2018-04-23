@@ -2,7 +2,11 @@
  * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
  */
 import '../vendor/canvasBlurRect';
-import Lightbox from 'jsonlylightbox';
+// import Lightbox from 'jsonlylightbox';
+import Lightbox from '../../assets/scripts/lightbox.js';
+import ActorClient from '../utils/ActorClient';
+import MessageAlertActionCreators from '../actions/MessageAlertActionCreators';
+import DialogStore from '../stores/DialogStore';
 
 const lightbox = new Lightbox();
 
@@ -66,4 +70,32 @@ export function getDimentions(width, height, maxWidth = 300, maxHeight = 400) {
   }
 
   return { width, height };
+}
+
+export function handleCopy(url) {
+    var canvas = document.createElement('canvas');
+    var ctx = canvas.getContext('2d');
+    var img = new Image();
+    img.setAttribute('crossOrigin', 'anonymous');
+    img.onload = () => {
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+      ctx.drawImage(img, 0, 0);
+      document.body.appendChild(canvas);
+      var dataUrl = canvas.toDataURL();
+      ActorClient.sendToElectron('copy-image', {dataUrl});
+      MessageAlertActionCreators.show({title: '图片复制成功', type: 'success', key: new Date().getTime()})
+
+    }
+    img.src = url;
+}
+
+export function downloadClick(url) {
+    // 点击下载
+    location.href = url;
+    // window.open(url, 'self');
+    // var peer = DialogStore.getCurrentPeer();
+    // if (ActorClient.isElectron()) {
+    //     window.messenger.sendToElectron('will-download-info', {rid: message.rid, ...peer});
+    // }
 }

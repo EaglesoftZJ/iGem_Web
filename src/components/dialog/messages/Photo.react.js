@@ -31,7 +31,8 @@ class Photo extends Component {
 
   onClick(event) {
     event.preventDefault();
-    lightbox.open(event.target.src, 'message');
+    // lightbox.open(event.target.src, 'mygroup');
+    lightbox.openGroup(event.target, 'mygroup');
   }
 
   getDimentions() {
@@ -80,6 +81,8 @@ class Photo extends Component {
           width={width}
           height={height}
           onClick={this.onClick}
+          data-jslghtbx-group="mygroup"
+          data-jslghtbx={fileUrl || preview}
         />
         {
           ActorClient.isElectron() ?

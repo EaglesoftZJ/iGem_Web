@@ -1,6 +1,7 @@
 import path from 'path';
 import webpack from 'webpack';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
+import 'expose-loader';
 
 const sassLoaders = [
   'css?sourceMap',
@@ -39,7 +40,12 @@ export default {
     noParse: [
       /languages\/autoit\.js/
     ],
-    loaders: [{
+    loaders: [
+    {
+        test: require.resolve('jquery'),
+        loader: 'expose-loader?jQuery!expose-loader?$'
+    },  
+    {
       test: /\.css$/,
       loader: 'style!css?modules&localIdentName=[name]__[local]!postcss?pack=cssnext',
       include: path.join(__dirname, 'src/components')

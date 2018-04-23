@@ -399,7 +399,7 @@ exports.default = {
       },
       quicksearch: '查看所有联系人',
       department: '通过组织结构选择联系人',
-      documentRecord: '查看下载记录'
+      documentRecord: '点击查看下载记录'
     },
 
     context: {

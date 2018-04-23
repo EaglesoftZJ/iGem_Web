@@ -26,6 +26,7 @@ import DefaultWelcome from './messages/Welcome.react';
 import Loading from './messages/Loading.react';
 import Popover from '../common/Popover.react';
 import $ from 'jquery';
+import { lightbox } from '../../utils/ImageUtils';
 
 class MessagesList extends Component {
     static getStores() {
@@ -150,7 +151,7 @@ class MessagesList extends Component {
   
   componentDidUpdate(prevProps, prevState) {
 
-    const { isShow, record } = this.state; 
+    const { isShow, record } = this.state;
     console.log('更新更新', prevState.isShow, isShow, prevState, this.state, prevProps, this.props);
     if (!prevState.isShow && isShow) {
         this.setListeners();
@@ -159,7 +160,55 @@ class MessagesList extends Component {
       return;
     }
     const { dimensions, refs: { scroller }, props: { uid, messages } } = this;
-
+    if (prevProps.messages.messages !== messages.messages) {
+        console.log('message发生改变了！！！');
+        // lightbox.load({
+        //     boxId: false,
+        //     dimensions: true,
+        //     captions: true,
+        //     prevImg: false,
+        //     nextImg: false,
+        //     hideCloseBtn: false,
+        //     closeOnClick: true,
+        //     animElCount: 4,
+        //     preload: true,
+        //     carousel: false,
+        //     animation: false,
+        //     nextOnClick: true,
+        //     responsive: true,
+        //     maxImgSize: 0.8,
+        //     // callbacks
+        //     onopen: function (image) {
+        //         // your code goes here
+        //         console.log('onopen', image)
+        //     },
+        //     onclose: function (image) {
+        //         // your code goes here
+        //         console.log('onclose', image)
+        //     },
+        //     onload: function (event) {
+        //         // your code goes here
+        //         console.log('onload', event)
+        //     },
+        //     onresize: function (image) {
+        //         // your code goes here
+        //         console.log('onresize', image)
+        //     },
+        //     onloaderror: function (event) {
+        //         // your code goes here
+        //         console.log('onloaderror', event)
+        //         // just display next or prev picture on error
+        //         // if (event._happenedWhile === 'prev')
+        //         //     lightbox.prev()
+        //         // else
+        //         //     lightbox.next()
+        //     },
+        //     onimageclick: function (image) {
+        //         // your code goes here
+        //         console.log('Image clicked!', image)
+        //     }
+        // });
+    }
     if (messages.unreadId && messages.unreadId !== prevProps.messages.unreadId) {
       if (this.refs.unread) {
         this.refs.scroller.scrollToNode(this.refs.unread);
