@@ -56,6 +56,14 @@ class Document extends Component {
     }
   }
 
+  renderPrview() {
+    // 渲染预览按钮
+    if (!this.checkOfficeFile()) {
+      return null;
+    }
+    return (<a href="javascript:;" onClick={this.handlePreviewClick.bind(this)}><FormattedMessage id="message.preview"/></a>);
+  }
+
   renderActions() {
     const { fileUrl, isUploading } = this.props;
 
@@ -64,8 +72,10 @@ class Document extends Component {
         <span><FormattedMessage id="message.uploading"/></span>
       );
     } else {
+      decodeURIComponent
       return (
         <div className="btn-group">
+            { this.renderPrview() }
             <a href={fileUrl} onClick={this.handleDownloadClick.bind(this)}><FormattedMessage id="message.download"/></a>
             <Tooltip
                 placement="top"
@@ -80,11 +90,42 @@ class Document extends Component {
     }
   }
   
+  
   handleDownloadClick() {
     const { peer } = this.state;
     const { message } = this.context;
     if (ActorClient.isElectron()) {
       window.messenger.sendToElectron('will-download-info', {rid: message.rid, ...peer});
+    }
+  }
+
+  handlePreviewClick() {
+    const { fileUrl, fileName } = this.props;
+    var type = this.checkOfficeFile();
+    if (type) {
+      var arr = fileUrl.split('?');
+      var arr1 = arr[0].split('/');
+      var name = encodeURIComponent(encodeURIComponent(arr1.slice(-1)[0]));
+      var filePath = '';
+      switch (type) {
+        case 'doc':
+        case 'docx':
+          filePath = '/wv/wordviewerframe.aspx?';
+          break;
+        case 'xls':
+        case 'xlsx':
+          filePath = '/x/_layouts/xlviewerinternal.aspx?';
+          break;
+        case 'ppt':
+        case 'pptx':
+          filePath = '/p/PowerPointFrame.aspx?';
+          break;
+        case 'pdf':
+          filePath = '/wv/wordviewerframe.aspx?PdfMode=1&';
+          break;
+      }
+      var url = `http://220.189.207.21${filePath}WOPISrc=http://61.175.100.14:8090/FlyChatWebService/wopi/files/${arr1.slice(-2, -1)[0]}/${name}`;
+      ActorClient.isElectron() ?  ActorClient.sendToElectron('openLink', {url}) : window.open(url);
     }
   }
 
@@ -96,6 +137,14 @@ class Document extends Component {
 
   handleMouseMove(event) {
     event.nativeEvent.stopImmediatePropagation();
+  }
+
+  checkOfficeFile() {
+    const { fileName } = this.props;
+    if (/\.(doc|xls|ppt|docx|xlsx|pptx|pdf)$/.test(fileName)) {
+      return RegExp.$1;
+    }
+    return false;
   }
 
   render() {

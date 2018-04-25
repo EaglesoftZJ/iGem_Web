@@ -92,6 +92,11 @@ $sticker-max-size: 180px;
 
   flex: 0 1 auto;
   flex-wrap: wrap;
+  .btn-group {
+      a+a {
+        margin-left: 5px;
+      }
+  }
   .message__body:hover{
     .message__photo__box{
       .img-icon{
@@ -1129,7 +1134,7 @@ $sticker-max-size: 180px;
   position: relative;
   display: inline-block;
   font-size: 12px;
-  img-icon {
+  .img-icon {
       display: none;
       position: absolute;
         z-index: 3;
