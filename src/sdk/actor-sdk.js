@@ -41,6 +41,7 @@ import DefaultArchive from '../components/Archive.react';
 import DefaultDialog from '../components/Dialog.react';
 import DefaultEmpty from '../components/Empty.react';
 import Department from '../components/Department.react';
+import $ from 'jquery';
 import eventDrag from 'jquery.event.drag';
 eventDrag($);
 import 'jquery.mousewheel';

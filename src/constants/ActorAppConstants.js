@@ -89,6 +89,11 @@ export const ActionTypes = keymirror({
     RING_DOM_ID_CHANGE: null,
     RING_NEW_CHANGE: null,
 
+  
+  DOWNLOAD_SHOW: null,
+  DOWNLOAD_HIDE: null,
+  DOWNLOAD_CHANGE: null,
+
   ACTIVITY_SHOW: null,
   ACTIVITY_HIDE: null,
     
@@ -450,7 +455,8 @@ export const ModalTypes = keymirror({
   INVITE_BY_LINK: null,
   QUICK_SEARCH: null,
   ATTACHMENTS: null,
-  DEPARTMENT: null
+  DEPARTMENT: null,
+  DOWNLOAD: null
 });
 
 export const PreferencesTabTypes = keymirror({

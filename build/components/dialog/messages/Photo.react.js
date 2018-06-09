@@ -48,7 +48,8 @@ var Photo = function (_Component) {
 
   Photo.prototype.onClick = function onClick(event) {
     event.preventDefault();
-    _ImageUtils.lightbox.open(event.target.src, 'message');
+    // lightbox.open(event.target.src, 'mygroup');
+    _ImageUtils.lightbox.openGroup(event.target, 'mygroup');
   };
 
   Photo.prototype.getDimentions = function getDimentions() {
@@ -109,7 +110,9 @@ var Photo = function (_Component) {
         src: fileUrl || preview,
         width: width,
         height: height,
-        onClick: this.onClick
+        onClick: this.onClick,
+        'data-jslghtbx-group': 'mygroup',
+        'data-jslghtbx': fileUrl || preview
       }),
       _ActorClient2.default.isElectron() ? _react2.default.createElement(
         'div',

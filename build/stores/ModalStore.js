@@ -84,6 +84,11 @@ var ModalStore = function (_ReduceStore) {
         });
       case _ActorAppConstants.ActionTypes.DEPARTMENT_SHOW:
         return _extends({}, state);
+
+      case _ActorAppConstants.ActionTypes.DOWNLOAD_SHOW:
+        return _extends({}, state, {
+          currentModal: _ActorAppConstants.ModalTypes.DOWNLOAD
+        });
       case _ActorAppConstants.ActionTypes.INVITE_USER_MODAL_SHOW:
         return _extends({}, state, {
           currentModal: _ActorAppConstants.ModalTypes.INVITE
@@ -114,6 +119,7 @@ var ModalStore = function (_ReduceStore) {
       case _ActorAppConstants.ActionTypes.INVITE_USER_MODAL_HIDE:
       case _ActorAppConstants.ActionTypes.ATTACHMENT_MODAL_HIDE:
       case _ActorAppConstants.ActionTypes.DEPARTMENT_HIDE:
+      case _ActorAppConstants.ActionTypes.DOWNLOAD_HIDE:
         return this.getInitialState();
 
       default:

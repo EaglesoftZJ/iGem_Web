@@ -96,6 +96,10 @@ var ActionTypes = exports.ActionTypes = (0, _keymirror2.default)({
   RING_DOM_ID_CHANGE: null,
   RING_NEW_CHANGE: null,
 
+  DOWNLOAD_SHOW: null,
+  DOWNLOAD_HIDE: null,
+  DOWNLOAD_CHANGE: null,
+
   ACTIVITY_SHOW: null,
   ACTIVITY_HIDE: null,
 
@@ -455,7 +459,8 @@ var ModalTypes = exports.ModalTypes = (0, _keymirror2.default)({
   INVITE_BY_LINK: null,
   QUICK_SEARCH: null,
   ATTACHMENTS: null,
-  DEPARTMENT: null
+  DEPARTMENT: null,
+  DOWNLOAD: null
 });
 
 var PreferencesTabTypes = exports.PreferencesTabTypes = (0, _keymirror2.default)({

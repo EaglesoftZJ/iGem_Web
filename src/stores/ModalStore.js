@@ -73,6 +73,12 @@ class ModalStore extends ReduceStore {
           ...state,
           // currentModal: ModalTypes.DEPARTMENT
         }
+
+      case ActionTypes.DOWNLOAD_SHOW:
+        return {
+          ...state,
+          currentModal: ModalTypes.DOWNLOAD
+      }
       case ActionTypes.INVITE_USER_MODAL_SHOW:
         return {
           ...state,
@@ -95,6 +101,7 @@ class ModalStore extends ReduceStore {
           ...state,
           currentModal: ModalTypes.ATTACHMENTS
         }
+        
 
       case ActionTypes.PROFILE_HIDE:
       case ActionTypes.GROUP_LIST_HIDE:
@@ -107,6 +114,7 @@ class ModalStore extends ReduceStore {
       case ActionTypes.INVITE_USER_MODAL_HIDE:
       case ActionTypes.ATTACHMENT_MODAL_HIDE:
       case ActionTypes.DEPARTMENT_HIDE:
+      case ActionTypes.DOWNLOAD_HIDE:
         return this.getInitialState();
 
       default:

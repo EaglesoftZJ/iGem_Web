@@ -79,6 +79,7 @@ exports.default = {
       'repeat': '转发',
       'reply': '回复',
       'forward': '前进',
+      'preview': '预览',
       'download': '下载',
       'downloadDetial': '查看记录',
       'delete': '删除',

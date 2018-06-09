@@ -5,19 +5,34 @@ exports.dataURItoBlob = exports.lightbox = undefined;
 exports.loadImage = loadImage;
 exports.renderImageToCanvas = renderImageToCanvas;
 exports.getDimentions = getDimentions;
+exports.handleCopy = handleCopy;
+exports.downloadClick = downloadClick;
 
 require('../vendor/canvasBlurRect');
 
-var _jsonlylightbox = require('jsonlylightbox');
+var _lightbox = require('../../assets/scripts/lightbox.js');
 
-var _jsonlylightbox2 = _interopRequireDefault(_jsonlylightbox);
+var _lightbox2 = _interopRequireDefault(_lightbox);
+
+var _ActorClient = require('../utils/ActorClient');
+
+var _ActorClient2 = _interopRequireDefault(_ActorClient);
+
+var _MessageAlertActionCreators = require('../actions/MessageAlertActionCreators');
+
+var _MessageAlertActionCreators2 = _interopRequireDefault(_MessageAlertActionCreators);
+
+var _DialogStore = require('../stores/DialogStore');
+
+var _DialogStore2 = _interopRequireDefault(_DialogStore);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-/*
- * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
- */
-var lightbox = new _jsonlylightbox2.default();
+// import Lightbox from 'jsonlylightbox';
+var lightbox = new _lightbox2.default(); /*
+                                          * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
+                                          */
+
 
 var dataURItoBlob = function dataURItoBlob(dataURI) {
   var byteString = atob(dataURI.split(',')[1]);
@@ -79,5 +94,32 @@ function getDimentions(width, height) {
   }
 
   return { width: width, height: height };
+}
+
+function handleCopy(url) {
+  var canvas = document.createElement('canvas');
+  var ctx = canvas.getContext('2d');
+  var img = new Image();
+  img.setAttribute('crossOrigin', 'anonymous');
+  img.onload = function () {
+    canvas.width = img.naturalWidth;
+    canvas.height = img.naturalHeight;
+    ctx.drawImage(img, 0, 0);
+    document.body.appendChild(canvas);
+    var dataUrl = canvas.toDataURL();
+    _ActorClient2.default.sendToElectron('copy-image', { dataUrl: dataUrl });
+    _MessageAlertActionCreators2.default.show({ title: '图片复制成功', type: 'success', key: new Date().getTime() });
+  };
+  img.src = url;
+}
+
+function downloadClick(url) {
+  // 点击下载
+  location.href = url;
+  // window.open(url, 'self');
+  // var peer = DialogStore.getCurrentPeer();
+  // if (ActorClient.isElectron()) {
+  //     window.messenger.sendToElectron('will-download-info', {rid: message.rid, ...peer});
+  // }
 }
 //# sourceMappingURL=ImageUtils.js.map

@@ -79,6 +79,7 @@ export default {
       'forward': '前进',
       'preview': '预览',
       'download': '下载',
+      'downloadAndOpen': '下载并打开',
       'downloadDetial': '查看记录',
       'delete': '删除',
       'quote': '引用',

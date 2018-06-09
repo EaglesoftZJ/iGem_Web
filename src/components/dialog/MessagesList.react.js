@@ -422,7 +422,7 @@ class MessagesList extends Component {
 
   render() {
       const { node, isShow } = this.state;
-      var addLeft = this.refs.outer ? 240 - this.refs.outer.clientWidth : 0;
+      var addLeft = this.refs.outer ? 305 - this.refs.outer.clientWidth : 0;
       var addTop = ($(node).height() - 22) / 2;
       console.log('偏移量', addLeft, addTop);
       console.log('node isShow', node, isShow);

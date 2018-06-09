@@ -64,6 +64,8 @@ var _jquery = require('jquery');
 
 var _jquery2 = _interopRequireDefault(_jquery);
 
+var _ImageUtils = require('../../utils/ImageUtils');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -188,7 +190,55 @@ var MessagesList = function (_Component) {
         uid = _props.uid,
         messages = _props.messages;
 
-
+    if (prevProps.messages.messages !== messages.messages) {
+      console.log('message发生改变了！！！');
+      // lightbox.load({
+      //     boxId: false,
+      //     dimensions: true,
+      //     captions: true,
+      //     prevImg: false,
+      //     nextImg: false,
+      //     hideCloseBtn: false,
+      //     closeOnClick: true,
+      //     animElCount: 4,
+      //     preload: true,
+      //     carousel: false,
+      //     animation: false,
+      //     nextOnClick: true,
+      //     responsive: true,
+      //     maxImgSize: 0.8,
+      //     // callbacks
+      //     onopen: function (image) {
+      //         // your code goes here
+      //         console.log('onopen', image)
+      //     },
+      //     onclose: function (image) {
+      //         // your code goes here
+      //         console.log('onclose', image)
+      //     },
+      //     onload: function (event) {
+      //         // your code goes here
+      //         console.log('onload', event)
+      //     },
+      //     onresize: function (image) {
+      //         // your code goes here
+      //         console.log('onresize', image)
+      //     },
+      //     onloaderror: function (event) {
+      //         // your code goes here
+      //         console.log('onloaderror', event)
+      //         // just display next or prev picture on error
+      //         // if (event._happenedWhile === 'prev')
+      //         //     lightbox.prev()
+      //         // else
+      //         //     lightbox.next()
+      //     },
+      //     onimageclick: function (image) {
+      //         // your code goes here
+      //         console.log('Image clicked!', image)
+      //     }
+      // });
+    }
     if (messages.unreadId && messages.unreadId !== prevProps.messages.unreadId) {
       if (this.refs.unread) {
         this.refs.scroller.scrollToNode(this.refs.unread);

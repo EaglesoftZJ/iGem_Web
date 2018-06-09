@@ -76,7 +76,8 @@ class Document extends Component {
       return (
         <div className="btn-group">
             { this.renderPrview() }
-            <a href={fileUrl} onClick={this.handleDownloadClick.bind(this)}><FormattedMessage id="message.download"/></a>
+            <a href={fileUrl} onClick={this.handleDownloadClick.bind(this, false)}><FormattedMessage id="message.download"/></a>
+            <a href={fileUrl} onClick={this.handleDownloadClick.bind(this, true)}><FormattedMessage id="message.downloadAndOpen"/></a>
             <Tooltip
                 placement="top"
                 mouseEnterDelay={0.15}
@@ -91,11 +92,11 @@ class Document extends Component {
   }
   
   
-  handleDownloadClick() {
+  handleDownloadClick(autoOpen) {
     const { peer } = this.state;
     const { message } = this.context;
     if (ActorClient.isElectron()) {
-      window.messenger.sendToElectron('will-download-info', {rid: message.rid, ...peer});
+      window.messenger.sendToElectron('will-download-info', {rid: message.rid, autoOpen, ...peer});
     }
   }
 

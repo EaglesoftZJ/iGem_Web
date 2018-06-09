@@ -72,6 +72,10 @@ var _DepartmentDialog = require('./DepartmentDialog.react');
 
 var _DepartmentDialog2 = _interopRequireDefault(_DepartmentDialog);
 
+var _Download = require('./Download.react');
+
+var _Download2 = _interopRequireDefault(_Download);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -122,7 +126,8 @@ var ModalsWrapper = function (_Component) {
         InviteByLink: (0, _lodash.isFunction)(modals.inviteByLink) ? modals.inviteByLink : _InviteByLink2.default,
         QuickSearch: (0, _lodash.isFunction)(modals.quickSearch) ? modals.quickSearch : _QuickSearch2.default,
         Attachments: (0, _lodash.isFunction)(modals.attachments) ? modals.attachments : _Attachments2.default,
-        Department: (0, _lodash.isFunction)(modals.department) ? modals.department : _DepartmentDialog2.default
+        Department: (0, _lodash.isFunction)(modals.department) ? modals.department : _DepartmentDialog2.default,
+        Download: (0, _lodash.isFunction)(modals.download) ? modals.download : _Download2.default
       };
     }
 
@@ -139,7 +144,8 @@ var ModalsWrapper = function (_Component) {
       InviteByLink: _InviteByLink2.default,
       QuickSearch: _QuickSearch2.default,
       Attachments: _Attachments2.default,
-      Department: _DepartmentDialog2.default
+      Department: _DepartmentDialog2.default,
+      Download: _Download2.default
     };
   };
 
@@ -161,11 +167,17 @@ var ModalsWrapper = function (_Component) {
         InviteByLink = _components.InviteByLink,
         QuickSearch = _components.QuickSearch,
         Attachments = _components.Attachments,
-        Department = _components.Department;
+        Department = _components.Department,
+        Download = _components.Download;
 
+    // return <Download/>;
 
     if (_ActorAppConstants.ModalTypes.DEPARTMENT === currentModal) {
       return _react2.default.createElement(Department, null);
+    }
+
+    if (_ActorAppConstants.ModalTypes.DOWNLOAD === currentModal) {
+      return _react2.default.createElement(Download, null);
     }
 
     switch (currentModal) {

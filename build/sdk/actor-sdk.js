@@ -120,6 +120,26 @@ var _Department = require('../components/Department.react');
 
 var _Department2 = _interopRequireDefault(_Department);
 
+var _jquery = require('jquery');
+
+var _jquery2 = _interopRequireDefault(_jquery);
+
+var _jqueryEvent = require('jquery.event.drag');
+
+var _jqueryEvent2 = _interopRequireDefault(_jqueryEvent);
+
+require('jquery.mousewheel');
+
+require('screenfull');
+
+require('../../assets/scripts/mag-analytics.js');
+
+require('../../assets/scripts/mag.js');
+
+require('../../assets/scripts/mag-jquery.js');
+
+require('../../assets/scripts/mag-control.js');
+
 var _l18n = require('../l18n');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -127,6 +147,12 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } } /*
                                                                                                                                                            * Copyright (C) 2015-2016 Actor LLC. <https://actor.im>
                                                                                                                                                            */
+
+(0, _jqueryEvent2.default)(_jquery2.default);
+
+
+console.log('滚动测试', (0, _jquery2.default)('img').mag);
+// console.log('显示！！！');
 
 var ACTOR_INIT_EVENT = 'INIT';
 
@@ -139,8 +165,23 @@ _pace2.default.start({
 
 // Init lightbox
 _ImageUtils.lightbox.load({
-  animation: false,
-  controlClose: '<i class="material-icons">close</i>'
+  animation: 500,
+  asyn: true,
+  carousel: false,
+  controlClose: '<i class="material-icons">close</i>',
+  btns: ['<a class="download img-icon" href="javascript:;" target="_self">下载</a>', '<a class="copy img-icon" href="javascript:;" target="_self">复制</a>'],
+  funs: [_ImageUtils.downloadClick, _ImageUtils.handleCopy],
+  onload: function onload() {
+    setTimeout(function () {
+      var $host = (0, _jquery2.default)('[mag-thumb=drag]');
+      console.log('初始化img', $host);
+      $host.mag({
+        position: 'drag',
+        zoomMin: 0.5,
+        toggle: false
+      });
+    }, 100);
+  }
 });
 
 window.isJsAppLoaded = false;
@@ -211,7 +252,7 @@ var ActorSDK = function () {
 
       if (window.location.hash !== '#/deactivated') {
         if (!_ActorClient2.default.isElectron() && _LoginStore2.default.isLoggedIn()) {
-          console.log("sdk loggedin");
+          console.log('sdk loggedin');
           _LoginActionCreators2.default.setLoggedIn({ redirect: false });
         }
       }

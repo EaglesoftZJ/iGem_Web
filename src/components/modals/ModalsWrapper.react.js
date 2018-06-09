@@ -24,6 +24,7 @@ import DefaultInviteByLink from './InviteByLink.react';
 import DefaultQuickSearch from './QuickSearch.react';
 import DefaultAttachments from './Attachments.react';
 import DefaultDepartment from './DepartmentDialog.react';
+import DefaultDownload from './Download.react';
 
 class ModalsWrapper extends Component {
   static getStores() {
@@ -58,7 +59,8 @@ class ModalsWrapper extends Component {
         InviteByLink: isFunction(modals.inviteByLink) ? modals.inviteByLink : DefaultInviteByLink,
         QuickSearch: isFunction(modals.quickSearch) ? modals.quickSearch : DefaultQuickSearch,
         Attachments: isFunction(modals.attachments) ? modals.attachments : DefaultAttachments,
-        Department: isFunction(modals.department) ? modals.department : DefaultDepartment
+        Department: isFunction(modals.department) ? modals.department : DefaultDepartment,
+        Download: isFunction(modals.download) ? modals.download : DefaultDownload,
       };
     }
 
@@ -75,7 +77,8 @@ class ModalsWrapper extends Component {
       InviteByLink: DefaultInviteByLink,
       QuickSearch: DefaultQuickSearch,
       Attachments: DefaultAttachments,
-      Department: DefaultDepartment
+      Department: DefaultDepartment,
+      Download: DefaultDownload
     };
   }
 
@@ -96,11 +99,18 @@ class ModalsWrapper extends Component {
       InviteByLink,
       QuickSearch,
       Attachments,
-      Department
+      Department,
+      Download
     } = this.components;
 
+    // return <Download/>;
+    
     if (ModalTypes.DEPARTMENT === currentModal) {
       return <Department/>
+    }
+
+    if (ModalTypes.DOWNLOAD === currentModal) {
+      return <Download/>
     }
 
     switch (currentModal) {

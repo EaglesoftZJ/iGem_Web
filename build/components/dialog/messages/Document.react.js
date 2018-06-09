@@ -82,6 +82,18 @@ var Document = function (_Component) {
     }
   };
 
+  Document.prototype.renderPrview = function renderPrview() {
+    // 渲染预览按钮
+    if (!this.checkOfficeFile()) {
+      return null;
+    }
+    return _react2.default.createElement(
+      'a',
+      { href: 'javascript:;', onClick: this.handlePreviewClick.bind(this) },
+      _react2.default.createElement(_reactIntl.FormattedMessage, { id: 'message.preview' })
+    );
+  };
+
   Document.prototype.renderActions = function renderActions() {
     var _props2 = this.props,
         fileUrl = _props2.fileUrl,
@@ -95,9 +107,11 @@ var Document = function (_Component) {
         _react2.default.createElement(_reactIntl.FormattedMessage, { id: 'message.uploading' })
       );
     } else {
+      decodeURIComponent;
       return _react2.default.createElement(
         'div',
         { className: 'btn-group' },
+        this.renderPrview(),
         _react2.default.createElement(
           'a',
           { href: fileUrl, onClick: this.handleDownloadClick.bind(this) },
@@ -133,6 +147,39 @@ var Document = function (_Component) {
     }
   };
 
+  Document.prototype.handlePreviewClick = function handlePreviewClick() {
+    var _props3 = this.props,
+        fileUrl = _props3.fileUrl,
+        fileName = _props3.fileName;
+
+    var type = this.checkOfficeFile();
+    if (type) {
+      var arr = fileUrl.split('?');
+      var arr1 = arr[0].split('/');
+      var name = encodeURIComponent(encodeURIComponent(arr1.slice(-1)[0]));
+      var filePath = '';
+      switch (type) {
+        case 'doc':
+        case 'docx':
+          filePath = '/wv/wordviewerframe.aspx?';
+          break;
+        case 'xls':
+        case 'xlsx':
+          filePath = '/x/_layouts/xlviewerinternal.aspx?';
+          break;
+        case 'ppt':
+        case 'pptx':
+          filePath = '/p/PowerPointFrame.aspx?';
+          break;
+        case 'pdf':
+          filePath = '/wv/wordviewerframe.aspx?PdfMode=1&';
+          break;
+      }
+      var url = 'http://220.189.207.21' + filePath + 'WOPISrc=http://61.175.100.14:8090/FlyChatWebService/wopi/files/' + arr1.slice(-2, -1)[0] + '/' + name;
+      _ActorClient2.default.isElectron() ? _ActorClient2.default.sendToElectron('openLink', { url: url }) : window.open(url);
+    }
+  };
+
   Document.prototype.handleOpenRecord = function handleOpenRecord(event) {
     var showDocumentRecord = this.context.showDocumentRecord;
 
@@ -144,12 +191,21 @@ var Document = function (_Component) {
     event.nativeEvent.stopImmediatePropagation();
   };
 
+  Document.prototype.checkOfficeFile = function checkOfficeFile() {
+    var fileName = this.props.fileName;
+
+    if (/\.(doc|xls|ppt|docx|xlsx|pptx|pdf)$/.test(fileName)) {
+      return RegExp.$1;
+    }
+    return false;
+  };
+
   Document.prototype.render = function render() {
-    var _props3 = this.props,
-        fileName = _props3.fileName,
-        fileSize = _props3.fileSize,
-        fileExtension = _props3.fileExtension,
-        className = _props3.className;
+    var _props4 = this.props,
+        fileName = _props4.fileName,
+        fileSize = _props4.fileSize,
+        fileExtension = _props4.fileExtension,
+        className = _props4.className;
 
 
     var documentClassName = (0, _classnames2.default)(className, 'row');
