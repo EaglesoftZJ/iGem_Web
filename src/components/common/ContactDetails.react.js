@@ -50,6 +50,17 @@ renderNickname() {
             </li>
         );
     }
+    renderDh() {
+      const { dh } = this.props.peerInfo;
+      if (!dh) return null;
+      return (
+          <li>
+              <i className="material-icons icon icon--green">call</i>
+              <span className="title"><a href={'tel:+' + dh}>{'+' + dh}</a></span>
+              <span className="description"><FormattedMessage id="profile.cornet"/></span>
+          </li>
+      );
+  }
     renderDwmc() {
         const { dwmc } = this.props.peerInfo;
         if (!dwmc) return null;
@@ -105,6 +116,7 @@ renderNickname() {
       <ul className="user_profile__contact_info__list">
         {this.renderNickname()}
         {this.renderSjh()}
+        {this.renderDh()}
         {this.renderDwmc()}
         {this.renderBmmc()}
         {this.renderZwmc()}

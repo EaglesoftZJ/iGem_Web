@@ -508,7 +508,7 @@ var MessagesList = function (_Component) {
         node = _state2.node,
         isShow = _state2.isShow;
 
-    var addLeft = this.refs.outer ? 240 - this.refs.outer.clientWidth : 0;
+    var addLeft = this.refs.outer ? 305 - this.refs.outer.clientWidth : 0;
     var addTop = ((0, _jquery2.default)(node).height() - 22) / 2;
     console.log('偏移量', addLeft, addTop);
     console.log('node isShow', node, isShow);

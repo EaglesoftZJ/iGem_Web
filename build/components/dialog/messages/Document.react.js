@@ -114,8 +114,13 @@ var Document = function (_Component) {
         this.renderPrview(),
         _react2.default.createElement(
           'a',
-          { href: fileUrl, onClick: this.handleDownloadClick.bind(this) },
+          { href: fileUrl, onClick: this.handleDownloadClick.bind(this, false) },
           _react2.default.createElement(_reactIntl.FormattedMessage, { id: 'message.download' })
+        ),
+        _react2.default.createElement(
+          'a',
+          { href: fileUrl, onClick: this.handleDownloadClick.bind(this, true) },
+          _react2.default.createElement(_reactIntl.FormattedMessage, { id: 'message.downloadAndOpen' })
         ),
         _react2.default.createElement(
           _rcTooltip2.default,
@@ -138,12 +143,12 @@ var Document = function (_Component) {
     }
   };
 
-  Document.prototype.handleDownloadClick = function handleDownloadClick() {
+  Document.prototype.handleDownloadClick = function handleDownloadClick(autoOpen) {
     var peer = this.state.peer;
     var message = this.context.message;
 
     if (_ActorClient2.default.isElectron()) {
-      window.messenger.sendToElectron('will-download-info', _extends({ rid: message.rid }, peer));
+      window.messenger.sendToElectron('will-download-info', _extends({ rid: message.rid, autoOpen: autoOpen }, peer));
     }
   };
 
