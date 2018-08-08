@@ -238,6 +238,7 @@ exports.default = {
     'profile': {
       'email': '邮箱',
       'phone': '手机号',
+      'cornet': '短号',
       'nickname': '昵称',
       'unit': '所在单位',
       'dept': '所在部门',

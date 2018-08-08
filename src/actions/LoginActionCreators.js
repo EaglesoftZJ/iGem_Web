@@ -199,6 +199,30 @@ class LoginActionCreators extends ActionCreators {
         });
     }
 
+    function getGroup() {
+      var spapdata = `<v:Envelope xmlns:i="http://www.w3.org/2001/XMLSchema-instance" xmlns:d="http://www.w3.org/2001/XMLSchema" xmlns:c="http://schemas.xmlsoap.org/soap/encoding/" xmlns:v="http://schemas.xmlsoap.org/soap/envelope/">
+                        <v:Header />
+                        <v:Body>
+                            <n0:selectXzrz id="o0" c:root="1" xmlns:n0="http://eaglesoft">
+                                <messageId i:type="d:string">${ message.rid }</messageId>
+                            </n0:selectXzrz>
+                        </v:Body>
+                    </v:Envelope>`;
+      var method = 'selectXzrz';  
+      $.ajax({
+          url: 'http://61.175.100.14:8012/ActorServices-Maven/services/ActorService',
+          type: 'post',
+          data: spapdata,
+          beforeSend(request) {
+              console.log('beforeSend', request);
+              request.setRequestHeader('Content-Type', 'text/xml;charset=UTF-8');
+              request.setRequestHeader('SOAPActrin', 'http://eaglesoft/' + method);
+          },
+          success: (res) => {
+          }
+      });
+    }
+
 
     // 创建webservicee请求
     function ajaxFunc() {

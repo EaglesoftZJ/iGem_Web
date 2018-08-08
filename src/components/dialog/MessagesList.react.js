@@ -124,7 +124,7 @@ class MessagesList extends Component {
 
   componentWillReceiveProps(nextProps) {
       const { messages: { messages } } = this.props;
-        console.log('message change', messages.length , nextProps.messages.messages.length, messages.slice(-1)[0] && messages.slice(-1)[0].rid, nextProps.messages.messages.slice(-2)[0] && nextProps.messages.messages.slice(-2)[0].rid)
+        // console.log('message change', messages.length , nextProps.messages.messages.length, messages.slice(-1)[0] && messages.slice(-1)[0].rid, nextProps.messages.messages.slice(-2)[0] && nextProps.messages.messages.slice(-2)[0].rid)
     //   if (messages.length +  1 === nextProps.messages.messages.length && 
     //     messages.slice(-1)[0].rid === nextProps.messages.messages.slice(-2)[0].rid &&
     //     nextProps.messages.messages.slice(-1)[0].content.content === 'text') {

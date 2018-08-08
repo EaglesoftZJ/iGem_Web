@@ -11,10 +11,11 @@ import RecentContextMenu from './dropdown/RecentContextMenu.react'
 
 import DropdownStore from '../../stores/DropdownStore';
 import DialogStore from '../../stores/DialogStore';
+import ProfileStore from '../../stores/ProfileStore';
 
 class MenuOverlay extends Component {
   static getStores() {
-    return [DropdownStore, DialogStore];
+    return [DropdownStore, DialogStore, ProfileStore];
   }
 
   static calculateState() {
@@ -26,6 +27,7 @@ class MenuOverlay extends Component {
       targetRect: DropdownStore.getTargetRect(),
       contextPos: DropdownStore.getContextPos(),
       contextPeer: DropdownStore.getPeer(),
+      profile: ProfileStore.getProfile(),
       message
     };
   }
@@ -35,7 +37,7 @@ class MenuOverlay extends Component {
   }
 
   render() {
-    const { isMessageDropdownOpen, isRecentContextOpen, message, targetRect, contextPeer, contextPos } = this.state;
+    const { isMessageDropdownOpen, isRecentContextOpen, message, targetRect, contextPeer, contextPos, profile } = this.state;
     const currentPeer = DialogStore.getCurrentPeer();
 
     const menuOverlayClassName = classnames('menu-overlay', {
@@ -49,6 +51,7 @@ class MenuOverlay extends Component {
             ? <MessageActions message={message}
                               targetRect={targetRect}
                               peer={currentPeer}
+                              profile={profile}
                               hideOnScroll/>
             : null
         }

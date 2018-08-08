@@ -9,6 +9,7 @@ import { MessageContentTypes } from '../../../constants/ActorAppConstants';
 // Default message content components
 import DefaultService from './Service.react';
 import DefaultText from './Text.react';
+import DefaultSysText from './sysText.react';
 import DefaultPhoto from './Photo.react';
 import DefaultAnimation from './Animation.react';
 import DefaultDocument from './Document.react';
@@ -35,6 +36,7 @@ class MessageContent extends Component {
       this.components = {
         Service: isFunction(dialog.messages.service) ? dialog.messages.service : DefaultService,
         Text: isFunction(dialog.messages.text) ? dialog.messages.text : DefaultText,
+        SysText: isFunction(dialog.messages.sysText) ? dialog.messages.sysText : DefaultSysText,
         Modern: isFunction(dialog.messages.modern) ? dialog.messages.modern : DefaultModern,
         Photo: isFunction(dialog.messages.photo) ? dialog.messages.photo : DefaultPhoto,
         Animation: isFunction(dialog.messages.animation) ? dialog.messages.animation : DefaultAnimation,
@@ -48,6 +50,7 @@ class MessageContent extends Component {
       this.components = {
         Service: DefaultService,
         Text: DefaultText,
+        SysText: DefaultSysText,
         Modern: DefaultModern,
         Photo: DefaultPhoto,
         Animation: DefaultAnimation,
@@ -66,7 +69,7 @@ class MessageContent extends Component {
 
   render() {
     const { content } = this.props;
-    const { Service, Text, Photo, Animation, Document, Voice, Contact, Location, Modern, Sticker } = this.components;
+    const { Service, Text, Photo, Animation, Document, Voice, Contact, Location, Modern, Sticker, SysText } = this.components;
 
     switch (content.content) {
       case MessageContentTypes.SERVICE:
@@ -83,6 +86,13 @@ class MessageContent extends Component {
             className="message__content message__content--text"
           />
         );
+      case MessageContentTypes.SysTEXT:
+        return (
+          <SysText
+            {...content}
+            className="message__content message__content--systext"
+          />
+      );
       case MessageContentTypes.PHOTO:
         return (
           <Photo

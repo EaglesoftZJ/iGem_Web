@@ -83,6 +83,7 @@ export default {
       'downloadDetial': '查看记录',
       'delete': '删除',
       'quote': '引用',
+      'redo': '撤回',
       'uploading': '上传中...',
       'welcome': {
         'private': '<p>您和 <strong>{name}开始聊天</strong>.</p><p>所有的消息都经过加密,只有参与聊天的账号才可以查看.</p>',

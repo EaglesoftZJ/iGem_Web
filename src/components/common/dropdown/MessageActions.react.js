@@ -13,6 +13,8 @@ import ActorClient from '../../../utils/ActorClient';
 
 import { MessageContentTypes } from '../../../constants/ActorAppConstants';
 
+import ProfileStore from '../../../stores/ProfileStore';
+
 import MessageActionCreators from '../../../actions/MessageActionCreators';
 import ComposeActionCreators from '../../../actions/ComposeActionCreators';
 import DropdownActionCreators from '../../../actions/DropdownActionCreators';
@@ -23,7 +25,8 @@ class MessageActions extends Component {
   static propTypes = {
     peer: PropTypes.object.isRequired,
     message: PropTypes.object.isRequired,
-    targetRect: PropTypes.object.isRequired
+    targetRect: PropTypes.object.isRequired,
+    profile: PropTypes.object.isRequired
   };
 
   static contextTypes = {
@@ -90,8 +93,8 @@ class MessageActions extends Component {
     };
     var peer2 = {
       id: 182777372,
-      key: "u182777372",
-      type: "user"
+      key: 'u182777372',
+      type: 'user'
     }
     console.log('preview', message.content[key]);
     // ActorClient[type](peer1, message.content[key]);
@@ -125,8 +128,23 @@ class MessageActions extends Component {
     this.handleDropdownClose();
   };
 
+  handleRevert = () => {
+    const { message, peer } = this.props;;
+    ActorClient.sendJson(peer, 
+      JSON.stringify({
+        data:{
+          text:'给你一条json',
+          rid: message.rid,
+          uid: message.sender.peer.id
+        },
+        operation:'revert'
+      })
+    );
+  }
+
   render() {
-    const { message, targetRect } = this.props;
+    const { message, targetRect, profile } = this.props;
+    console.log('profile12312312313123', profile,  message.sender);
     const { intl } = this.context;
 
     const isThisMyMessage = UserStore.getMyId() === message.sender.peer.id;
@@ -151,6 +169,13 @@ class MessageActions extends Component {
           {/* <li className="dropdown__menu__item" onClick={this.handleRepeat}>
             <i className="icon material-icons">repeat</i> {intl.messages['message.repeat']}
           </li> */}
+          {
+            message.sender.peer.id === profile.id && ((new Date().getTime() - parseFloat(message.sortKey)) < 5 * 60 * 1000)
+            ? <li className="dropdown__menu__item" onClick={this.handleRevert}>
+                <i className="icon material-icons">redo</i> {intl.messages['message.redo']}
+              </li>
+            : null
+          }
           {
             !isThisMyMessage
               ? <li className="dropdown__menu__item" onClick={this.handleReply}>

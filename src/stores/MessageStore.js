@@ -10,6 +10,8 @@ import ActorClient from '../utils/ActorClient';
 import { getFirstUnreadMessageIndex } from '../utils/MessageUtils';
 import UserStore from './UserStore';
 import DialogStore from './DialogStore';
+import MessageActionCreators from '../actions/MessageActionCreators';
+import linq from 'linq';
 
 const MESSAGE_COUNT_STEP = 20;
 
@@ -45,6 +47,21 @@ class MessageStore extends ReduceStore {
         return this.getInitialState();
 
       case ActionTypes.MESSAGES_CHANGED:
+        // 撤回消息删除处理
+        let message = null;
+        var revertMessage = linq.from(action.messages).where('$.content.content === "customJson"').toArray();
+        // var renderMessage = linq.from(action.messages).except(revertMessage, '$.rid').toArray();
+        for (var i = 0; i < revertMessage.length; i++) {
+          message = linq.from(action.messages).where((item) => {
+            return item.rid === JSON.parse(revertMessage[i].content.text).rid;
+          }).toArray()[0];
+          if (message) {
+            setTimeout(function () {
+              MessageActionCreators.deleteMessage(DialogStore.getCurrentPeer(), message.rid);
+            }, 1);
+          }
+        }
+        
         if (ActorClient.isElectron()) {
           ActorClient.sendToElectron('message-change', {currentMsg: action.messages});
         }

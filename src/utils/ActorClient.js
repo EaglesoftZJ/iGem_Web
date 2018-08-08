@@ -203,6 +203,11 @@ class ActorClient {
     window.messenger.sendMessage(peer, text);
   }
 
+  sendJson(peer, text) {
+    console.log('sendJson11111', peer, text)
+    window.messenger.sendJson(peer, text, () => {}, () => {});
+  }
+
   editMessage(peer, rid, text) {
     return window.messenger.editMessage(peer, rid, text);
   }
