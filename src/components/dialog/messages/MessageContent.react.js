@@ -86,13 +86,17 @@ class MessageContent extends Component {
             className="message__content message__content--text"
           />
         );
-      case MessageContentTypes.SysTEXT:
-        return (
-          <SysText
-            {...content}
-            className="message__content message__content--systext"
-          />
-      );
+      case MessageContentTypes.CUSTOM_JSON:
+        if (content.operation === 'revert') {
+          // 撤回
+          return (
+            <SysText
+              {...content}
+              className="message__content message__content--systext"
+            />        
+          );
+        }
+        return '';
       case MessageContentTypes.PHOTO:
         return (
           <Photo

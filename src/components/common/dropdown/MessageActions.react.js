@@ -129,14 +129,15 @@ class MessageActions extends Component {
   };
 
   handleRevert = () => {
-    const { message, peer } = this.props;;
+    const { message, peer, profile } = this.props;
     ActorClient.sendJson(peer, 
       JSON.stringify({
         data:{
-          text:'给你一条json',
+          text:`"${profile.name}"撤回了一条消息`,
           rid: message.rid,
           uid: message.sender.peer.id
         },
+        dataType: 'revert',
         operation:'revert'
       })
     );
@@ -170,7 +171,7 @@ class MessageActions extends Component {
             <i className="icon material-icons">repeat</i> {intl.messages['message.repeat']}
           </li> */}
           {
-            message.sender.peer.id === profile.id && ((new Date().getTime() - parseFloat(message.sortKey)) < 5 * 60 * 1000)
+            message.content.content !== 'customJson' && message.content.operation !== 'revert' && message.sender.peer.id === profile.id && ((new Date().getTime() - parseFloat(message.sortKey)) < 5 * 60 * 1000)
             ? <li className="dropdown__menu__item" onClick={this.handleRevert}>
                 <i className="icon material-icons">redo</i> {intl.messages['message.redo']}
               </li>

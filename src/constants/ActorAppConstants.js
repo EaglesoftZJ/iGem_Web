@@ -405,7 +405,7 @@ export const CreateGroupSteps = keymirror({
 export const MessageContentTypes = {
   SERVICE: 'service',
   TEXT: 'text',
-  SysTEXT: 'customJson',
+  CUSTOM_JSON: 'customJson',
   TEXT_MODERN: 'text_modern',
   PHOTO: 'photo',
   ANIMATION: 'animation',

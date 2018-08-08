@@ -49,16 +49,18 @@ class MessageStore extends ReduceStore {
       case ActionTypes.MESSAGES_CHANGED:
         // 撤回消息删除处理
         let message = null;
-        var revertMessage = linq.from(action.messages).where('$.content.content === "customJson"').toArray();
+        var revertMessage = linq.from(action.messages).where('$.content.content === "customJson" && $.content.operation === "revert"').toArray();
         // var renderMessage = linq.from(action.messages).except(revertMessage, '$.rid').toArray();
         for (var i = 0; i < revertMessage.length; i++) {
           message = linq.from(action.messages).where((item) => {
             return item.rid === JSON.parse(revertMessage[i].content.text).rid;
           }).toArray()[0];
           if (message) {
-            setTimeout(function () {
-              MessageActionCreators.deleteMessage(DialogStore.getCurrentPeer(), message.rid);
-            }, 1);
+            (function(msg) {
+              setTimeout(function () {
+                MessageActionCreators.deleteMessage(DialogStore.getCurrentPeer(), msg.rid);
+              }, 1);
+            })(message);
           }
         }
         
