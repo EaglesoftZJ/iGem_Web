@@ -9,6 +9,7 @@ import ProfileStore from '../stores/ProfileStore';
 import ActorClient from '../utils/ActorClient';
 import makepy from 'makepy';
 import linq from 'Linq';
+import $ from 'jquery';
 
 
 var interval = null;

@@ -30,6 +30,14 @@ var _DialogStore = require('./DialogStore');
 
 var _DialogStore2 = _interopRequireDefault(_DialogStore);
 
+var _MessageActionCreators = require('../actions/MessageActionCreators');
+
+var _MessageActionCreators2 = _interopRequireDefault(_MessageActionCreators);
+
+var _linq = require('linq');
+
+var _linq2 = _interopRequireDefault(_linq);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -87,6 +95,23 @@ var MessageStore = function (_ReduceStore) {
         return this.getInitialState();
 
       case _ActorAppConstants.ActionTypes.MESSAGES_CHANGED:
+        // 撤回消息删除处理
+        var message = null;
+        var revertMessage = _linq2.default.from(action.messages).where('$.content.content === "customJson" && $.content.operation === "revert"').toArray();
+        // var renderMessage = linq.from(action.messages).except(revertMessage, '$.rid').toArray();
+        for (var i = 0; i < revertMessage.length; i++) {
+          message = _linq2.default.from(action.messages).where(function (item) {
+            return item.rid === JSON.parse(revertMessage[i].content.text).rid;
+          }).toArray()[0];
+          if (message) {
+            (function (msg) {
+              setTimeout(function () {
+                _MessageActionCreators2.default.deleteMessage(_DialogStore2.default.getCurrentPeer(), msg.rid);
+              }, 1);
+            })(message);
+          }
+        }
+
         if (_ActorClient2.default.isElectron()) {
           _ActorClient2.default.sendToElectron('message-change', { currentMsg: action.messages });
         }

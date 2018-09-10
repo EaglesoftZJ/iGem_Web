@@ -20,6 +20,10 @@ var _Text = require('./Text.react');
 
 var _Text2 = _interopRequireDefault(_Text);
 
+var _sysText = require('./sysText.react');
+
+var _sysText2 = _interopRequireDefault(_sysText);
+
 var _Photo = require('./Photo.react');
 
 var _Photo2 = _interopRequireDefault(_Photo);
@@ -79,6 +83,7 @@ var MessageContent = function (_Component) {
       _this.components = {
         Service: (0, _lodash.isFunction)(dialog.messages.service) ? dialog.messages.service : _Service2.default,
         Text: (0, _lodash.isFunction)(dialog.messages.text) ? dialog.messages.text : _Text2.default,
+        SysText: (0, _lodash.isFunction)(dialog.messages.sysText) ? dialog.messages.sysText : _sysText2.default,
         Modern: (0, _lodash.isFunction)(dialog.messages.modern) ? dialog.messages.modern : _Modern2.default,
         Photo: (0, _lodash.isFunction)(dialog.messages.photo) ? dialog.messages.photo : _Photo2.default,
         Animation: (0, _lodash.isFunction)(dialog.messages.animation) ? dialog.messages.animation : _Animation2.default,
@@ -92,6 +97,7 @@ var MessageContent = function (_Component) {
       _this.components = {
         Service: _Service2.default,
         Text: _Text2.default,
+        SysText: _sysText2.default,
         Modern: _Modern2.default,
         Photo: _Photo2.default,
         Animation: _Animation2.default,
@@ -121,7 +127,8 @@ var MessageContent = function (_Component) {
         Contact = _components.Contact,
         Location = _components.Location,
         Modern = _components.Modern,
-        Sticker = _components.Sticker;
+        Sticker = _components.Sticker,
+        SysText = _components.SysText;
 
 
     switch (content.content) {
@@ -133,6 +140,14 @@ var MessageContent = function (_Component) {
         return _react2.default.createElement(Text, _extends({}, content, {
           className: 'message__content message__content--text'
         }));
+      case _ActorAppConstants.MessageContentTypes.CUSTOM_JSON:
+        if (content.operation === 'revert') {
+          // 撤回
+          return _react2.default.createElement(SysText, _extends({}, content, {
+            className: 'message__content message__content--systext'
+          }));
+        }
+        return '';
       case _ActorAppConstants.MessageContentTypes.PHOTO:
         return _react2.default.createElement(Photo, _extends({}, content, {
           className: 'message__content message__content--photo'

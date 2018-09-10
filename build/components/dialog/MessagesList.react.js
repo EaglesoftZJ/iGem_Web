@@ -146,8 +146,7 @@ var MessagesList = function (_Component) {
 
   MessagesList.prototype.componentWillReceiveProps = function componentWillReceiveProps(nextProps) {
     var messages = this.props.messages.messages;
-
-    console.log('message change', messages.length, nextProps.messages.messages.length, messages.slice(-1)[0] && messages.slice(-1)[0].rid, nextProps.messages.messages.slice(-2)[0] && nextProps.messages.messages.slice(-2)[0].rid);
+    // console.log('message change', messages.length , nextProps.messages.messages.length, messages.slice(-1)[0] && messages.slice(-1)[0].rid, nextProps.messages.messages.slice(-2)[0] && nextProps.messages.messages.slice(-2)[0].rid)
     //   if (messages.length +  1 === nextProps.messages.messages.length && 
     //     messages.slice(-1)[0].rid === nextProps.messages.messages.slice(-2)[0].rid &&
     //     nextProps.messages.messages.slice(-1)[0].content.content === 'text') {
@@ -157,6 +156,7 @@ var MessagesList = function (_Component) {
     //             RingActionCreators.setNew(true);
     //         }, 1);
     //   }
+
     if (!_PeerUtils2.default.equals(nextProps.peer, this.props.peer)) {
       this.dimensions = null;
       this.isLoading = false;

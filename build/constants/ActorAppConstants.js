@@ -409,6 +409,7 @@ var CreateGroupSteps = exports.CreateGroupSteps = (0, _keymirror2.default)({
 var MessageContentTypes = exports.MessageContentTypes = {
   SERVICE: 'service',
   TEXT: 'text',
+  CUSTOM_JSON: 'customJson',
   TEXT_MODERN: 'text_modern',
   PHOTO: 'photo',
   ANIMATION: 'animation',

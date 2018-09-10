@@ -220,6 +220,11 @@ var ActorClient = function () {
     window.messenger.sendMessage(peer, text);
   };
 
+  ActorClient.prototype.sendJson = function sendJson(peer, text) {
+    console.log('sendJson11111', peer, text);
+    window.messenger.sendJson(peer, text, function () {}, function () {});
+  };
+
   ActorClient.prototype.editMessage = function editMessage(peer, rid, text) {
     return window.messenger.editMessage(peer, rid, text);
   };

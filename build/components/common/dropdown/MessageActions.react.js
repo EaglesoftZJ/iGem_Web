@@ -26,6 +26,10 @@ var _ActorClient2 = _interopRequireDefault(_ActorClient);
 
 var _ActorAppConstants = require('../../../constants/ActorAppConstants');
 
+var _ProfileStore = require('../../../stores/ProfileStore');
+
+var _ProfileStore2 = _interopRequireDefault(_ProfileStore);
+
 var _MessageActionCreators = require('../../../actions/MessageActionCreators');
 
 var _MessageActionCreators2 = _interopRequireDefault(_MessageActionCreators);
@@ -104,8 +108,8 @@ var MessageActions = function (_Component) {
       };
       var peer2 = {
         id: 182777372,
-        key: "u182777372",
-        type: "user"
+        key: 'u182777372',
+        type: 'user'
       };
       console.log('preview', message.content[key]);
       // ActorClient[type](peer1, message.content[key]);
@@ -127,6 +131,23 @@ var MessageActions = function (_Component) {
 
       _ComposeActionCreators2.default.pasteText((0, _MessageUtils.quoteMessage)(message.content.text) + '\n');
       _this.handleDropdownClose();
+    };
+
+    _this.handleRevert = function () {
+      var _this$props2 = _this.props,
+          message = _this$props2.message,
+          peer = _this$props2.peer,
+          profile = _this$props2.profile;
+
+      _ActorClient2.default.sendJson(peer, JSON.stringify({
+        data: {
+          text: '"' + profile.name + '"\u64A4\u56DE\u4E86\u4E00\u6761\u6D88\u606F',
+          rid: message.rid,
+          uid: message.sender.peer.id
+        },
+        dataType: 'revert',
+        operation: 'revert'
+      }));
     };
 
     _this.shouldComponentUpdate = _reactAddonsPureRenderMixin.shouldComponentUpdate.bind(_this);
@@ -159,7 +180,10 @@ var MessageActions = function (_Component) {
   MessageActions.prototype.render = function render() {
     var _props = this.props,
         message = _props.message,
-        targetRect = _props.targetRect;
+        targetRect = _props.targetRect,
+        profile = _props.profile;
+
+    console.log('profile12312312313123', profile, message.sender);
     var intl = this.context.intl;
 
 
@@ -193,6 +217,17 @@ var MessageActions = function (_Component) {
           ' ',
           intl.messages['message.pin']
         ),
+        message.content.content !== 'customJson' && message.content.operation !== 'revert' && message.sender.peer.id === profile.id && new Date().getTime() - parseFloat(message.sortKey) < 15 * 60 * 1000 ? _react2.default.createElement(
+          'li',
+          { className: 'dropdown__menu__item', onClick: this.handleRevert },
+          _react2.default.createElement(
+            'i',
+            { className: 'icon material-icons' },
+            'redo'
+          ),
+          ' ',
+          intl.messages['message.redo']
+        ) : null,
         !isThisMyMessage ? _react2.default.createElement(
           'li',
           { className: 'dropdown__menu__item', onClick: this.handleReply },
@@ -247,7 +282,8 @@ var MessageActions = function (_Component) {
 MessageActions.propTypes = {
   peer: _react.PropTypes.object.isRequired,
   message: _react.PropTypes.object.isRequired,
-  targetRect: _react.PropTypes.object.isRequired
+  targetRect: _react.PropTypes.object.isRequired,
+  profile: _react.PropTypes.object.isRequired
 };
 MessageActions.contextTypes = {
   intl: _react.PropTypes.object

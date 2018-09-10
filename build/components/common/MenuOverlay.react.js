@@ -28,6 +28,10 @@ var _DialogStore = require('../../stores/DialogStore');
 
 var _DialogStore2 = _interopRequireDefault(_DialogStore);
 
+var _ProfileStore = require('../../stores/ProfileStore');
+
+var _ProfileStore2 = _interopRequireDefault(_ProfileStore);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -42,7 +46,7 @@ var MenuOverlay = function (_Component) {
   _inherits(MenuOverlay, _Component);
 
   MenuOverlay.getStores = function getStores() {
-    return [_DropdownStore2.default, _DialogStore2.default];
+    return [_DropdownStore2.default, _DialogStore2.default, _ProfileStore2.default];
   };
 
   MenuOverlay.calculateState = function calculateState() {
@@ -54,6 +58,7 @@ var MenuOverlay = function (_Component) {
       targetRect: _DropdownStore2.default.getTargetRect(),
       contextPos: _DropdownStore2.default.getContextPos(),
       contextPeer: _DropdownStore2.default.getPeer(),
+      profile: _ProfileStore2.default.getProfile(),
       message: message
     };
   };
@@ -71,7 +76,8 @@ var MenuOverlay = function (_Component) {
         message = _state.message,
         targetRect = _state.targetRect,
         contextPeer = _state.contextPeer,
-        contextPos = _state.contextPos;
+        contextPos = _state.contextPos,
+        profile = _state.profile;
 
     var currentPeer = _DialogStore2.default.getCurrentPeer();
 
@@ -85,6 +91,7 @@ var MenuOverlay = function (_Component) {
       isMessageDropdownOpen ? _react2.default.createElement(_MessageActions2.default, { message: message,
         targetRect: targetRect,
         peer: currentPeer,
+        profile: profile,
         hideOnScroll: true }) : null,
       isRecentContextOpen ? _react2.default.createElement(_RecentContextMenu2.default, { peer: contextPeer,
         contextPos: contextPos,
