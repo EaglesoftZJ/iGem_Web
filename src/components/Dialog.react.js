@@ -78,7 +78,6 @@ class Dialog extends Component {
 
   constructor(props, context) {
     super(props, context);
-    this.updatePeer(this.props.params.id);
 
     this.handleStartClick = this.handleStartClick.bind(this);
     this.handleUnblock = this.handleUnblock.bind(this);
@@ -87,7 +86,10 @@ class Dialog extends Component {
 
     this.components = this.getComponents();
   }
-
+  componentWillMount() {
+    this.updatePeer(this.props.params.id);
+  }
+  
   componentDidMount() {
     this.handleDialogSwitch();
   }

@@ -144,8 +144,11 @@ class Main extends Component {
 
   getDialogStore() {
     window.messenger.listenOnRender('dialogStore', function(event, arg) {
+      console.log('dialogStore', arg, );
       if (arg) {
-        DialogActionCreators.setDialogs(arg.dialogs);
+        setTimeout(() => {
+          DialogActionCreators.setDialogs(arg['dialogs_' + ProfileStore.getProfile().id] );
+        }, 1)
       }
     });
     ActorClient.sendToElectron('getDialogStore');

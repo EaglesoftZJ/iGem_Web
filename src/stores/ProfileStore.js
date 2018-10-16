@@ -21,6 +21,9 @@ class ProfileStore extends ReduceStore {
   reduce(state, action) {
     switch (action.type) {
       case ActionTypes.PROFILE_CHANGED:
+        if (ActorClient.isElectron()) {
+          ActorClient.sendToElectron('profile', action.profile);
+        }
         return {
           ...state,
           profile: action.profile

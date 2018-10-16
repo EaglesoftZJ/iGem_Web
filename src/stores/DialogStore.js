@@ -7,11 +7,8 @@ import { ReduceStore } from 'flux/utils';
 import Dispatcher from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes, PeerTypes } from '../constants/ActorAppConstants';
 import ActorClient from '../utils/ActorClient';
+import ProfileStore from '../stores/ProfileStore';
 import linq from 'Linq';
-
-var newDailogObj = {},
-    oldDailogObj = {};
-    
 
 class DialogStore extends ReduceStore {
   getInitialState() {
@@ -20,6 +17,7 @@ class DialogStore extends ReduceStore {
       storePeer: null,
       dialogs: []
     };
+
   }
 
   getDialogs() {
@@ -56,6 +54,31 @@ class DialogStore extends ReduceStore {
 
   reduce(state, action) {
     switch (action.type) {
+      case ActionTypes.FILTER_DIALOGS_GROUP:
+        // 过滤删除的群组
+        // function isTheSameToPre() {
+        //   return linq.from(group).except(preGroup, '$.peerInfo.peer.id').toArray().length === 0;
+        // }
+        // var group = PingyinSearchStore.getState()['群组'];
+        // if (group && state.dialogs.length > 0 && (!preGroup || !isTheSameToPre())) {
+        //   time++;
+        //   if (time > 1 && preGroup && preGroup.length === 0)  state.dialogs = preDialogs; 
+        //   preGroup = group;
+        //   preDialogs = JSON.parse(JSON.stringify(state.dialogs));
+        //   for (var i = 0; i < state.dialogs.length; i++) {
+        //     if (state.dialogs[i].key !== 'privates') {
+        //       // 非用户组
+        //       var arr = linq.from(state.dialogs[i].shorts).where('$.peer.peer.type === "group"').toArray(); // 群组部分
+        //       var arr1 = linq.from(state.dialogs[i].shorts).where('$.peer.peer.type !== "group"').toArray(); // 非群组部分
+        //       var activeGroup = linq.from(arr).join(group, 'outer => outer.peer.peer.id', 'inner => inner.peerInfo.peer.id', 'outer => outer').toArray(); // 未删除群组
+        //       state.dialogs[i].shorts.splice(0, state.dialogs[i].shorts.length, ...arr1, ...activeGroup); // 重新组合
+        //     }
+        //   }
+        // }
+        return {
+          ...state,
+        };
+        
       case ActionTypes.DIALOGS_CHANGED:
         // web端左侧对话框列表排序处理，客户端消息推送处理
         var arr = [];
@@ -72,12 +95,19 @@ class DialogStore extends ReduceStore {
               var dialog = action.dialogs[i].shorts[j];
               var key = dialog.peer.peer.key;
               var oldDialog = linq.from(oldArr).where(`$.peer.peer.key == '${key}'`).toArray()[0];
+              /* 取合集添加 */
+              var index = oldArr.indexOf(oldDialog);
+              index >= 0 && oldArr.splice(index, 1);
+              /* 取合集添加 */
               if (oldDialog && oldDialog.counter < dialog.counter || !oldDialog) {
                 dialog.updateTime = new Date().getTime();
               } else {
                 dialog.updateTime = oldDialog.updateTime;
               }
             }
+            /* 取合集添加 */
+            action.dialogs[i].shorts.push(...oldArr);
+            /* 取合集添加 */
             action.dialogs[i].shorts.sort((a, b) => {
               return b.updateTime - a.updateTime;
             });
@@ -85,6 +115,7 @@ class DialogStore extends ReduceStore {
             arr = arr.concat(action.dialogs[i].shorts);
           }
         }
+
         arr = linq.from(arr).where('$.counter > 0').toArray().sort((a, b) => {
           return b.updateTime - a.updateTime;
         });
@@ -92,7 +123,7 @@ class DialogStore extends ReduceStore {
         console.log('arr', arr);
         
         if (ActorClient.isElectron()) {
-          ActorClient.sendToElectron('setDialogStore', {key: 'dialogs', value: action.dialogs});
+          ActorClient.sendToElectron('setDialogStore', {key: 'dialogs_' + ProfileStore.getProfile().id, value: action.dialogs});
           ActorClient.sendToElectron('new-messages', {minimizeMsg: arr});
         }
         return {

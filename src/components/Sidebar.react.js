@@ -12,18 +12,22 @@ import QuickSearchButton from './sidebar/QuickSearchButton.react';
 import Department from './sidebar/DepartmentButton.react';
 
 import DialogStore from '../stores/DialogStore';
+import PingyinSearchStore from '../stores/PingyinSearchStore';
 import ArchiveStore from '../stores/ArchiveStore';
+import linq from 'linq';
+import $ from 'jquery';
 
 class Sidebar extends Component {
   static getStores() {
-    return [DialogStore, ArchiveStore];
+    return [DialogStore, PingyinSearchStore, ArchiveStore];
   }
 
   static calculateState() {
     return {
       currentPeer: DialogStore.getCurrentPeer(),
       dialogs: DialogStore.getDialogs(),
-      archive: ArchiveStore.getArchiveChatState()
+      archive: ArchiveStore.getArchiveChatState(),
+      pingyinSearch: PingyinSearchStore.getState()
     };
   }
 
@@ -53,16 +57,35 @@ class Sidebar extends Component {
     };
   }
 
+  filterDailogs() {
+    // 过滤删除的群组
+    const { dialogs, pingyinSearch } = this.state;
+    let group = pingyinSearch['群组'] || [];
+    var newDialog = [],
+        obj = {};
+    for (var i = 0; i < dialogs.length; i++) {
+      obj = $.extend({}, dialogs[i]);
+      newDialog.push(obj);
+      if (dialogs[i].key !== 'privates') {
+        // 非用户组
+        var arr = linq.from(dialogs[i].shorts).where('$.peer.peer.type === "group"').toArray(); // 群组部分
+        var arr1 = linq.from(dialogs[i].shorts).where('$.peer.peer.type !== "group"').toArray(); // 非群组部分
+        var activeGroup = linq.from(arr).join(group, 'outer => outer.peer.peer.id', 'inner => inner.peerInfo.peer.id', 'outer => outer').toArray(); // 未删除群组
+        obj.shorts = [].concat(...arr1, ...activeGroup); // 重新组合
+      }
+    }
+    return newDialog;
+  }
 
   render() {
-    const { currentPeer, dialogs, archive } = this.state;
-    const { Recent,DepSection, FooterSection } = this.components;
-
+    const { currentPeer, archive } = this.state;
+    const { Recent, DepSection, FooterSection } = this.components;
+    
     return (
       <aside className="sidebar">
         <Recent
           currentPeer={currentPeer}
-          dialogs={dialogs}
+          dialogs={this.filterDailogs()}
           archive={archive}
         />
 

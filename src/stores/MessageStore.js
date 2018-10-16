@@ -11,6 +11,7 @@ import { getFirstUnreadMessageIndex } from '../utils/MessageUtils';
 import UserStore from './UserStore';
 import DialogStore from './DialogStore';
 import MessageActionCreators from '../actions/MessageActionCreators';
+import DialogActionCreators from '../actions/DialogActionCreators';
 import linq from 'linq';
 
 const MESSAGE_COUNT_STEP = 20;
@@ -62,6 +63,28 @@ class MessageStore extends ReduceStore {
               }, 1);
             })(message);
           }
+        }
+
+        var message1 = state.messages.slice(-1)[0];
+        var message2 = action.messages.slice(-2)[0];
+        if (message1 && message2 && message2.rid === message1.rid) {
+          // 判断是否为手动发送数据
+          setTimeout(function () {
+            var peer = DialogStore.getCurrentPeer();
+            var dialogs = DialogStore.getDialogs();
+            for (var i = 0; i < dialogs.length; i++) {
+              var dialog = linq.from(dialogs[i].shorts).where('$.peer.peer.id ===' + peer.id).toArray()[0];
+              if (dialog) {
+                dialog.updateTime = new Date().getTime();
+                dialogs[i].shorts.sort((a, b) => {
+                  return b.updateTime - a.updateTime;
+                });
+                dialogs[i].shorts = [].concat(dialogs[i].shorts);
+                break;
+              }
+            }
+            DialogActionCreators.setDialogs(dialogs);
+          }, 1);
         }
         
         if (ActorClient.isElectron()) {

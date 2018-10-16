@@ -5,6 +5,7 @@
 import { ReduceStore } from 'flux/utils';
 import Dispatcher from '../dispatcher/ActorAppDispatcher';
 import { ActionTypes } from '../constants/ActorAppConstants';
+import DialogActionCreators from '../actions/DialogActionCreators';
 import linq from 'Linq';
 
 class PingyinSearchStore extends ReduceStore {
@@ -15,7 +16,9 @@ class PingyinSearchStore extends ReduceStore {
   reduce(state, action) {
     switch (action.type) {
       case ActionTypes.PINGYIN_SEARCH_CHANGED:
-        return action.obj;
+        return {
+          ...action.obj
+        };
       default:
         return state;
     }

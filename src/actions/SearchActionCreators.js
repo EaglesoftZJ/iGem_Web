@@ -39,7 +39,7 @@ class SearchActionCreators {
   }
 
   updateResults(query) {
-    const elements = QuickSearchStore.getState();
+    const elements = QuickSearchStore.getSearchList();
     const results = search(query, elements, (element) => {
       return [
         element.peerInfo.title,

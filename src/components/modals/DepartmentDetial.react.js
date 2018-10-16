@@ -43,7 +43,7 @@ class DepartmentDetial extends Component {
       dw_data: linq.from(res.dw_data).where('$.id!=="dw017"').orderBy('$.wzh').toArray(),
       bm_data: res.bm_data,
       yh_data: res.yh_data,
-      quickSearchData: QuickSearchStore.getState(),
+      quickSearchData: QuickSearchStore.getSearchList(),
       hoverId: '',
       selectedDw: '',
       selectedBm: '',
