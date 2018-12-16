@@ -73,13 +73,23 @@ class RecentContextMenu extends Component {
 
   handleFavorite = () => {
     const { peer } = this.props;
-    FavoriteActionCreators.favoriteChat(peer);
+    FavoriteActionCreators.favoriteChat(peer).then((res) => {
+      if (res.actionType === 'FAVORITE_ADD_SUCCESS') {
+        // 置顶成功
+        DialogActionCreators.deleteDialog(peer.id, ['groups', 'privates']);
+      }
+    });
     this.handleClose();
   };
 
   handleUnfavorite = () => {
     const { peer } = this.props;
-    FavoriteActionCreators.unfavoriteChat(peer);
+    FavoriteActionCreators.unfavoriteChat(peer).then((res) => {
+      if (res.actionType === 'FAVORITE_REMOVE_SUCCESS') {
+        // 取消置顶成功
+        DialogActionCreators.deleteDialog(peer.id, ['favourites']);
+      }
+    })
     this.handleClose();
   };
 

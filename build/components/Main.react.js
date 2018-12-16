@@ -219,8 +219,11 @@ var Main = function (_Component) {
 
   Main.prototype.getDialogStore = function getDialogStore() {
     window.messenger.listenOnRender('dialogStore', function (event, arg) {
-      if (arg) {
-        _DialogActionCreators2.default.setDialogs(arg.dialogs);
+      // console.log('dialogStore', arg, );
+      if (arg && arg['dialogs_' + _ProfileStore2.default.getProfile().id]) {
+        (0, _timers.setTimeout)(function () {
+          _DialogActionCreators2.default.setDialogs(arg['dialogs_' + _ProfileStore2.default.getProfile().id]);
+        }, 1);
       }
     });
     _ActorClient2.default.sendToElectron('getDialogStore');

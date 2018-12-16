@@ -2,6 +2,8 @@
 
 exports.__esModule = true;
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _utils = require('flux/utils');
 
 var _ActorAppDispatcher = require('../dispatcher/ActorAppDispatcher');
@@ -9,6 +11,10 @@ var _ActorAppDispatcher = require('../dispatcher/ActorAppDispatcher');
 var _ActorAppDispatcher2 = _interopRequireDefault(_ActorAppDispatcher);
 
 var _ActorAppConstants = require('../constants/ActorAppConstants');
+
+var _DialogActionCreators = require('../actions/DialogActionCreators');
+
+var _DialogActionCreators2 = _interopRequireDefault(_DialogActionCreators);
 
 var _Linq = require('Linq');
 
@@ -40,7 +46,7 @@ var PingyinSearchStore = function (_ReduceStore) {
   PingyinSearchStore.prototype.reduce = function reduce(state, action) {
     switch (action.type) {
       case _ActorAppConstants.ActionTypes.PINGYIN_SEARCH_CHANGED:
-        return action.obj;
+        return _extends({}, action.obj);
       default:
         return state;
     }

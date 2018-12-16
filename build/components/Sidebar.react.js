@@ -30,9 +30,21 @@ var _DialogStore = require('../stores/DialogStore');
 
 var _DialogStore2 = _interopRequireDefault(_DialogStore);
 
+var _PingyinSearchStore = require('../stores/PingyinSearchStore');
+
+var _PingyinSearchStore2 = _interopRequireDefault(_PingyinSearchStore);
+
 var _ArchiveStore = require('../stores/ArchiveStore');
 
 var _ArchiveStore2 = _interopRequireDefault(_ArchiveStore);
+
+var _linq = require('linq');
+
+var _linq2 = _interopRequireDefault(_linq);
+
+var _jquery = require('jquery');
+
+var _jquery2 = _interopRequireDefault(_jquery);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -48,14 +60,15 @@ var Sidebar = function (_Component) {
   _inherits(Sidebar, _Component);
 
   Sidebar.getStores = function getStores() {
-    return [_DialogStore2.default, _ArchiveStore2.default];
+    return [_DialogStore2.default, _PingyinSearchStore2.default, _ArchiveStore2.default];
   };
 
   Sidebar.calculateState = function calculateState() {
     return {
       currentPeer: _DialogStore2.default.getCurrentPeer(),
       dialogs: _DialogStore2.default.getDialogs(),
-      archive: _ArchiveStore2.default.getArchiveChatState()
+      archive: _ArchiveStore2.default.getArchiveChatState(),
+      pingyinSearch: _PingyinSearchStore2.default.getState()
     };
   };
 
@@ -90,11 +103,38 @@ var Sidebar = function (_Component) {
     };
   };
 
-  Sidebar.prototype.render = function render() {
+  Sidebar.prototype.filterDailogs = function filterDailogs() {
+    // 过滤删除的群组
     var _state = this.state,
-        currentPeer = _state.currentPeer,
         dialogs = _state.dialogs,
-        archive = _state.archive;
+        pingyinSearch = _state.pingyinSearch;
+
+    var group = pingyinSearch['群组'] || [];
+    var newDialog = [],
+        obj = {};
+    for (var i = 0; i < dialogs.length; i++) {
+      obj = _jquery2.default.extend({}, dialogs[i]);
+      newDialog.push(obj);
+      if (dialogs[i].key !== 'privates') {
+        var _ref;
+
+        // 非用户组
+        var arr = _linq2.default.from(dialogs[i].shorts).where('$.peer.peer.type === "group"').toArray(); // 群组部分
+        var arr1 = _linq2.default.from(dialogs[i].shorts).where('$.peer.peer.type !== "group"').toArray(); // 非群组部分
+        var activeGroup = _linq2.default.from(arr).join(group, 'outer => outer.peer.peer.id', 'inner => inner.peerInfo.peer.id', 'outer => outer').toArray(); // 未删除群组
+        obj.shorts = (_ref = []).concat.apply(_ref, arr1.concat(activeGroup)); // 重新组合
+        obj.shorts.sort(function (a, b) {
+          return b.updateTime - a.updateTime;
+        });
+      }
+    }
+    return newDialog;
+  };
+
+  Sidebar.prototype.render = function render() {
+    var _state2 = this.state,
+        currentPeer = _state2.currentPeer,
+        archive = _state2.archive;
     var _components = this.components,
         Recent = _components.Recent,
         DepSection = _components.DepSection,
@@ -106,7 +146,7 @@ var Sidebar = function (_Component) {
       { className: 'sidebar' },
       _react2.default.createElement(Recent, {
         currentPeer: currentPeer,
-        dialogs: dialogs,
+        dialogs: this.filterDailogs(),
         archive: archive
       }),
       _react2.default.createElement(DepSection, null),

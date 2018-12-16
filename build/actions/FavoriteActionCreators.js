@@ -14,14 +14,14 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 exports.default = {
   favoriteChat: function favoriteChat(peer) {
-    (0, _ActorAppDispatcher.dispatchAsync)(_ActorClient2.default.favoriteChat(peer), {
+    return (0, _ActorAppDispatcher.dispatchAsync)(_ActorClient2.default.favoriteChat(peer), {
       request: _ActorAppConstants.ActionTypes.FAVORITE_ADD,
       success: _ActorAppConstants.ActionTypes.FAVORITE_ADD_SUCCESS,
       failure: _ActorAppConstants.ActionTypes.FAVORITE_ADD_ERROR
     }, { peer: peer });
   },
   unfavoriteChat: function unfavoriteChat(peer) {
-    (0, _ActorAppDispatcher.dispatchAsync)(_ActorClient2.default.unfavoriteChat(peer), {
+    return (0, _ActorAppDispatcher.dispatchAsync)(_ActorClient2.default.unfavoriteChat(peer), {
       request: _ActorAppConstants.ActionTypes.FAVORITE_REMOVE,
       success: _ActorAppConstants.ActionTypes.FAVORITE_REMOVE_SUCCESS,
       failure: _ActorAppConstants.ActionTypes.FAVORITE_REMOVE_ERROR

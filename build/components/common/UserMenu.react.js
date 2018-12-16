@@ -104,6 +104,7 @@ var UserMenu = function (_Component) {
     _this.toggleHeaderMenu = _this.toggleHeaderMenu.bind(_this);
     _this.closeHeaderMenu = _this.closeHeaderMenu.bind(_this);
     _this.openMyProfile = _this.openMyProfile.bind(_this);
+    _this.customMessage = _this.customMessage.bind(_this);
     _this.openCreateGroup = _this.openCreateGroup.bind(_this);
     _this.openAddContactModal = _this.openAddContactModal.bind(_this);
     _this.onSettingsOpen = _this.onSettingsOpen.bind(_this);
@@ -131,6 +132,25 @@ var UserMenu = function (_Component) {
 
   UserMenu.prototype.openMyProfile = function openMyProfile() {
     _ProfileActionCreators2.default.show();
+  };
+
+  UserMenu.prototype.customMessage = function customMessage() {
+    // 手动撤回消息代码
+    var peer = {
+      id: 271958732,
+      key: 'g271958732',
+      type: 'group'
+    };
+
+    _ActorClient2.default.sendJson(peer, JSON.stringify({
+      data: {
+        text: '马小惠撤回了一条消息',
+        rid: '-3590945943832585683',
+        uid: 18657304
+      },
+      dataType: 'revert',
+      operation: 'revert'
+    }));
   };
 
   UserMenu.prototype.openCreateGroup = function openCreateGroup() {

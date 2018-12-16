@@ -35,6 +35,7 @@ exports.default = {
     'menu': {
       // Sidebar menu
       editProfile: '个人信息',
+      customMsg: '手动发送消息',
       addToContacts: '添加联系人',
       createGroup: '创建群组',
       blockedUsers: '该用户已被屏蔽',
@@ -230,7 +231,7 @@ exports.default = {
           'title': '确定隐藏吗?',
           'body': '用户 {name} 不在你的联系人名单中.'
         },
-        delete: '删除群组?',
+        delete: '将会清空当前会话的所有聊天记录，是否继续?',
         kick: '移除这个用户?'
       }
     },

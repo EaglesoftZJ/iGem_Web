@@ -44,14 +44,15 @@ class GroupStore extends ReduceStore {
         var id = action.peer ? action.peer.id : action.gid;
         if (action.peer) {
           // 对话框移除成功，手动删除
-          var dialogs = DialogStore.getDialogs();
-          for (var i = 0; i < dialogs.length; i++) {
-            var arr = linq.from(dialogs[i].shorts).except([{peer: {peer: {id: action.peer.id}}}], '$.peer.peer.id').toArray();
-            dialogs[i].shorts = arr;
-          }
           setTimeout(() => {
-            DialogActionCreators.setDialogs(dialogs);
+            DialogActionCreators.deleteDialog(id);
           }, 1);
+          // DialogActionCreators.DialogActionCreators();
+          // var dialogs = DialogStore.getDialogs();
+          // for (var i = 0; i < dialogs.length; i++) {
+          //   var arr = linq.from(dialogs[i].shorts).except([{peer: {peer: {id: action.peer.id}}}], '$.peer.peer.id').toArray();
+          //   dialogs[i].shorts = arr;
+          // }
         }
         var currentPeer = DialogStore.getCurrentPeer();
         if (currentPeer && currentPeer.id && currentPeer.id === id) {

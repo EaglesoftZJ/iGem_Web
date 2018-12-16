@@ -94,6 +94,7 @@ class DialogStore extends ReduceStore {
             for (var j = 0; j < action.dialogs[i].shorts.length; j++) {
               var dialog = action.dialogs[i].shorts[j];
               var key = dialog.peer.peer.key;
+              oldDialog = null;
               var oldDialog = linq.from(oldArr).where(`$.peer.peer.key == '${key}'`).toArray()[0];
               /* 取合集添加 */
               var index = oldArr.indexOf(oldDialog);

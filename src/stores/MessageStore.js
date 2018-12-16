@@ -67,7 +67,8 @@ class MessageStore extends ReduceStore {
 
         var message1 = state.messages.slice(-1)[0];
         var message2 = action.messages.slice(-2)[0];
-        if (message1 && message2 && message2.rid === message1.rid) {
+        var message3 = action.messages.slice(-1)[0];
+        if (message1 && message2 && message2.rid === message1.rid && message3.content.content !== 'service') {
           // 判断是否为手动发送数据
           setTimeout(function () {
             var peer = DialogStore.getCurrentPeer();

@@ -68,7 +68,7 @@ function processText(text) {
 
 
   processedText = (0, _EmojiUtils.processEmojiText)(processedText);
-  var list = _QuickSearchStore2.default.getState();
+  var list = _QuickSearchStore2.default.getSearchList();
   var id = '';
   var name = '';
   processedText = processedText.replace(/(@[0-9a-zA-Z_]{1,32})/ig, function (str) {

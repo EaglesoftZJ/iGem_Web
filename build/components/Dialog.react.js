@@ -157,8 +157,6 @@ var Dialog = function (_Component) {
 
     var _this = _possibleConstructorReturn(this, _Component.call(this, props, context));
 
-    _this.updatePeer(_this.props.params.id);
-
     _this.handleStartClick = _this.handleStartClick.bind(_this);
     _this.handleUnblock = _this.handleUnblock.bind(_this);
     _this.handleDialogSearchCancel = _this.handleDialogSearchCancel.bind(_this);
@@ -167,6 +165,10 @@ var Dialog = function (_Component) {
     _this.components = _this.getComponents();
     return _this;
   }
+
+  Dialog.prototype.componentWillMount = function componentWillMount() {
+    this.updatePeer(this.props.params.id);
+  };
 
   Dialog.prototype.componentDidMount = function componentDidMount() {
     this.handleDialogSwitch();

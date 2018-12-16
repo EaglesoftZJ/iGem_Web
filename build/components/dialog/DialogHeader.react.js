@@ -32,6 +32,10 @@ var _FavoriteActionCreators = require('../../actions/FavoriteActionCreators');
 
 var _FavoriteActionCreators2 = _interopRequireDefault(_FavoriteActionCreators);
 
+var _DialogActionCreators = require('../../actions/DialogActionCreators');
+
+var _DialogActionCreators2 = _interopRequireDefault(_DialogActionCreators);
+
 var _SearchMessagesActionCreators = require('../../actions/SearchMessagesActionCreators');
 
 var _SearchMessagesActionCreators2 = _interopRequireDefault(_SearchMessagesActionCreators);
@@ -102,9 +106,21 @@ var DialogHeader = function (_Component) {
 
 
     if (isFavorite) {
-      _FavoriteActionCreators2.default.unfavoriteChat(peer);
+      // console.log('unfavoriteChat', FavoriteActionCreators.unfavoriteChat(peer));
+      _FavoriteActionCreators2.default.unfavoriteChat(peer).then(function (res) {
+        if (res.actionType === 'FAVORITE_REMOVE_SUCCESS') {
+          // 取消置顶成功
+          console.log('unfavoriteChat', 123123123);
+          _DialogActionCreators2.default.deleteDialog(peer.id, ['favourites']);
+        }
+      });
     } else {
-      _FavoriteActionCreators2.default.favoriteChat(peer);
+      _FavoriteActionCreators2.default.favoriteChat(peer).then(function (res) {
+        if (res.actionType === 'FAVORITE_ADD_SUCCESS') {
+          // 置顶成功
+          _DialogActionCreators2.default.deleteDialog(peer.id, ['groups', 'privates']);
+        }
+      });
     }
   };
 

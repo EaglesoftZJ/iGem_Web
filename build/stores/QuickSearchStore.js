@@ -2,6 +2,8 @@
 
 exports.__esModule = true;
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _utils = require('flux/utils');
 
 var _ActorAppDispatcher = require('../dispatcher/ActorAppDispatcher');
@@ -9,6 +11,10 @@ var _ActorAppDispatcher = require('../dispatcher/ActorAppDispatcher');
 var _ActorAppDispatcher2 = _interopRequireDefault(_ActorAppDispatcher);
 
 var _ActorAppConstants = require('../constants/ActorAppConstants');
+
+var _PingyinSearchActionCreators = require('../actions/PingyinSearchActionCreators');
+
+var _PingyinSearchActionCreators2 = _interopRequireDefault(_PingyinSearchActionCreators);
 
 var _Linq = require('Linq');
 
@@ -34,13 +40,39 @@ var QuickSearchStore = function (_ReduceStore) {
   }
 
   QuickSearchStore.prototype.getInitialState = function getInitialState() {
-    return [];
+    return {
+      user: [], // 用户列表
+      group: [], // 群组列表
+      list: [] // 合集
+    };
+  };
+
+  QuickSearchStore.prototype.getSearchList = function getSearchList() {
+    return this.getState().list;
   };
 
   QuickSearchStore.prototype.reduce = function reduce(state, action) {
     switch (action.type) {
-      case _ActorAppConstants.ActionTypes.QUICK_SEARCH_CHANGED:
-        return _Linq2.default.from(action.list).orderBy('$.peerInfo.userName').toArray();
+      case _ActorAppConstants.ActionTypes.QUICK_SEARCH_CHANGED_USER:
+        var user = _Linq2.default.from(action.list).orderBy('$.peerInfo.userName').toArray();
+        var list = state.group.concat(user);
+        setTimeout(function () {
+          _PingyinSearchActionCreators2.default.setPingyinSearchList(list);
+        }, 1);
+        return _extends({}, state, {
+          user: user,
+          list: list
+        });
+      case _ActorAppConstants.ActionTypes.QUICK_SEARCH_CHANGED_GROUP:
+        var group = _Linq2.default.from(action.list).orderBy('$.peerInfo.userName').toArray();
+        var list = state.user.concat(group);
+        setTimeout(function () {
+          _PingyinSearchActionCreators2.default.setPingyinSearchList(list);
+        }, 1);
+        return _extends({}, state, {
+          group: group,
+          list: list
+        });
       default:
         return state;
     }

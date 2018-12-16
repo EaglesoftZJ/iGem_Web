@@ -34,6 +34,10 @@ var _MessageActionCreators = require('../actions/MessageActionCreators');
 
 var _MessageActionCreators2 = _interopRequireDefault(_MessageActionCreators);
 
+var _DialogActionCreators = require('../actions/DialogActionCreators');
+
+var _DialogActionCreators2 = _interopRequireDefault(_DialogActionCreators);
+
 var _linq = require('linq');
 
 var _linq2 = _interopRequireDefault(_linq);
@@ -110,6 +114,29 @@ var MessageStore = function (_ReduceStore) {
               }, 1);
             })(message);
           }
+        }
+
+        var message1 = state.messages.slice(-1)[0];
+        var message2 = action.messages.slice(-2)[0];
+        var message3 = action.messages.slice(-1)[0];
+        if (message1 && message2 && message2.rid === message1.rid && message3.content.content !== 'service') {
+          // 判断是否为手动发送数据
+          setTimeout(function () {
+            var peer = _DialogStore2.default.getCurrentPeer();
+            var dialogs = _DialogStore2.default.getDialogs();
+            for (var i = 0; i < dialogs.length; i++) {
+              var dialog = _linq2.default.from(dialogs[i].shorts).where('$.peer.peer.id ===' + peer.id).toArray()[0];
+              if (dialog) {
+                dialog.updateTime = new Date().getTime();
+                dialogs[i].shorts.sort(function (a, b) {
+                  return b.updateTime - a.updateTime;
+                });
+                dialogs[i].shorts = [].concat(dialogs[i].shorts);
+                break;
+              }
+            }
+            _DialogActionCreators2.default.setDialogs(dialogs);
+          }, 1);
         }
 
         if (_ActorClient2.default.isElectron()) {

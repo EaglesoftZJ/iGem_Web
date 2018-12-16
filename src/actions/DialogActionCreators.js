@@ -18,8 +18,22 @@ import DraftActionCreators from './DraftActionCreators';
 
 import DialogStore from '../stores/DialogStore';
 import MessageStore from '../stores/MessageStore';
+import linq from 'linq';
 
 class DialogActionCreators extends ActionCreators {
+  deleteDialog(id, keys) {
+    // 删除根据id删除dialog
+    var dialogs = DialogStore.getDialogs();
+    var arr = null;
+    for (var i = 0; i < dialogs.length; i++) {
+      if (!keys || keys && keys.indexOf(dialogs[i].key) !== -1) {
+        arr = linq.from(dialogs[i].shorts).except([{peer: {peer: {id: id}}}], '$.peer.peer.id').toArray();
+        dialogs[i].shorts = arr;
+      }
+    }
+    this.setDialogs(dialogs);
+  }
+  
   setDialogs(dialogs) {
     dispatch(ActionTypes.DIALOGS_CHANGED, { dialogs });
   }

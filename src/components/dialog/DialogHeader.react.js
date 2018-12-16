@@ -13,6 +13,7 @@ import { escapeWithEmoji } from '../../utils/EmojiUtils';
 import CallActionCreators from '../../actions/CallActionCreators';
 import ActivityActionCreators from '../../actions/ActivityActionCreators';
 import FavoriteActionCreators from '../../actions/FavoriteActionCreators';
+import DialogActionCreators from '../../actions/DialogActionCreators';
 import SearchMessagesActionCreators from '../../actions/SearchMessagesActionCreators';
 import InviteUserActions from '../../actions/InviteUserActions';
 import CreateGroupActionCreators from '../../actions/CreateGroupActionCreators';
@@ -60,9 +61,21 @@ class DialogHeader extends Component {
     const { peer, isFavorite } = this.props;
 
     if (isFavorite) {
-      FavoriteActionCreators.unfavoriteChat(peer);
+      // console.log('unfavoriteChat', FavoriteActionCreators.unfavoriteChat(peer));
+      FavoriteActionCreators.unfavoriteChat(peer).then((res) => {
+        if (res.actionType === 'FAVORITE_REMOVE_SUCCESS') {
+          // 取消置顶成功
+          console.log('unfavoriteChat', 123123123);
+          DialogActionCreators.deleteDialog(peer.id, ['favourites']);
+        }
+      });
     } else {
-      FavoriteActionCreators.favoriteChat(peer);
+      FavoriteActionCreators.favoriteChat(peer).then((res) => {
+        if (res.actionType === 'FAVORITE_ADD_SUCCESS') {
+          // 置顶成功
+          DialogActionCreators.deleteDialog(peer.id, ['groups', 'privates']);
+        }
+      });
     }
   }
 

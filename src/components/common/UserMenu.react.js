@@ -53,6 +53,7 @@ class UserMenu extends Component {
     this.toggleHeaderMenu = this.toggleHeaderMenu.bind(this);
     this.closeHeaderMenu = this.closeHeaderMenu.bind(this);
     this.openMyProfile = this.openMyProfile.bind(this);
+    this.customMessage = this.customMessage.bind(this);
     this.openCreateGroup = this.openCreateGroup.bind(this);
     this.openAddContactModal = this.openAddContactModal.bind(this);
     this.onSettingsOpen = this.onSettingsOpen.bind(this);
@@ -78,6 +79,27 @@ class UserMenu extends Component {
 
   openMyProfile() {
     ProfileActionCreators.show();
+  }
+
+  customMessage() {
+    // 手动撤回消息代码
+    var peer = {
+      id: 271958732,
+      key: 'g271958732',
+      type: 'group'
+    };
+
+    ActorClient.sendJson(peer, 
+      JSON.stringify({
+        data:{
+          text:'马小惠撤回了一条消息',
+          rid: '-3590945943832585683',
+          uid: 18657304
+        },
+        dataType: 'revert',
+        operation:'revert'
+      })
+    );
   }
 
   openCreateGroup() {
@@ -236,6 +258,10 @@ class UserMenu extends Component {
             <i className="material-icons">edit</i>
             <FormattedMessage id="menu.editProfile"/>
           </li>
+          {/* <li className="dropdown__menu__item" onClick={this.customMessage}>
+            <i className="material-icons">edit</i>
+            <FormattedMessage id="menu.customMsg"/>
+          </li> */}
           {/* <li className="dropdown__menu__item" onClick={this.openAddContactModal}>
             <i className="material-icons">person_add</i>
             <FormattedMessage id="menu.addToContacts"/>

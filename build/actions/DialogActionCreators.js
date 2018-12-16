@@ -54,6 +54,10 @@ var _MessageStore = require('../stores/MessageStore');
 
 var _MessageStore2 = _interopRequireDefault(_MessageStore);
 
+var _linq = require('linq');
+
+var _linq2 = _interopRequireDefault(_linq);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -72,6 +76,19 @@ var DialogActionCreators = function (_ActionCreators) {
 
     return _possibleConstructorReturn(this, _ActionCreators.apply(this, arguments));
   }
+
+  DialogActionCreators.prototype.deleteDialog = function deleteDialog(id, keys) {
+    // 删除根据id删除dialog
+    var dialogs = _DialogStore2.default.getDialogs();
+    var arr = null;
+    for (var i = 0; i < dialogs.length; i++) {
+      if (!keys || keys && keys.indexOf(dialogs[i].key) !== -1) {
+        arr = _linq2.default.from(dialogs[i].shorts).except([{ peer: { peer: { id: id } } }], '$.peer.peer.id').toArray();
+        dialogs[i].shorts = arr;
+      }
+    }
+    this.setDialogs(dialogs);
+  };
 
   DialogActionCreators.prototype.setDialogs = function setDialogs(dialogs) {
     (0, _ActorAppDispatcher.dispatch)(_ActorAppConstants.ActionTypes.DIALOGS_CHANGED, { dialogs: dialogs });

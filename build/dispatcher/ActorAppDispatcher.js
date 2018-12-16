@@ -78,9 +78,9 @@ function dispatchAsync(promise, types) {
 
   dispatch(request, action);
   return promise.then(function (response) {
-    return dispatch(success, _extends({}, action, { response: response }));
+    return dispatch(success, _extends({}, action, { response: response, actionType: success }));
   }, function (error) {
-    return dispatch(failure, _extends({}, action, { error: error }));
+    return dispatch(failure, _extends({}, action, { error: error, actionType: failure }));
   }).catch(logError);
 }
 

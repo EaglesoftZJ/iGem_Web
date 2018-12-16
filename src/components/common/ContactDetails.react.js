@@ -46,21 +46,35 @@ renderNickname() {
             <li>
                 <i className="material-icons icon icon--green">call</i>
                 <span className="title"><a href={'tel:+' + sjh}>{'+' + sjh}</a></span>
-                <span className="description"><FormattedMessage id="profile.phone"/></span>
+                <span className="description"><FormattedMessage id="profile.cellphone"/></span>
             </li>
         );
     }
     renderDh() {
+      // 电话
       const { dh } = this.props.peerInfo;
       if (!dh) return null;
       return (
           <li>
               <i className="material-icons icon icon--green">call</i>
               <span className="title"><a href={'tel:+' + dh}>{'+' + dh}</a></span>
+              <span className="description"><FormattedMessage id="profile.telephone"/></span>
+          </li>
+      );
+    }
+    renderDuh() {
+      // 短号
+      const { duh } = this.props.peerInfo;
+      if (!duh) return null;
+      return (
+          <li>
+              <i className="material-icons icon icon--green">call</i>
+              <span className="title"><a href={'tel:+' + duh}>{'+' + duh}</a></span>
               <span className="description"><FormattedMessage id="profile.cornet"/></span>
           </li>
       );
-  }
+    }
+
     renderDwmc() {
         const { dwmc } = this.props.peerInfo;
         if (!dwmc) return null;
@@ -117,6 +131,7 @@ renderNickname() {
         {this.renderNickname()}
         {this.renderSjh()}
         {this.renderDh()}
+        {this.renderDuh()}
         {this.renderDwmc()}
         {this.renderBmmc()}
         {this.renderZwmc()}

@@ -60,8 +60,8 @@ export function dispatchAsync(promise, types, action = {}) {
 
   dispatch(request, action);
   return promise.then(
-    response => dispatch(success, { ...action, response }),
-    error => dispatch(failure, { ...action, error })
+    response => dispatch(success, { ...action, response, actionType: success}),
+    error => dispatch(failure, { ...action, error, actionType: failure})
   ).catch(logError);
 }
 

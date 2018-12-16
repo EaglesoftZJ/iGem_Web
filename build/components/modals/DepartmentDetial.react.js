@@ -90,7 +90,7 @@ var DepartmentDetial = function (_Component) {
       dw_data: _Linq2.default.from(res.dw_data).where('$.id!=="dw017"').orderBy('$.wzh').toArray(),
       bm_data: res.bm_data,
       yh_data: res.yh_data,
-      quickSearchData: _QuickSearchStore2.default.getState(),
+      quickSearchData: _QuickSearchStore2.default.getSearchList(),
       hoverId: '',
       selectedDw: '',
       selectedBm: '',

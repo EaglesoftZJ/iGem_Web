@@ -8,6 +8,7 @@ import ActorClient from '../utils/ActorClient';
 import ComposeActionCreators from '../actions/ComposeActionCreators';
 import ProfileStore from '../stores/ProfileStore';
 import linq from 'Linq';
+import $ from 'jquery';
 
 var interval = null;
 

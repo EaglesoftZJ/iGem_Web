@@ -8,7 +8,7 @@ import ActorClient from '../utils/ActorClient';
 
 export default {
   favoriteChat(peer) {
-    dispatchAsync(ActorClient.favoriteChat(peer), {
+    return dispatchAsync(ActorClient.favoriteChat(peer), {
       request: ActionTypes.FAVORITE_ADD,
       success: ActionTypes.FAVORITE_ADD_SUCCESS,
       failure: ActionTypes.FAVORITE_ADD_ERROR
@@ -16,7 +16,7 @@ export default {
   },
 
   unfavoriteChat(peer) {
-    dispatchAsync(ActorClient.unfavoriteChat(peer), {
+    return dispatchAsync(ActorClient.unfavoriteChat(peer), {
       request: ActionTypes.FAVORITE_REMOVE,
       success: ActionTypes.FAVORITE_REMOVE_SUCCESS,
       failure: ActionTypes.FAVORITE_REMOVE_ERROR

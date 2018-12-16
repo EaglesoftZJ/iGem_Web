@@ -90,14 +90,24 @@ var RecentContextMenu = function (_Component) {
     _this.handleFavorite = function () {
       var peer = _this.props.peer;
 
-      _FavoriteActionCreators2.default.favoriteChat(peer);
+      _FavoriteActionCreators2.default.favoriteChat(peer).then(function (res) {
+        if (res.actionType === 'FAVORITE_ADD_SUCCESS') {
+          // 置顶成功
+          _DialogActionCreators2.default.deleteDialog(peer.id, ['groups', 'privates']);
+        }
+      });
       _this.handleClose();
     };
 
     _this.handleUnfavorite = function () {
       var peer = _this.props.peer;
 
-      _FavoriteActionCreators2.default.unfavoriteChat(peer);
+      _FavoriteActionCreators2.default.unfavoriteChat(peer).then(function (res) {
+        if (res.actionType === 'FAVORITE_REMOVE_SUCCESS') {
+          // 取消置顶成功
+          _DialogActionCreators2.default.deleteDialog(peer.id, ['favourites']);
+        }
+      });
       _this.handleClose();
     };
 

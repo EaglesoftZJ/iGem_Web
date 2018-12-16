@@ -72,6 +72,9 @@ class Sidebar extends Component {
         var arr1 = linq.from(dialogs[i].shorts).where('$.peer.peer.type !== "group"').toArray(); // 非群组部分
         var activeGroup = linq.from(arr).join(group, 'outer => outer.peer.peer.id', 'inner => inner.peerInfo.peer.id', 'outer => outer').toArray(); // 未删除群组
         obj.shorts = [].concat(...arr1, ...activeGroup); // 重新组合
+        obj.shorts.sort((a, b) => {
+          return b.updateTime - a.updateTime;
+        });
       }
     }
     return newDialog;

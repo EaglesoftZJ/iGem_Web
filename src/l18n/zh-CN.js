@@ -33,6 +33,7 @@ export default {
     'menu': {
       // Sidebar menu
       editProfile: '个人信息',
+      customMsg: '手动发送消息',
       addToContacts: '添加联系人',
       createGroup: '创建群组',
       blockedUsers: '该用户已被屏蔽',
@@ -236,7 +237,8 @@ export default {
     // Profiles
     'profile': {
       'email': '邮箱',
-      'phone': '手机号',
+      'cellphone': '手机号',
+      'telephone': '电话',
       'cornet': '短号',
       'nickname': '昵称',
       'unit': '所在单位',

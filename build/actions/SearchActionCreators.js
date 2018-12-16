@@ -65,7 +65,7 @@ var SearchActionCreators = function () {
   };
 
   SearchActionCreators.prototype.updateResults = function updateResults(query) {
-    var elements = _QuickSearchStore2.default.getState();
+    var elements = _QuickSearchStore2.default.getSearchList();
     var results = (0, _SearchUtils.search)(query, elements, function (element) {
       return [element.peerInfo.title, element.peerInfo.userName];
     });

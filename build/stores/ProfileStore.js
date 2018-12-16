@@ -51,6 +51,9 @@ var ProfileStore = function (_ReduceStore) {
   ProfileStore.prototype.reduce = function reduce(state, action) {
     switch (action.type) {
       case _ActorAppConstants.ActionTypes.PROFILE_CHANGED:
+        if (_ActorClient2.default.isElectron()) {
+          _ActorClient2.default.sendToElectron('profile', action.profile);
+        }
         return _extends({}, state, {
           profile: action.profile
         });
