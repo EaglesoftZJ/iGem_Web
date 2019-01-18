@@ -10,6 +10,7 @@ import GroupMember from '../activity/GroupMember.react';
 class GroupProfileMembers extends Component {
   static propTypes = {
     groupId: PropTypes.number,
+    adminId: PropTypes.number,
     members: PropTypes.array.isRequired
   };
 
@@ -20,10 +21,10 @@ class GroupProfileMembers extends Component {
   }
 
   renderMembers() {
-    const { groupId, members } = this.props;
+    const { groupId, members, adminId } = this.props;
 
     return members.map((member) => (
-      <GroupMember {...member} gid={groupId} key={member.peerInfo.peer.key} />
+      <GroupMember {...member} adminId={adminId} gid={groupId} key={member.peerInfo.peer.key} />
     ));
   }
 

@@ -39,10 +39,10 @@ export default class Stateful extends Component {
   renderState() {
     const { currentState, processing, pending, success, failure } = this.props;
     switch (currentState) {
-      case AsyncActionStates.PENDING: return pending || null;
-      case AsyncActionStates.PROCESSING: return processing || null;
-      case AsyncActionStates.SUCCESS: return success || null;
-      case AsyncActionStates.FAILURE: return failure || null;
+      case AsyncActionStates.PENDING: return pending || null; // 移除
+      case AsyncActionStates.PROCESSING: return processing || null; // 移除中
+      case AsyncActionStates.SUCCESS: return success || null; //  移除成功
+      case AsyncActionStates.FAILURE: return failure || null; // 移除是吧
       default: return null;
     }
   }

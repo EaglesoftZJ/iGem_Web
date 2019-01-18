@@ -181,7 +181,7 @@ class GroupProfile extends Component {
 
             <li className="profile__list__item group_profile__members no-p">
               <Fold iconElement={iconElement} title={message}>
-                <GroupProfileMembers groupId={group.id} members={group.members}/>
+                <GroupProfileMembers groupId={group.id} members={group.members} adminId={group.adminId}/>
               </Fold>
             </li>
 

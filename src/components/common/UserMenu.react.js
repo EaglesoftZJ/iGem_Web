@@ -17,6 +17,7 @@ import LoginActionCreators from '../../actions/LoginActionCreators';
 import HelpActionCreators from '../../actions/HelpActionCreators';
 import AddContactActionCreators from '../../actions/AddContactActionCreators';
 import PreferencesActionCreators from '../../actions/PreferencesActionCreators';
+import MessageActionCreators from '../../actions/MessageActionCreators'
 
 import ProfileStore from '../../stores/ProfileStore';
 
@@ -83,23 +84,31 @@ class UserMenu extends Component {
 
   customMessage() {
     // 手动撤回消息代码
-    var peer = {
-      id: 271958732,
-      key: 'g271958732',
-      type: 'group'
+    var peer1 = {
+      id: 1477384559,
+      key: 'u1477384559',
+      type: 'user'
+    };
+    var peer2 = {
+      id: 673080096,
+      key: 'u673080096',
+      type: 'user'
     };
 
-    ActorClient.sendJson(peer, 
-      JSON.stringify({
-        data:{
-          text:'马小惠撤回了一条消息',
-          rid: '-3590945943832585683',
-          uid: 18657304
-        },
-        dataType: 'revert',
-        operation:'revert'
-      })
-    );
+    // ActorClient.sendJson(peer, 
+    //   JSON.stringify({
+    //     data:{
+    //       text:'马小惠撤回了一条消息',
+    //       rid: '-3590945943832585683',
+    //       uid: 18657304
+    //     },
+    //     dataType: 'revert',
+    //     operation:'revert'
+    //   })
+    // );
+    MessageActionCreators.sendTextMessage(peer1, '未激活发送个消息试试1');
+    MessageActionCreators.sendTextMessage(peer2, '未激活发送个消息试试2');
+    // ActorClient.sendTextMessage
   }
 
   openCreateGroup() {

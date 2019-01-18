@@ -24,7 +24,8 @@ class GroupMember extends Component {
 
   static propTypes = {
     peerInfo: PropTypes.object.isRequired,
-    canKick: PropTypes.bool.isRequired,
+    canKick: PropTypes.bool.isRequired, // 是否可以踢人
+    adminId: PropTypes.number, // 当前登录用户是否群组
     gid: PropTypes.number.isRequired
   };
 
@@ -50,11 +51,12 @@ class GroupMember extends Component {
   };
 
   renderControls() {
-    const { peerInfo, canKick, gid } = this.props;
+    const { peerInfo, canKick, adminId, gid } = this.props;
     const { kickUserState } = this.state;
     const myId = ActorClient.getUid();
 
-    if (!canKick || peerInfo.peer.id === myId) return <div/>;
+    if (!canKick && adminId !== myId || peerInfo.peer.id === myId) return <div/>;
+    // if (peerInfo.peer.id === myId) return <div/>;
 
     return (
       <Stateful

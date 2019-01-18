@@ -8,6 +8,7 @@ import { ActionTypes, PeerTypes } from '../constants/ActorAppConstants';
 import ActorClient from '../utils/ActorClient';
 
 import DialogStore from '../stores/DialogStore';
+import linq from 'linq';
 
 const DialogInfoActionCreators = {
   setDialogInfo(info) {
@@ -20,6 +21,7 @@ const DialogInfoActionCreators = {
       ActorClient.loadMembers(info.id, 10000, null).then((data) => {
         if(info.members && info.members.length > 0) {
           info.members = data.members;
+          info.adminId = linq.from(info.members).where('$.isAdmin === true').toArray()[0].peerInfo.peer.id;
           dispatch(ActionTypes.DIALOG_INFO_CHANGED, { info });
         }  
       });

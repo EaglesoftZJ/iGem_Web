@@ -109,12 +109,13 @@ var ContactDetails = function (_Component) {
       _react2.default.createElement(
         'span',
         { className: 'description' },
-        _react2.default.createElement(_reactIntl.FormattedMessage, { id: 'profile.phone' })
+        _react2.default.createElement(_reactIntl.FormattedMessage, { id: 'profile.cellphone' })
       )
     );
   };
 
   ContactDetails.prototype.renderDh = function renderDh() {
+    // 电话
     var dh = this.props.peerInfo.dh;
 
     if (!dh) return null;
@@ -133,6 +134,36 @@ var ContactDetails = function (_Component) {
           'a',
           { href: 'tel:+' + dh },
           '+' + dh
+        )
+      ),
+      _react2.default.createElement(
+        'span',
+        { className: 'description' },
+        _react2.default.createElement(_reactIntl.FormattedMessage, { id: 'profile.telephone' })
+      )
+    );
+  };
+
+  ContactDetails.prototype.renderDuh = function renderDuh() {
+    // 短号
+    var duh = this.props.peerInfo.duh;
+
+    if (!duh) return null;
+    return _react2.default.createElement(
+      'li',
+      null,
+      _react2.default.createElement(
+        'i',
+        { className: 'material-icons icon icon--green' },
+        'call'
+      ),
+      _react2.default.createElement(
+        'span',
+        { className: 'title' },
+        _react2.default.createElement(
+          'a',
+          { href: 'tel:+' + duh },
+          '+' + duh
         )
       ),
       _react2.default.createElement(
@@ -253,6 +284,7 @@ var ContactDetails = function (_Component) {
       this.renderNickname(),
       this.renderSjh(),
       this.renderDh(),
+      this.renderDuh(),
       this.renderDwmc(),
       this.renderBmmc(),
       this.renderZwmc()
