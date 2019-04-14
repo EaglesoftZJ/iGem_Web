@@ -164,13 +164,14 @@ class MessageActions extends Component {
     return (
       <div className="dropdown dropdown--opened dropdown--small" style={dropdownStyles}>
         <ul className="dropdown__menu dropdown__menu--right" ref="dropdown" style={dropdownMenuStyles}>
-          <li className="dropdown__menu__item hide">
+          {/* <li className="dropdown__menu__item hide">
             <i className="icon material-icons">star_rate</i> {intl.messages['message.pin']}
-          </li>
+          </li> */}
           {/* <li className="dropdown__menu__item" onClick={this.handleRepeat}>
             <i className="icon material-icons">repeat</i> {intl.messages['message.repeat']}
           </li> */}
           {
+            // 撤销
             message.content.content !== 'customJson' && message.content.operation !== 'revert' && message.sender.peer.id === profile.id && ((new Date().getTime() - parseFloat(message.sortKey)) < 15 * 60 * 1000)
             ? <li className="dropdown__menu__item" onClick={this.handleRevert}>
                 <i className="icon material-icons">redo</i> {intl.messages['message.redo']}
@@ -178,6 +179,7 @@ class MessageActions extends Component {
             : null
           }
           {
+            // 回复
             !isThisMyMessage
               ? <li className="dropdown__menu__item" onClick={this.handleReply}>
                   <i className="icon material-icons">reply</i> {intl.messages['message.reply']}
@@ -185,18 +187,26 @@ class MessageActions extends Component {
               : null
           }
           {
+            // 引用
             message.content.content === MessageContentTypes.TEXT
               ? <li className="dropdown__menu__item" onClick={this.handleQuote}>
                   <i className="icon material-icons">format_quote</i> {intl.messages['message.quote']}
                 </li>
               : null
           }
-          <li className="dropdown__menu__item hide">
-            <i className="icon material-icons">forward</i> {intl.messages['message.forward']}
-          </li>
-          <li className="dropdown__menu__item" onClick={this.handleDelete}>
-            <i className="icon material-icons">delete</i> {intl.messages['message.delete']}
-          </li>
+          {
+            // 前进 隐藏了 没有绑定任何处理函数
+            // <li className="dropdown__menu__item hide">
+            //   <i className="icon material-icons">forward</i> {intl.messages['message.forward']}
+            // </li>
+          }
+          {
+            // 删除 容易和撤回弄混出现误操作 先隐藏
+            // <li className="dropdown__menu__item hide" onClick={this.handleDelete}>
+            //   <i className="icon material-icons">delete</i> {intl.messages['message.delete']}
+            // </li>
+          }
+          <li className="dropdown__menu__item text">没有可操作项</li>
         </ul>
       </div>
     );

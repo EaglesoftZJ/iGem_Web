@@ -117,6 +117,18 @@
           fill: white !important;
         }
       }
+      &.text {
+        cursor: default !important;
+        padding-left: 24px !important;
+        &:hover {
+          color: rgba(0, 0, 0, 0.4) !important;
+          background-color: transparent !important;
+        }
+        
+      }
+      & + &.text {
+        display: none;
+      }
     }
     &__separator {
       height: 8px;
