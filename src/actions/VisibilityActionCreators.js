@@ -18,7 +18,7 @@ class VisibilityActionCreators extends ActionCreators {
     dispatch(ActionTypes.APP_VISIBLE);
     ActorClient.onAppVisible();
     // 活跃度统计 20191205
-    if (ProfileStore.getProfile() && (isNotTj === false || typeof isNotTj === 'object')) {
+    if (ProfileStore.getProfile() && (isNotTj === false || isNotTj === undefined || typeof isNotTj === 'object')) {
       $.ajax({
         url: 'http://61.175.100.13:8002/zsgwuias/rest/out/subsystemClickFlyChat',
         type: 'POST',
