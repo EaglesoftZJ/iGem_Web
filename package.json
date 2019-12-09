@@ -50,7 +50,7 @@
     "actor-emoji": "latest",
     "actor-js": "latest",
     "actor-react-scroll": "1.0.5",
-    "assign-deep": "0.4.5",
+    "assign-deep": "1.0.1",
     "babel-polyfill": "6.9.1",
     "classnames": "2.2.5",
     "crosstab": "0.2.12",
