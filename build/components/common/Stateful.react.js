@@ -41,13 +41,13 @@ var Stateful = function (_Component) {
 
     switch (currentState) {
       case _ActorAppConstants.AsyncActionStates.PENDING:
-        return pending || null;
+        return pending || null; // 移除
       case _ActorAppConstants.AsyncActionStates.PROCESSING:
-        return processing || null;
+        return processing || null; // 移除中
       case _ActorAppConstants.AsyncActionStates.SUCCESS:
-        return success || null;
+        return success || null; //  移除成功
       case _ActorAppConstants.AsyncActionStates.FAILURE:
-        return failure || null;
+        return failure || null; // 移除是吧
       default:
         return null;
     }

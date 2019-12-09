@@ -14,11 +14,11 @@ var _DialogStore = require('../stores/DialogStore');
 
 var _DialogStore2 = _interopRequireDefault(_DialogStore);
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _linq = require('linq');
 
-/*
- * Copyright (C) 2015 Actor LLC. <https://actor.im>
- */
+var _linq2 = _interopRequireDefault(_linq);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var DialogInfoActionCreators = {
   setDialogInfo: function setDialogInfo(info) {
@@ -29,6 +29,7 @@ var DialogInfoActionCreators = {
       _ActorClient2.default.loadMembers(info.id, 10000, null).then(function (data) {
         if (info.members && info.members.length > 0) {
           info.members = data.members;
+          info.adminId = _linq2.default.from(info.members).where('$.isAdmin === true').toArray()[0].peerInfo.peer.id;
           (0, _ActorAppDispatcher.dispatch)(_ActorAppConstants.ActionTypes.DIALOG_INFO_CHANGED, { info: info });
         }
       });
@@ -51,7 +52,9 @@ var DialogInfoActionCreators = {
     //   return;    
     // }
   }
-};
+}; /*
+    * Copyright (C) 2015 Actor LLC. <https://actor.im>
+    */
 
 exports.default = DialogInfoActionCreators;
 //# sourceMappingURL=DialogInfoActionCreators.js.map

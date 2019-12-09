@@ -64,7 +64,7 @@ class Login extends Component {
     this.handleFocus();
     if (ActorClient.isElectron()) {   
       window.messenger.listenOnRender('loginStore', (event, data) => {
-        console.log("what?");
+        console.log('what?');
         if (!data) {
           return;
         }
@@ -77,7 +77,7 @@ class Login extends Component {
         if (LoginStore.isLoggedIn()) {
           LoginActionCreators.setLoggedOut({'keepAuto': true});
         } else if(data.info.auto || data.info.requestAuto) {
-          console.log("on loggedin");
+          console.log('on loggedin');
           ActorClient.sendToElectron('setLoginStore', {key: 'info.requestAuto', value: false});
           this.onRequestCode();
         }
@@ -112,6 +112,7 @@ class Login extends Component {
     event && event.preventDefault();
     localStorage.clear();
     if (LoginStore.isLoggedIn()) {
+      // 如果已经是登录状态先退出登录，重复登录会有问题？
       LoginActionCreators.setLoggedOut({'requestAuto': true});
       return;
     }
@@ -285,6 +286,7 @@ class Login extends Component {
             <FormattedMessage id="login.name_en"/>
           </h2>
           <div>
+             {/*登录表单*/}
             <form className={requestFormClassName} onSubmit={this.onRequestCode}>
               {/* <a className="wrong" onClick={this.handleRestartAuthClick}><FormattedMessage id="login.wrong"/></a>*/}
               <div className={ dropClassName }>
@@ -322,7 +324,7 @@ class Login extends Component {
                 </button>
               </footer>
             </form>
-
+            {/*注册表单*/}
             <form className={signupFormClassName} onSubmit={this.onSignupRequested}>
               <TextField className="login-new__forms__form__input input__material--wide"
                          disabled={isSignupStarted || step === AuthSteps.COMPLETED}

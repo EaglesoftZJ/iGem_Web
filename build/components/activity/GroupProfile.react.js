@@ -254,7 +254,7 @@ var GroupProfile = function (_Component) {
             _react2.default.createElement(
               _Fold2.default,
               { iconElement: iconElement, title: message },
-              _react2.default.createElement(_GroupProfileMembers2.default, { groupId: group.id, members: group.members })
+              _react2.default.createElement(_GroupProfileMembers2.default, { groupId: group.id, members: group.members, adminId: group.adminId })
             )
           )
         )

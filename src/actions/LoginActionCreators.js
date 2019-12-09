@@ -21,6 +21,7 @@ import FaviconActionCreators from './FaviconActionCreators';
 import EventBusActionCreators from './EventBusActionCreators';
 import StickersActionCreators from './StickersActionCreators';
 import DepartmentActionCreators from './DepartmentActionCreators';
+import ProfileStore from '../stores/ProfileStore';
 
 class LoginActionCreators extends ActionCreators {
   start() {
@@ -186,6 +187,24 @@ class LoginActionCreators extends ActionCreators {
 
 
     dispatch(ActionTypes.AUTH_SET_LOGGED_IN);
+
+    // 登录后活跃度统计
+    $.ajax({
+      url: 'http://61.175.100.13:8002/zsgwuias/rest/out/subsystemClickFlyChat',
+      type: 'POST',
+      data: JSON.stringify({
+        userId: ProfileStore.getProfile().id,
+        zxt: '1196629848201199617'
+      }),
+      beforeSend(request) {
+          console.log('beforeSend', request);
+          request.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
+          // request.setRequestHeader('SOAPActrin', 'http://eaglesoft/' + method);
+      },
+      success: (res) => {
+        console.log('统计结果=======================', res);
+      }
+    });
 
     function getDepartment() {
         ActorClient.postOAWebservice({

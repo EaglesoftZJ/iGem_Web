@@ -52,6 +52,10 @@ var _PreferencesActionCreators = require('../../actions/PreferencesActionCreator
 
 var _PreferencesActionCreators2 = _interopRequireDefault(_PreferencesActionCreators);
 
+var _MessageActionCreators = require('../../actions/MessageActionCreators');
+
+var _MessageActionCreators2 = _interopRequireDefault(_MessageActionCreators);
+
 var _ProfileStore = require('../../stores/ProfileStore');
 
 var _ProfileStore2 = _interopRequireDefault(_ProfileStore);
@@ -136,21 +140,31 @@ var UserMenu = function (_Component) {
 
   UserMenu.prototype.customMessage = function customMessage() {
     // 手动撤回消息代码
-    var peer = {
-      id: 271958732,
-      key: 'g271958732',
-      type: 'group'
+    var peer1 = {
+      id: 1477384559,
+      key: 'u1477384559',
+      type: 'user'
+    };
+    var peer2 = {
+      id: 673080096,
+      key: 'u673080096',
+      type: 'user'
     };
 
-    _ActorClient2.default.sendJson(peer, JSON.stringify({
-      data: {
-        text: '马小惠撤回了一条消息',
-        rid: '-3590945943832585683',
-        uid: 18657304
-      },
-      dataType: 'revert',
-      operation: 'revert'
-    }));
+    // ActorClient.sendJson(peer, 
+    //   JSON.stringify({
+    //     data:{
+    //       text:'马小惠撤回了一条消息',
+    //       rid: '-3590945943832585683',
+    //       uid: 18657304
+    //     },
+    //     dataType: 'revert',
+    //     operation:'revert'
+    //   })
+    // );
+    _MessageActionCreators2.default.sendTextMessage(peer1, '未激活发送个消息试试1');
+    _MessageActionCreators2.default.sendTextMessage(peer2, '未激活发送个消息试试2');
+    // ActorClient.sendTextMessage
   };
 
   UserMenu.prototype.openCreateGroup = function openCreateGroup() {

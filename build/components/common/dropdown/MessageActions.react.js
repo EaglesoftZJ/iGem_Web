@@ -206,17 +206,8 @@ var MessageActions = function (_Component) {
       _react2.default.createElement(
         'ul',
         { className: 'dropdown__menu dropdown__menu--right', ref: 'dropdown', style: dropdownMenuStyles },
-        _react2.default.createElement(
-          'li',
-          { className: 'dropdown__menu__item hide' },
-          _react2.default.createElement(
-            'i',
-            { className: 'icon material-icons' },
-            'star_rate'
-          ),
-          ' ',
-          intl.messages['message.pin']
-        ),
+
+        // 撤销
         message.content.content !== 'customJson' && message.content.operation !== 'revert' && message.sender.peer.id === profile.id && new Date().getTime() - parseFloat(message.sortKey) < 15 * 60 * 1000 ? _react2.default.createElement(
           'li',
           { className: 'dropdown__menu__item', onClick: this.handleRevert },
@@ -228,6 +219,8 @@ var MessageActions = function (_Component) {
           ' ',
           intl.messages['message.redo']
         ) : null,
+
+        // 回复
         !isThisMyMessage ? _react2.default.createElement(
           'li',
           { className: 'dropdown__menu__item', onClick: this.handleReply },
@@ -239,6 +232,8 @@ var MessageActions = function (_Component) {
           ' ',
           intl.messages['message.reply']
         ) : null,
+
+        // 引用
         message.content.content === _ActorAppConstants.MessageContentTypes.TEXT ? _react2.default.createElement(
           'li',
           { className: 'dropdown__menu__item', onClick: this.handleQuote },
@@ -252,25 +247,8 @@ var MessageActions = function (_Component) {
         ) : null,
         _react2.default.createElement(
           'li',
-          { className: 'dropdown__menu__item hide' },
-          _react2.default.createElement(
-            'i',
-            { className: 'icon material-icons' },
-            'forward'
-          ),
-          ' ',
-          intl.messages['message.forward']
-        ),
-        _react2.default.createElement(
-          'li',
-          { className: 'dropdown__menu__item', onClick: this.handleDelete },
-          _react2.default.createElement(
-            'i',
-            { className: 'icon material-icons' },
-            'delete'
-          ),
-          ' ',
-          intl.messages['message.delete']
+          { className: 'dropdown__menu__item text' },
+          '\u6CA1\u6709\u53EF\u64CD\u4F5C\u9879'
         )
       )
     );

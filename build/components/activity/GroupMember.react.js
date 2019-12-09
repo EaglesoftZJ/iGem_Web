@@ -90,12 +90,14 @@ var GroupMember = function (_Component) {
     var _props = this.props,
         peerInfo = _props.peerInfo,
         canKick = _props.canKick,
+        adminId = _props.adminId,
         gid = _props.gid;
     var kickUserState = this.state.kickUserState;
 
     var myId = _ActorClient2.default.getUid();
 
-    if (!canKick || peerInfo.peer.id === myId) return _react2.default.createElement('div', null);
+    if (!canKick && adminId !== myId || peerInfo.peer.id === myId) return _react2.default.createElement('div', null);
+    // if (peerInfo.peer.id === myId) return <div/>;
 
     return _react2.default.createElement(_Stateful2.default, {
       currentState: kickUserState,
@@ -159,7 +161,8 @@ var GroupMember = function (_Component) {
 
 GroupMember.propTypes = {
   peerInfo: _react.PropTypes.object.isRequired,
-  canKick: _react.PropTypes.bool.isRequired,
+  canKick: _react.PropTypes.bool.isRequired, // 是否可以踢人
+  adminId: _react.PropTypes.number, // 当前登录用户是否群组
   gid: _react.PropTypes.number.isRequired
 };
 exports.default = _utils.Container.create(GroupMember, { pure: false, withProps: true });

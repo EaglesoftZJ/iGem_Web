@@ -70,16 +70,16 @@ class Main extends Component {
   componentDidMount() {
     // 测试
 
-    this.onVisibilityChange();
+    this.onVisibilityChange(true);
     if (ActorClient.isElectron()) {
       window.messenger.listenOnRender('windows-blur', function(event, arg) {
         history.push('/im');
       })
 
-      window.messenger.listenOnRender('windows-focus', function(event, arg) {
-
+      window.messenger.listenOnRender('windows-focus', (event, arg) => {
+        VisibilityActionCreators.createAppVisible(); // 客户端中 web无法监听到visibilitychange事件 所以通过客户端的windows-focus来执行
         history.push(`/im/${arg}`);
-      })
+      });
 
 
       window.messenger.listenOnRender('setLoggedOut', function(event, arg) {
@@ -162,11 +162,12 @@ class Main extends Component {
     }
   }
 
-  onVisibilityChange = () => {
+  onVisibilityChange = (isNotTj) => {
+    console.log('onVisibilityChange is-hidden', document.hidden);
     if (document.hidden) {
       VisibilityActionCreators.createAppHidden();
     } else {
-      VisibilityActionCreators.createAppVisible();
+      VisibilityActionCreators.createAppVisible(isNotTj);
     }
   };
 
@@ -184,6 +185,7 @@ class Main extends Component {
   }
 
   render() {
+    console.log('main render========');
     const { Sidebar, Toolbar } = this.components;
     return (
       <div className="app">

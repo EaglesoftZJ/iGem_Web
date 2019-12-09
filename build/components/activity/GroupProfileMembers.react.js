@@ -39,11 +39,12 @@ var GroupProfileMembers = function (_Component) {
   GroupProfileMembers.prototype.renderMembers = function renderMembers() {
     var _props = this.props,
         groupId = _props.groupId,
-        members = _props.members;
+        members = _props.members,
+        adminId = _props.adminId;
 
 
     return members.map(function (member) {
-      return _react2.default.createElement(_GroupMember2.default, _extends({}, member, { gid: groupId, key: member.peerInfo.peer.key }));
+      return _react2.default.createElement(_GroupMember2.default, _extends({}, member, { adminId: adminId, gid: groupId, key: member.peerInfo.peer.key }));
     });
   };
 
@@ -60,6 +61,7 @@ var GroupProfileMembers = function (_Component) {
 
 GroupProfileMembers.propTypes = {
   groupId: _react.PropTypes.number,
+  adminId: _react.PropTypes.number,
   members: _react.PropTypes.array.isRequired
 };
 exports.default = GroupProfileMembers;
