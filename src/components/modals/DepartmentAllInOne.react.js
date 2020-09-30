@@ -162,9 +162,9 @@ class Department extends Component {
           className={resultClassName} key={`r${index}`}
           onClick={() => this.handleDialogSelect(
             {
-              id: result.IGIMID,
+              id: result.iGIMID,
               type: 'user',
-              key: 'u' + result.IGIMID
+              key: 'u' + result.iGIMID
             }
           )}
           onMouseOver={() => this.setState({ selectedYhIndex: index })}>

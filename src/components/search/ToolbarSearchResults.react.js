@@ -39,7 +39,7 @@ class ToolbarSearchResults extends Component {
   renderInfo() {
     const { department, selectedUserId } = this.state;
     const { yh_data } = department;
-    let info = linq.from(yh_data).where('parseFloat($.IGIMID) ==' + selectedUserId).toArray()[0];
+    let info = linq.from(yh_data).where('parseFloat($.iGIMID) ==' + selectedUserId).toArray()[0];
     if (!info) return null;
     return (
       <ContactDetails peerInfo={info}></ContactDetails>

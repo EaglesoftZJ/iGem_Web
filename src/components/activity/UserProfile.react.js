@@ -66,7 +66,7 @@ class UserProfile extends Component {
   renderInfo() {
     const { user } = this.props;
     const { yh_data } = this.state.department;
-    let totalInfo = linq.from(yh_data).where('parseFloat($.IGIMID) == ' + user.id).toArray()[0];
+    let totalInfo = linq.from(yh_data).where('parseFloat($.iGIMID) == ' + user.id).toArray()[0];
     return <ContactDetails peerInfo={{...user, ...totalInfo}}/>;
   }
 

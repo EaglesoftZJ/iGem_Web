@@ -145,12 +145,12 @@ class CreateGroupForm extends Component {
       set = new Set(linq.from(members).select('$.peerInfo.peer.id.toString()').toArray());
     }
     if (type === 'item') {
-      isSelected = selectedUserIds.has(contact.IGIMID);
-      isMember = set && set.has(contact.IGIMID);
+      isSelected = selectedUserIds.has(contact.iGIMID);
+      isMember = set && set.has(contact.iGIMID);
       contacts = [contact];
     } else {
       var arr = contact.filter((item) => {
-        return !selectedUserIds.has(item.IGIMID) && !(set && set.has(item.IGIMID));
+        return !selectedUserIds.has(item.iGIMID) && !(set && set.has(item.iGIMID));
       })
       isSelected = arr.length > 0 ? false : true;
       contacts = contact;
@@ -159,7 +159,7 @@ class CreateGroupForm extends Component {
     const icon = isSelected || isMember ? 'check_box' : 'check_box_outline_blank';
   
     var name = type === 'item' ? contact.xm + (contact.zwmc ? ` (${contact.zwmc})` : '') : '全选';
-    var key = type === 'item' ? contact.IGIMID : 'all';
+    var key = type === 'item' ? contact.iGIMID : 'all';
     var itemClassName = classnames('group-name-item', icon, {'disabled': isMember});
 
     return (
@@ -176,8 +176,8 @@ class CreateGroupForm extends Component {
     const { selectedUserIds, onContactToggle } = this.props;
     var userIds = selectedUserIds;
     contacts.forEach((item) => {
-      if (!set || !set.has(item.IGIMID)) {
-        userIds = isSelected ? userIds.add(item.IGIMID) : userIds.delete(item.IGIMID);
+      if (!set || !set.has(item.iGIMID)) {
+        userIds = isSelected ? userIds.add(item.iGIMID) : userIds.delete(item.iGIMID);
       } 
     });
     isSelected && this.setState({'shouldScroll': true});
@@ -214,7 +214,7 @@ class CreateGroupForm extends Component {
     const { selectedUserIds } = this.props;
     const contacts = this.getContacts();
     var results = contacts.filter((contact, i) => {
-      return selectedUserIds.has(contact.IGIMID);
+      return selectedUserIds.has(contact.iGIMID);
     });
     return results.length;
   }
@@ -224,12 +224,12 @@ class CreateGroupForm extends Component {
     const { selectedUserIds } = this.props;
     var results = [];
     selectedUserIds.forEach((item) => {
-      var result = linq.from(yh_data).where(`$.IGIMID == "${item}"`).toArray();
+      var result = linq.from(yh_data).where(`$.iGIMID == "${item}"`).toArray();
       result.length > 0 && results.push(result[0]);
     });
     return results.map((item) => {
       return (
-        <div key={ item.IGIMID } className="group-name-select-tag">
+        <div key={ item.iGIMID } className="group-name-select-tag">
           <a href="javascript:;" target="_self" className="material-icons delete" onClick={this.handleDelete.bind(this, item)}>clear</a>
           <div className="name">{item.xm} <span style={{'fontSize': 12 + 'px', 'fontWeight': 'normal'}}>{ item.bmmc }</span></div>
           <div className="info" title={ item.dwmc + ' ' + item.bmmc }>{ item.dwmc }</div>
@@ -259,7 +259,7 @@ class CreateGroupForm extends Component {
 
   handleDelete(item) {
     const { selectedUserIds, handleDelete } = this.props;
-    handleDelete && handleDelete(selectedUserIds.delete(item.IGIMID));
+    handleDelete && handleDelete(selectedUserIds.delete(item.iGIMID));
   }
 
 
