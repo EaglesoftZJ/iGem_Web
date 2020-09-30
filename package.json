@@ -71,7 +71,7 @@
     "jsonlylightbox": "github:actorapp/jsOnlyLightbox#develop",
     "keymirror": "0.1.1",
     "linq": "3.0.9",
-    "lodash": "4.13.1",
+    "lodash": "4.17.20",
     "makepy": "^1.1.0",
     "normalize.css": "4.1.1",
     "object-assign": "4.1.0",
