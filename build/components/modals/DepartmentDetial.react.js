@@ -95,7 +95,6 @@ var DepartmentDetial = function (_Component) {
       selectedDw: '',
       selectedBm: '',
       selectedYhIndex: -1,
-      szk: '',
       selectedDwmc: '',
       selectedBmmc: '',
       hoverable: true,
@@ -183,21 +182,26 @@ var DepartmentDetial = function (_Component) {
         hoverId = _state.hoverId,
         dwAll = _state.dwAll,
         selectedBm = _state.selectedBm,
-        selectedDw = _state.selectedDw,
-        szk = _state.szk;
+        selectedDw = _state.selectedDw;
+    // console.log('user111', selectedBm, 'selectedDw', selectedDw);
 
     var results = null;
     if (!dwAll) {
-      results = _Linq2.default.from(yh_data).where('$.bmid.trim() == "' + selectedBm + '" && $.dwid.trim() == "' + selectedDw + '"&& $.szk == "' + szk + '"').orderBy('$.wzh').toArray();
+      results = _Linq2.default.from(yh_data).where(function ($) {
+        // console.log('user111', $.xm, $.bmid, selectedBm, $.bmid && $.bmid.trim() == selectedBm, $.dwid, selectedDw, $.dwid && $.dwid.trim() == selectedDw)
+        if ($.bmid && $.dwid) {
+          return $.bmid.trim() == selectedBm && $.dwid.trim() == selectedDw;
+        } else {
+          return false;
+        }
+      }).orderBy('$.wzh').toArray();
     } else {
-      results = _Linq2.default.from(yh_data).where('$.dwid.trim() == "' + selectedDw + '"&& $.szk == "' + szk + '"').orderBy('$.wzh').toArray();
+      results = _Linq2.default.from(yh_data).where('$.dwid && $.dwid.trim() == "' + selectedDw + '"').orderBy('$.wzh').toArray();
     }
-
-    // results = linq.from(results).join(quickSearchData, 'a => parseFloat(a.IGIMID)', 'b => b.peerInfo.peer.id', 'a, b => {...a, ...b}').toArray();
-    results = _Linq2.default.from(results).join(quickSearchData, 'a => parseFloat(a.IGIMID)', 'b => b.peerInfo.peer.id', 'department, user=>{department: department, user: user}').toArray();
-
-    console.log(results, quickSearchData);
-    console.log(111, results);
+    // console.log('quickSearchData', quickSearchData, results);
+    results = _Linq2.default.from(results).join(quickSearchData, 'a => a.iGIMID', 'b => b.peerInfo.peer.id', 'department, user => {department: department, user: user}').toArray();
+    console.log('quickSearchData', quickSearchData, results);
+    // results = linq.from(results).join(quickSearchData, 'a => parseFloat(a.id)', 'b => b.peerInfo.peer.id', 'department, user=>{department: department, user: user}').toArray();
     if (results.length <= 0) {
       return _react2.default.createElement(
         'li',
@@ -212,7 +216,7 @@ var DepartmentDetial = function (_Component) {
     }
     return results.map(function (result, index) {
       var resultClassName = (0, _classnames2.default)('results__item row', {
-        'results__item--active': hoverId === result.department.IGIMID + result.department.szk
+        'results__item--active': hoverId === result.department.iGIMID
       });
 
       return _react2.default.createElement(
@@ -221,13 +225,13 @@ var DepartmentDetial = function (_Component) {
           className: resultClassName, key: 'r' + index,
           onClick: function onClick() {
             return _this3.handleDialogSelect({
-              id: parseFloat(result.department.IGIMID),
+              id: parseFloat(result.department.iGIMID),
               type: 'user',
-              key: 'u' + result.department.IGIMID
+              key: 'u' + result.department.iGIMID
             });
           },
           onMouseOver: function onMouseOver() {
-            return _this3.setState({ hoverId: result.department.IGIMID + result.department.szk });
+            return _this3.setState({ hoverId: result.department.iGIMID });
           } },
         _react2.default.createElement(
           'div',
@@ -246,7 +250,7 @@ var DepartmentDetial = function (_Component) {
             'div',
             { className: 'username', title: result.department.zwmc ? '(' + result.department.zwmc + ')' : '' },
             result.department.xm,
-            result.department.zwmc ? '(' + result.department.zwmc + ')' : ''
+            result.department.zwmc ? ' (' + result.department.zwmc + ')' : ''
           )
         )
       );

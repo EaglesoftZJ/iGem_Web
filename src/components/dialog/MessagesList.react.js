@@ -254,7 +254,7 @@ class MessagesList extends Component {
   }
 
   onScroll() {
-      const { isShow } = this.state;
+    const { isShow } = this.state;
     const dimensions = this.refs.scroller.getDimensions();
     this.updateDimensions(dimensions);
     isShow && this.popoverHide();
@@ -419,6 +419,10 @@ class MessagesList extends Component {
         </table>
     )
   }
+  // 获取查询的历史数据
+  getHistoryMessages() {
+
+  }
 
   render() {
       const { node, isShow } = this.state;
@@ -431,6 +435,7 @@ class MessagesList extends Component {
         <Popover node={node} isShow={isShow} container={this.refs.outer} addLeft={addLeft} addTop={addTop} maxHeight={ 300 } emptyMsg="message.documentRecord">
             { this.renderInfo() }
         </Popover>
+        {/* <button className="button button--square col-xs" onClick={ this.getHistoryMessages }>加载message</button> */}
         <Scroller
           className="chat__messages"
           ref="scroller"

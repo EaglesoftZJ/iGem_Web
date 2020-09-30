@@ -48,7 +48,6 @@ class DepartmentDetial extends Component {
       selectedDw: '',
       selectedBm: '',
       selectedYhIndex: -1,
-      szk: '',
       selectedDwmc: '',
       selectedBmmc: '',
       hoverable: true,
@@ -123,20 +122,25 @@ class DepartmentDetial extends Component {
 
 
   renderYh() {
-    const { selectedYhIndex, yh_data, quickSearchData, hoverId, dwAll, selectedBm, selectedDw, szk } = this.state;
+    const { selectedYhIndex, yh_data, quickSearchData, hoverId, dwAll, selectedBm, selectedDw } = this.state;
+    // console.log('user111', selectedBm, 'selectedDw', selectedDw);
     let results = null;
     if (!dwAll) {
-      results = linq.from(yh_data).where('$.bmid.trim() == "' + selectedBm + '" && $.dwid.trim() == "' + selectedDw + '"&& $.szk == "' + szk +'"').orderBy('$.wzh').toArray();
+      results = linq.from(yh_data).where(($) => {
+        // console.log('user111', $.xm, $.bmid, selectedBm, $.bmid && $.bmid.trim() == selectedBm, $.dwid, selectedDw, $.dwid && $.dwid.trim() == selectedDw)
+        if ($.bmid && $.dwid) {
+          return $.bmid.trim() == selectedBm && $.dwid.trim() == selectedDw;
     } else {
-      results = linq.from(yh_data).where('$.dwid.trim() == "' + selectedDw + '"&& $.szk == "' + szk +'"').orderBy('$.wzh').toArray();
+          return false;
     }
-
-    // results = linq.from(results).join(quickSearchData, 'a => parseFloat(a.IGIMID)', 'b => b.peerInfo.peer.id', 'a, b => {...a, ...b}').toArray();
-    results = linq.from(results).join(quickSearchData, 'a => parseFloat(a.IGIMID)', 'b => b.peerInfo.peer.id', 'department, user=>{department: department, user: user}').toArray();
-
-
-    console.log(results, quickSearchData);
-    console.log(111, results);
+      }).orderBy('$.wzh').toArray();
+    } else {
+      results = linq.from(yh_data).where('$.dwid && $.dwid.trim() == "' + selectedDw + '"').orderBy('$.wzh').toArray();
+    }
+    // console.log('quickSearchData', quickSearchData, results);
+    results = linq.from(results).join(quickSearchData, 'a => a.iGIMID', 'b => b.peerInfo.peer.id', 'department, user => {department: department, user: user}').toArray();
+    console.log('quickSearchData', quickSearchData, results);
+    // results = linq.from(results).join(quickSearchData, 'a => parseFloat(a.id)', 'b => b.peerInfo.peer.id', 'department, user=>{department: department, user: user}').toArray();
     if (results.length <= 0) {
       return (
         <li className="results__item results__item--suggestion row">
@@ -147,7 +151,7 @@ class DepartmentDetial extends Component {
     }
     return results.map((result, index) => {
       const resultClassName = classnames('results__item row', {
-        'results__item--active': hoverId === (result.department.IGIMID + result.department.szk)
+        'results__item--active': hoverId === (result.department.iGIMID)
       });
 
       return (
@@ -155,12 +159,12 @@ class DepartmentDetial extends Component {
           className={resultClassName} key={`r${index}`}
           onClick={() => this.handleDialogSelect(
             {
-              id: parseFloat(result.department.IGIMID),
+              id: parseFloat(result.department.iGIMID),
               type: 'user',
-              key: 'u' + result.department.IGIMID
+              key: 'u' + result.department.iGIMID
             }
           )}
-          onMouseOver={() => this.setState({ hoverId: (result.department.IGIMID + result.department.szk) })}>
+          onMouseOver={() => this.setState({ hoverId: (result.department.iGIMID) })}>
           <div className="title col-xs">
             {/* <div className="hint pull-right"><FormattedMessage id="modal.department.openDialog" /></div> */}
             <AvatarItem
@@ -171,7 +175,7 @@ class DepartmentDetial extends Component {
               title={result.user.peerInfo.title}
               onClick={() => this.onClick(result.user.peerInfo.peer.id)}
             />
-            <div className="username" title={result.department.zwmc ? '(' + result.department.zwmc +')' : ''}>{result.department.xm}{result.department.zwmc ? '(' + result.department.zwmc +')' : ''}</div>
+            <div className="username" title={result.department.zwmc ? '(' + result.department.zwmc +')' : ''}>{result.department.xm}{result.department.zwmc ? ' (' + result.department.zwmc +')' : ''}</div>
           </div>
         </li>
       );

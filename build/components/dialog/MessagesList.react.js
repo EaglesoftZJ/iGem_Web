@@ -502,6 +502,10 @@ var MessagesList = function (_Component) {
       )
     );
   };
+  // 获取查询的历史数据
+
+
+  MessagesList.prototype.getHistoryMessages = function getHistoryMessages() {};
 
   MessagesList.prototype.render = function render() {
     var _state2 = this.state,

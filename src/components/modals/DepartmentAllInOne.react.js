@@ -181,7 +181,7 @@ class Department extends Component {
   renderBm(parentId, tier) {
     const { bm_data, selectedDw, selectedBmIndex, selectedBmTier } = this.state;
 
-    let results = linq.from(bm_data).where('$.dwid.trim() == "' + selectedDw + '" && $.fid.trim() == "' + parentId + '"').orderBy('$.wzh').toArray();
+    let results = linq.from(bm_data).where('$.dwid && $.dwid.trim() == "' + selectedDw + '" && $.fid.trim() == "' + parentId + '"').orderBy('$.wzh').toArray();
     if (results.length <= 0) {
       return null;
     }

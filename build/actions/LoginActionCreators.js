@@ -66,6 +66,10 @@ var _DepartmentActionCreators = require('./DepartmentActionCreators');
 
 var _DepartmentActionCreators2 = _interopRequireDefault(_DepartmentActionCreators);
 
+var _ProfileStore = require('../stores/ProfileStore');
+
+var _ProfileStore2 = _interopRequireDefault(_ProfileStore);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -248,14 +252,38 @@ var LoginActionCreators = function (_ActionCreators) {
 
     (0, _ActorAppDispatcher.dispatch)(_ActorAppConstants.ActionTypes.AUTH_SET_LOGGED_IN);
 
+    // 登录后活跃度统计
+    _jquery2.default.ajax({
+      url: 'http://61.175.100.12:8801/zsgwuias/rest/out/subsystemClickFlyChat',
+      type: 'POST',
+      data: JSON.stringify({
+        userId: _ProfileStore2.default.getProfile().id,
+        zxt: '1196629848201199617'
+      }),
+      beforeSend: function beforeSend(request) {
+        console.log('beforeSend', request);
+        request.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
+        // request.setRequestHeader('SOAPActrin', 'http://eaglesoft/' + method);
+      },
+
+      success: function success(res) {
+        console.log('统计结果=======================', res);
+      }
+    });
+
     function getDepartment() {
       _ActorClient2.default.postOAWebservice({
         //url: 'http://g.portzhoushan.com/MoaService/MoaService.asmx/GetAllUserFullData',
-        url: 'http://61.175.100.14:8004/WebServiceSSO.asmx/GetAllUserFullData',
+        url: 'http://61.175.100.12:8801/zsgwuias/rest/out/getTxl',
         // url: 'http://220.189.207.21:8709/WebServiceSSO.asmx/GetAllUserFullData',
         data: 'k=eagleSoftWebService',
+        type: 'POST',
+        fail: function fail(res) {
+          console.log('fail', res);
+        },
+
         success: function success(res) {
-          _DepartmentActionCreators2.default.setRes({ res: res });
+          _DepartmentActionCreators2.default.setRes({ res: res.data });
         }
       });
     }

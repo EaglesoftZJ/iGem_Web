@@ -190,7 +190,7 @@ class LoginActionCreators extends ActionCreators {
 
     // 登录后活跃度统计
     $.ajax({
-      url: 'http://61.175.100.13:8002/zsgwuias/rest/out/subsystemClickFlyChat',
+      url: 'http://61.175.100.12:8801/zsgwuias/rest/out/subsystemClickFlyChat',
       type: 'POST',
       data: JSON.stringify({
         userId: ProfileStore.getProfile().id,
@@ -209,12 +209,16 @@ class LoginActionCreators extends ActionCreators {
     function getDepartment() {
         ActorClient.postOAWebservice({
             //url: 'http://g.portzhoushan.com/MoaService/MoaService.asmx/GetAllUserFullData',
-            url: 'http://61.175.100.14:8004/WebServiceSSO.asmx/GetAllUserFullData',
+            url: 'http://61.175.100.12:8801/zsgwuias/rest/out/getTxl',
             // url: 'http://220.189.207.21:8709/WebServiceSSO.asmx/GetAllUserFullData',
-            data: 'k=eagleSoftWebService',
-            success: res => {
-                DepartmentActionCreators.setRes({res});
-            }
+          data: 'k=eagleSoftWebService',
+          type: 'POST',
+          fail(res) {
+            console.log('fail', res);
+          },
+          success: res => {
+              DepartmentActionCreators.setRes({res: res.data});
+          }
         });
     }
 

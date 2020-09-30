@@ -260,7 +260,7 @@ var Department = function (_Component) {
         selectedBmTier = _state3.selectedBmTier;
 
 
-    var results = _Linq2.default.from(bm_data).where('$.dwid.trim() == "' + selectedDw + '" && $.fid.trim() == "' + parentId + '"').orderBy('$.wzh').toArray();
+    var results = _Linq2.default.from(bm_data).where('$.dwid && $.dwid.trim() == "' + selectedDw + '" && $.fid.trim() == "' + parentId + '"').orderBy('$.wzh').toArray();
     if (results.length <= 0) {
       return null;
     }

@@ -21,7 +21,14 @@ const getMessageId = (message) => message ? message.rid : null;
 class MessageStore extends ReduceStore {
   getInitialState() {
     return {
-      messages: [],
+      messages: [], // 所有的聊天记录存在这里
+      chatMessages: [], // 展示在聊天框中的聊天记录
+      historyMessages: [], // 聊天记录查找结果数据
+      historyQueryData: {
+        dateRange: [new Date().getTime(), new Date().getTime()],
+        filter: ''
+      }, // 聊天记录查询条件
+      historyLoaded: true, // 查询的历史数据是否加载完
       overlay: [],
       isLoaded: false,
       receiveDate: 0,
@@ -47,6 +54,12 @@ class MessageStore extends ReduceStore {
       case ActionTypes.BIND_DIALOG_PEER:
         return this.getInitialState();
 
+
+      case ActionTypes.HISTROY_MESSAGES_CHANGED: 
+        return {
+          ...state,
+          historyMessages: action.historyMessages
+        }
       case ActionTypes.MESSAGES_CHANGED:
         // 撤回消息删除处理
         let message = null;
@@ -108,16 +121,16 @@ class MessageStore extends ReduceStore {
 
         if (firstId !== state.firstId) {
           nextState.count = Math.min(action.messages.length, state.count + MESSAGE_COUNT_STEP);
-          nextState.changeReason = MessageChangeReason.UNSHIFT;
+          nextState.changeReason = MessageChangeReason.UNSHIFT; // 顶部插入（向上找聊天记录）
         } else if (lastId !== state.lastId) {
           // TODO: possible incorrect
           const lengthDiff = action.messages.length - state.messages.length;
 
           nextState.count = Math.min(action.messages.length, state.count + lengthDiff);
-          nextState.changeReason = MessageChangeReason.PUSH;
+          nextState.changeReason = MessageChangeReason.PUSH; // 底部插入（聊天的过程）
         } else {
           nextState.count = Math.min(action.messages.length, state.count);
-          nextState.changeReason = MessageChangeReason.UPDATE;
+          nextState.changeReason = MessageChangeReason.UPDATE; // 中间更新（删除记录等）
         }
 
         if (state.readByMeDate === 0 && action.readByMeDate > 0) {

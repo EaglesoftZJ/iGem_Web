@@ -81,6 +81,7 @@ var Login = function (_Component) {
       event && event.preventDefault();
       localStorage.clear();
       if (_LoginStore2.default.isLoggedIn()) {
+        // 如果已经是登录状态先退出登录，重复登录会有问题？
         _LoginActionCreators2.default.setLoggedOut({ 'requestAuto': true });
         return;
       }
@@ -208,7 +209,7 @@ var Login = function (_Component) {
     this.handleFocus();
     if (_ActorClient2.default.isElectron()) {
       window.messenger.listenOnRender('loginStore', function (event, data) {
-        console.log("what?");
+        console.log('what?');
         if (!data) {
           return;
         }
@@ -221,7 +222,7 @@ var Login = function (_Component) {
         if (_LoginStore2.default.isLoggedIn()) {
           _LoginActionCreators2.default.setLoggedOut({ 'keepAuto': true });
         } else if (data.info.auto || data.info.requestAuto) {
-          console.log("on loggedin");
+          console.log('on loggedin');
           _ActorClient2.default.sendToElectron('setLoginStore', { key: 'info.requestAuto', value: false });
           _this2.onRequestCode();
         }

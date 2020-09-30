@@ -69,7 +69,14 @@ var MessageStore = function (_ReduceStore) {
 
   MessageStore.prototype.getInitialState = function getInitialState() {
     return {
-      messages: [],
+      messages: [], // 所有的聊天记录存在这里
+      chatMessages: [], // 展示在聊天框中的聊天记录
+      historyMessages: [], // 聊天记录查找结果数据
+      historyQueryData: {
+        dateRange: [new Date().getTime(), new Date().getTime()],
+        filter: ''
+      }, // 聊天记录查询条件
+      historyLoaded: true, // 查询的历史数据是否加载完
       overlay: [],
       isLoaded: false,
       receiveDate: 0,
@@ -98,6 +105,10 @@ var MessageStore = function (_ReduceStore) {
       case _ActorAppConstants.ActionTypes.BIND_DIALOG_PEER:
         return this.getInitialState();
 
+      case _ActorAppConstants.ActionTypes.HISTROY_MESSAGES_CHANGED:
+        return _extends({}, state, {
+          historyMessages: action.historyMessages
+        });
       case _ActorAppConstants.ActionTypes.MESSAGES_CHANGED:
         // 撤回消息删除处理
         var message = null;
@@ -158,16 +169,16 @@ var MessageStore = function (_ReduceStore) {
 
         if (firstId !== state.firstId) {
           nextState.count = Math.min(action.messages.length, state.count + MESSAGE_COUNT_STEP);
-          nextState.changeReason = _ActorAppConstants.MessageChangeReason.UNSHIFT;
+          nextState.changeReason = _ActorAppConstants.MessageChangeReason.UNSHIFT; // 顶部插入（向上找聊天记录）
         } else if (lastId !== state.lastId) {
           // TODO: possible incorrect
           var lengthDiff = action.messages.length - state.messages.length;
 
           nextState.count = Math.min(action.messages.length, state.count + lengthDiff);
-          nextState.changeReason = _ActorAppConstants.MessageChangeReason.PUSH;
+          nextState.changeReason = _ActorAppConstants.MessageChangeReason.PUSH; // 底部插入（聊天的过程）
         } else {
           nextState.count = Math.min(action.messages.length, state.count);
-          nextState.changeReason = _ActorAppConstants.MessageChangeReason.UPDATE;
+          nextState.changeReason = _ActorAppConstants.MessageChangeReason.UPDATE; // 中间更新（删除记录等）
         }
 
         if (state.readByMeDate === 0 && action.readByMeDate > 0) {

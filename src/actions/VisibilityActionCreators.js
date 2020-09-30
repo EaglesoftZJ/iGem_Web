@@ -20,7 +20,7 @@ class VisibilityActionCreators extends ActionCreators {
     // 活跃度统计 20191205
     if (ProfileStore.getProfile() && (isNotTj === false || isNotTj === undefined || typeof isNotTj === 'object')) {
       $.ajax({
-        url: 'http://61.175.100.13:8002/zsgwuias/rest/out/subsystemClickFlyChat',
+        url: 'http://61.175.100.12:8801/zsgwuias/rest/out/subsystemClickFlyChat',
         type: 'POST',
         data: JSON.stringify({
           userId: ProfileStore.getProfile().id,

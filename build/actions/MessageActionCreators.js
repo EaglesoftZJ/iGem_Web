@@ -90,6 +90,13 @@ var MessageActionCreators = function () {
     (0, _ActorAppDispatcher.dispatch)(_ActorAppConstants.ActionTypes.MESSAGE_LIKE_REMOVE, { peer: peer, rid: rid });
   };
 
+  // 查询历史数据
+
+
+  MessageActionCreators.prototype.setHistoryMessages = function setHistoryMessages(historyMessages) {
+    (0, _ActorAppDispatcher.dispatch)(_ActorAppConstants.ActionTypes.HISTROY_MESSAGES_CHANGED, { historyMessages: historyMessages });
+  };
+
   MessageActionCreators.prototype.setMessages = function setMessages(messages, overlay, isLoaded, receiveDate, readDate, readByMeDate) {
     (0, _ActorAppDispatcher.dispatch)(_ActorAppConstants.ActionTypes.MESSAGES_CHANGED, {
       messages: messages,

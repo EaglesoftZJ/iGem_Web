@@ -95,7 +95,6 @@ var CreateGroupForm = function (_Component) {
       selectedDwmc: '',
       selectedBm: '',
       selectedBmmc: '',
-      szk: '',
       error: '',
       nameError: '',
       shouldScroll: false,
@@ -136,15 +135,14 @@ var CreateGroupForm = function (_Component) {
         yh_data = _state.yh_data,
         selectedBm = _state.selectedBm,
         selectedDw = _state.selectedDw,
-        szk = _state.szk,
         dwAll = _state.dwAll;
     var search = this.props.search;
 
     var results = null;
     if (!dwAll) {
-      results = _Linq2.default.from(yh_data).where('$.bmid.trim() == "' + selectedBm + '" && $.dwid.trim() == "' + selectedDw + '"&& $.szk == "' + szk + '"').orderBy('$.wzh').toArray();
+      results = _Linq2.default.from(yh_data).where('$.bmid && $.bmid.trim() == "' + selectedBm + '" && $.dwid && $.dwid.trim() == "' + selectedDw + '"').orderBy('$.wzh').toArray();
     } else {
-      results = _Linq2.default.from(yh_data).where('$.dwid.trim() == "' + selectedDw + '"&& $.szk == "' + szk + '"').orderBy('$.wzh').toArray();
+      results = _Linq2.default.from(yh_data).where('$.dwid && $.dwid.trim() == "' + selectedDw + '"').orderBy('$.wzh').toArray();
     }
 
     if (!search) {

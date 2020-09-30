@@ -28,7 +28,6 @@ class DepartementItem extends Component {
             selectedDwmc: '',
             selectedBm: -1,
             selectedBmmc: '',
-            szk: '',
             scrollTo: null,
             hoverable: true,
             innerHoverId: '',
@@ -72,21 +71,21 @@ class DepartementItem extends Component {
            }, 10);  
         }
     }
-    handleShowAll(selectedDw, selectedDwmc, szk, event) {
+    handleShowAll(selectedDw, selectedDwmc, event) {
         event.stopPropagation();
         const { onShowAll } = this.props;
         this.setState({
             selectedBm: '', 
             selectedDw: '',
-            szk: '',
-            selectAllId: selectedDw + szk
+            selectAllId: selectedDw
         })
-        onShowAll && onShowAll({selectedDw, selectedDwmc, szk, selectedBm: '', selectedBmmc: ''});
+        onShowAll && onShowAll({selectedDw, selectedDwmc, selectedBm: '', selectedBmmc: ''});
     }
 
     renderDw() {
         const { yh_data, bm_data, dw_data, hoverId, onShowAll } = this.props;
-        const { selectedDw, szk, innerHoverId, selectAllId } = this.state;
+        const { selectedDw, innerHoverId, selectAllId } = this.state;
+        // console.log('hoverId111', hoverId);
         var _hoverId = hoverId === undefined ? innerHoverId : hoverId;
         if (dw_data && dw_data.length <= 0) {
           return (
@@ -96,10 +95,11 @@ class DepartementItem extends Component {
             </li>
           )
         }
+        const list = linq.from(dw_data).where('$.fid !== "-1"').toArray(); // 过滤 单位list根节点 宁波舟山港股份有限公司
     
-        return dw_data.map((result, index) => {
-          const itemId = result.id + result.szk;
-          const selected = (selectedDw + szk) === itemId;
+        return list.map((result, index) => {
+          const itemId = result.id;
+          const selected = selectedDw === itemId;
           const hover = _hoverId === itemId;
           const all = selectAllId === itemId;
           const resultClassName = classnames('results__item row', {
@@ -108,37 +108,37 @@ class DepartementItem extends Component {
             'results__item--all': all
           });
         //   const iconClassName = classnames('material-icons icon', hover ? 'icon--blue' : 'icon--blue');
-            let arr = linq.from(yh_data).where('$.dwid.trim() == "' + result.id + '" && $.szk =="' + result.szk + '"').toArray();
-            let size = arr.length;
+            // let arr = linq.from(yh_data).where('$.dwid && $.dwid.trim() == "' + result.id + '"').toArray();
+            // let size = arr.length;
             return (
             <li
               className="results__dw"
               style={{'position': 'relative'}}
               key={`r${index}`}>
               <div className={resultClassName} 
-              onClick={(event) => this.dwSelect(result.id, result.mc, result.szk, event)}
-              onMouseOver={this.handleMouseOver.bind(this, result.id, result.szk)}>
+              onClick={(event) => this.dwSelect(result.id, result.mc, event)}
+              onMouseOver={this.handleMouseOver.bind(this, result.id)}>
                 <div className="title col-xs">
                     {result.mc}
-                    { onShowAll ? <a href="javascript:;" onClick={ this.handleShowAll.bind(this, result.id, result.mc, result.szk) } title="单位所有人" className="all" target="_self">全</a> : null }
+                    { onShowAll ? <a href="javascript:;" onClick={ this.handleShowAll.bind(this, result.id, result.mc) } title="单位所有人" className="all" target="_self">全</a> : null }
                     {/* {result.mc} <i className={ iconClassName }>business</i> */}
                 </div>
                 <div className="arrow"></div>
               </div>
               <div className="children-box">
-              { selected ? this.renderBm(result.id, result.szk, -1) : null }
+              { selected ? this.renderBm(result.id, result.id) : null }
               </div>
             </li>
           );
         });
       }
 
-    renderBm(dwId, szk1, parentId) {
+    renderBm(dwId, parentId) {
         const { bm_data, yh_data, hoverId } = this.props;
-        const { selectedBm, szk, innerHoverId} = this.state;
+        const { selectedBm, selectedDw, innerHoverId} = this.state;
         var _hoverId = hoverId === undefined ? innerHoverId : hoverId;
 
-        let results = linq.from(bm_data).where('$.dwid.trim() == "' + dwId + '" && $.fid.trim() == "' + parentId + '" && $.szk ==' + '"' + szk1 + '"').orderBy('$.wzh').toArray();
+        let results = linq.from(bm_data).where('$.dwid && $.dwid.trim() == "' + dwId + '" && $.fid.trim() == "' + parentId + '"').orderBy('$.wzh').toArray();
         
         
         if (results.length <= 0) {
@@ -147,8 +147,9 @@ class DepartementItem extends Component {
     
 
         return results.map((result, index) => {
-            const itemId = result.id + result.szk;
-            const selected = (selectedBm + szk) === itemId;
+            const itemId = result.id;
+            const selected = selectedBm === itemId;
+            console.log('selectedBm', selectedBm, itemId);
             const hover = _hoverId === itemId;
             const resultClassName = classnames('results__item row', {
             'results__item--active': hover,
@@ -157,46 +158,55 @@ class DepartementItem extends Component {
 
             var usersLength =  0;
             if (yh_data) {
-                usersLength = linq.from(yh_data).where('$.bmid.trim() == "' + result.id + '" && $.dwid.trim() == "' + result.dwid + '"&& $.szk == "' + result.szk +'"').count();
+                usersLength = linq.from(yh_data).where(($) => {
+                  if ($.bmid && $.dwid) {
+                    return $.bmid.trim() == itemId && $.dwid.trim() == selectedDw;
+                  } else {
+                    return false;
+                  }
+                }).count();
             }
 
             return (
-                <div key={result.id + result.szk} className="results__bm">
+                <div key={result.id} className="results__bm">
                     <div
                     className={resultClassName} key={`r${index}`}
                     onClick={() => this.bmSelect(result.id, result.mc)}
-                    onMouseOver={this.handleMouseOver.bind(this, result.id, result.szk)}>
+                    onMouseOver={this.handleMouseOver.bind(this, result.id)}>
                     <div className="title col-xs">
                         {result.mc} {yh_data ? '(' + usersLength + ')' : null}
                     </div>
                     </div>
                     <div className="children-box">
-                    {this.renderBm(dwId, szk1, result.id)}
+                    {this.renderBm(dwId, result.id)}
                     </div>
                 </div>
             );
         });
     }
-    dwSelect(dwid, dwmc, szk, event) {
+    dwSelect(dwid, dwmc, event) {
         console.log('title click');
         const { selectedDw, selectedDwmc } = this.state;
         const { onSelectDw, bm_data } = this.props;
         var hoverable = false,
             _dwid = '',
             _dwmc = '',
-            _szk = '',
             _bmid = '',
             _bmmc = '',
             _hoverable = true,
             _scrollTo = null; 
         if (selectedDw !== dwid || selectedDwmc !== dwmc) {
             console.log('open');
-            var results = linq.from(bm_data).where('$.dwid.trim() == "' + dwid + '" && $.fid.trim() == "-1" && $.szk ==' + '"' + szk + '"').orderBy('$.wzh').toArray();
+            var results = linq.from(bm_data).where(($) => {
+              console.log(11111111111, $.fid, dwid, $.fid && $.fid.trim() == dwid);
+              return $.dwid && $.dwid === dwid;
+              // '$.fid && $.fid.trim() == "' + dwid + '"'
+            }).orderBy('$.wzh').toArray();
+            console.log('results', results);
             _dwid = dwid;
             _dwmc = dwmc;
-            _szk = szk;
             _bmid = results.length > 0 ? results[0].id : '';
-            _bmmc = results.length > 0 ? results[0].title : '';
+            _bmmc = results.length > 0 ? results[0].mc : '';
             _hoverable = false;
             _scrollTo = $(event.target).parents('li');
         }
@@ -206,7 +216,6 @@ class DepartementItem extends Component {
           selectedBm: _bmid,
           selectedBmmc: _bmmc,
           scrollTo: _scrollTo,
-          szk: _szk,
           hoverable: _hoverable,
           selectAllId: ''
         });
@@ -214,26 +223,25 @@ class DepartementItem extends Component {
             selectedDw: _dwid,
             selectedDwmc: _dwmc, 
             selectedBm: _bmid,
-            selectedBmmc: _bmmc,
-            szk: _szk
+            selectedBmmc: _bmmc
         });
     }
 
     bmSelect(bmid, bmmc) {
         const { onSelectBm } = this.props;
-        const { selectedDw, selectedDwmc, szk} = this.state;
+        const { selectedDw, selectedDwmc} = this.state;
         var data = {
             selectedBm: bmid, 
             selectedBmmc: bmmc
         }
         this.setState({...data, selectAllId: ''});
-        onSelectBm && onSelectBm({selectedDw, selectedDwmc, szk, ...data});
+        onSelectBm && onSelectBm({selectedDw, selectedDwmc, ...data});
     }
 
-    handleMouseOver(id, szk) {
+    handleMouseOver(id) {
         const { onItemHover } = this.props;
         const { hoverable } = this.state;
-        var hoverId = id + szk;
+        var hoverId = id;
         if (onItemHover === undefined) {
             this.setState({innerHoverId: hoverId});
         }

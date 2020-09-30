@@ -73,6 +73,11 @@ class MessageActionCreators {
     dispatch(ActionTypes.MESSAGE_LIKE_REMOVE, { peer, rid });
   }
 
+  // 查询历史数据
+  setHistoryMessages(historyMessages) {
+    dispatch(ActionTypes.HISTROY_MESSAGES_CHANGED, { historyMessages });
+  }
+
   setMessages(messages, overlay, isLoaded, receiveDate, readDate, readByMeDate) {
     dispatch(ActionTypes.MESSAGES_CHANGED, {
       messages,

@@ -61,7 +61,6 @@ class CreateGroupForm extends Component {
       selectedDwmc: '',
       selectedBm: '',
       selectedBmmc: '',
-      szk: '',
       error: '',
       nameError: '',
       shouldScroll: false,
@@ -93,13 +92,13 @@ class CreateGroupForm extends Component {
   }
 
   getContacts() {
-    const { yh_data, selectedBm, selectedDw, szk, dwAll } = this.state;
+    const { yh_data, selectedBm, selectedDw, dwAll } = this.state;
     const { search } = this.props;
     let results = null;
     if (!dwAll) {
-      results = linq.from(yh_data).where('$.bmid.trim() == "' + selectedBm + '" && $.dwid.trim() == "' + selectedDw + '"&& $.szk == "' + szk +'"').orderBy('$.wzh').toArray();
+      results = linq.from(yh_data).where('$.bmid && $.bmid.trim() == "' + selectedBm + '" && $.dwid && $.dwid.trim() == "' + selectedDw + '"').orderBy('$.wzh').toArray();
     } else {
-      results = linq.from(yh_data).where('$.dwid.trim() == "' + selectedDw + '"&& $.szk == "' + szk +'"').orderBy('$.wzh').toArray();
+      results = linq.from(yh_data).where('$.dwid && $.dwid.trim() == "' + selectedDw + '"').orderBy('$.wzh').toArray();
     }
 
     if (!search) {

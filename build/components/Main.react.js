@@ -111,11 +111,12 @@ var Main = function (_Component) {
 
     var _this = _possibleConstructorReturn(this, _Component.call(this, props));
 
-    _this.onVisibilityChange = function () {
+    _this.onVisibilityChange = function (isNotTj) {
+      console.log('onVisibilityChange is-hidden', document.hidden);
       if (document.hidden) {
         _VisibilityActionCreators2.default.createAppHidden();
       } else {
-        _VisibilityActionCreators2.default.createAppVisible();
+        _VisibilityActionCreators2.default.createAppVisible(isNotTj);
       }
     };
 
@@ -149,14 +150,14 @@ var Main = function (_Component) {
   Main.prototype.componentDidMount = function componentDidMount() {
     // 测试
 
-    this.onVisibilityChange();
+    this.onVisibilityChange(true);
     if (_ActorClient2.default.isElectron()) {
       window.messenger.listenOnRender('windows-blur', function (event, arg) {
         _history2.default.push('/im');
       });
 
       window.messenger.listenOnRender('windows-focus', function (event, arg) {
-
+        _VisibilityActionCreators2.default.createAppVisible(); // 客户端中 web无法监听到visibilitychange事件 所以通过客户端的windows-focus来执行
         _history2.default.push('/im/' + arg);
       });
 
@@ -253,6 +254,7 @@ var Main = function (_Component) {
   };
 
   Main.prototype.render = function render() {
+    console.log('main render========');
     var _components = this.components,
         Sidebar = _components.Sidebar,
         Toolbar = _components.Toolbar;

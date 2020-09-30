@@ -51,7 +51,6 @@ var DepartementItem = function (_Component) {
             selectedDwmc: '',
             selectedBm: -1,
             selectedBmmc: '',
-            szk: '',
             scrollTo: null,
             hoverable: true,
             innerHoverId: '',
@@ -105,17 +104,16 @@ var DepartementItem = function (_Component) {
         }
     };
 
-    DepartementItem.prototype.handleShowAll = function handleShowAll(selectedDw, selectedDwmc, szk, event) {
+    DepartementItem.prototype.handleShowAll = function handleShowAll(selectedDw, selectedDwmc, event) {
         event.stopPropagation();
         var onShowAll = this.props.onShowAll;
 
         this.setState({
             selectedBm: '',
             selectedDw: '',
-            szk: '',
-            selectAllId: selectedDw + szk
+            selectAllId: selectedDw
         });
-        onShowAll && onShowAll({ selectedDw: selectedDw, selectedDwmc: selectedDwmc, szk: szk, selectedBm: '', selectedBmmc: '' });
+        onShowAll && onShowAll({ selectedDw: selectedDw, selectedDwmc: selectedDwmc, selectedBm: '', selectedBmmc: '' });
     };
 
     DepartementItem.prototype.renderDw = function renderDw() {
@@ -129,9 +127,9 @@ var DepartementItem = function (_Component) {
             onShowAll = _props.onShowAll;
         var _state = this.state,
             selectedDw = _state.selectedDw,
-            szk = _state.szk,
             innerHoverId = _state.innerHoverId,
             selectAllId = _state.selectAllId;
+        // console.log('hoverId111', hoverId);
 
         var _hoverId = hoverId === undefined ? innerHoverId : hoverId;
         if (dw_data && dw_data.length <= 0) {
@@ -146,10 +144,11 @@ var DepartementItem = function (_Component) {
                 )
             );
         }
+        var list = _Linq2.default.from(dw_data).where('$.fid !== "-1"').toArray(); // 过滤 单位list根节点 宁波舟山港股份有限公司
 
-        return dw_data.map(function (result, index) {
-            var itemId = result.id + result.szk;
-            var selected = selectedDw + szk === itemId;
+        return list.map(function (result, index) {
+            var itemId = result.id;
+            var selected = selectedDw === itemId;
             var hover = _hoverId === itemId;
             var all = selectAllId === itemId;
             var resultClassName = (0, _classnames2.default)('results__item row', {
@@ -158,8 +157,8 @@ var DepartementItem = function (_Component) {
                 'results__item--all': all
             });
             //   const iconClassName = classnames('material-icons icon', hover ? 'icon--blue' : 'icon--blue');
-            var arr = _Linq2.default.from(yh_data).where('$.dwid.trim() == "' + result.id + '" && $.szk =="' + result.szk + '"').toArray();
-            var size = arr.length;
+            // let arr = linq.from(yh_data).where('$.dwid && $.dwid.trim() == "' + result.id + '"').toArray();
+            // let size = arr.length;
             return _react2.default.createElement(
                 'li',
                 {
@@ -170,16 +169,16 @@ var DepartementItem = function (_Component) {
                     'div',
                     { className: resultClassName,
                         onClick: function onClick(event) {
-                            return _this3.dwSelect(result.id, result.mc, result.szk, event);
+                            return _this3.dwSelect(result.id, result.mc, event);
                         },
-                        onMouseOver: _this3.handleMouseOver.bind(_this3, result.id, result.szk) },
+                        onMouseOver: _this3.handleMouseOver.bind(_this3, result.id) },
                     _react2.default.createElement(
                         'div',
                         { className: 'title col-xs' },
                         result.mc,
                         onShowAll ? _react2.default.createElement(
                             'a',
-                            { href: 'javascript:;', onClick: _this3.handleShowAll.bind(_this3, result.id, result.mc, result.szk), title: '\u5355\u4F4D\u6240\u6709\u4EBA', className: 'all', target: '_self' },
+                            { href: 'javascript:;', onClick: _this3.handleShowAll.bind(_this3, result.id, result.mc), title: '\u5355\u4F4D\u6240\u6709\u4EBA', className: 'all', target: '_self' },
                             '\u5168'
                         ) : null
                     ),
@@ -188,13 +187,13 @@ var DepartementItem = function (_Component) {
                 _react2.default.createElement(
                     'div',
                     { className: 'children-box' },
-                    selected ? _this3.renderBm(result.id, result.szk, -1) : null
+                    selected ? _this3.renderBm(result.id, result.id) : null
                 )
             );
         });
     };
 
-    DepartementItem.prototype.renderBm = function renderBm(dwId, szk1, parentId) {
+    DepartementItem.prototype.renderBm = function renderBm(dwId, parentId) {
         var _this4 = this;
 
         var _props2 = this.props,
@@ -203,20 +202,21 @@ var DepartementItem = function (_Component) {
             hoverId = _props2.hoverId;
         var _state2 = this.state,
             selectedBm = _state2.selectedBm,
-            szk = _state2.szk,
+            selectedDw = _state2.selectedDw,
             innerHoverId = _state2.innerHoverId;
 
         var _hoverId = hoverId === undefined ? innerHoverId : hoverId;
 
-        var results = _Linq2.default.from(bm_data).where('$.dwid.trim() == "' + dwId + '" && $.fid.trim() == "' + parentId + '" && $.szk ==' + '"' + szk1 + '"').orderBy('$.wzh').toArray();
+        var results = _Linq2.default.from(bm_data).where('$.dwid && $.dwid.trim() == "' + dwId + '" && $.fid.trim() == "' + parentId + '"').orderBy('$.wzh').toArray();
 
         if (results.length <= 0) {
             return null;
         }
 
         return results.map(function (result, index) {
-            var itemId = result.id + result.szk;
-            var selected = selectedBm + szk === itemId;
+            var itemId = result.id;
+            var selected = selectedBm === itemId;
+            console.log('selectedBm', selectedBm, itemId);
             var hover = _hoverId === itemId;
             var resultClassName = (0, _classnames2.default)('results__item row', {
                 'results__item--active': hover,
@@ -225,12 +225,18 @@ var DepartementItem = function (_Component) {
 
             var usersLength = 0;
             if (yh_data) {
-                usersLength = _Linq2.default.from(yh_data).where('$.bmid.trim() == "' + result.id + '" && $.dwid.trim() == "' + result.dwid + '"&& $.szk == "' + result.szk + '"').count();
+                usersLength = _Linq2.default.from(yh_data).where(function ($) {
+                    if ($.bmid && $.dwid) {
+                        return $.bmid.trim() == itemId && $.dwid.trim() == selectedDw;
+                    } else {
+                        return false;
+                    }
+                }).count();
             }
 
             return _react2.default.createElement(
                 'div',
-                { key: result.id + result.szk, className: 'results__bm' },
+                { key: result.id, className: 'results__bm' },
                 _react2.default.createElement(
                     'div',
                     {
@@ -238,7 +244,7 @@ var DepartementItem = function (_Component) {
                         onClick: function onClick() {
                             return _this4.bmSelect(result.id, result.mc);
                         },
-                        onMouseOver: _this4.handleMouseOver.bind(_this4, result.id, result.szk) },
+                        onMouseOver: _this4.handleMouseOver.bind(_this4, result.id) },
                     _react2.default.createElement(
                         'div',
                         { className: 'title col-xs' },
@@ -250,13 +256,13 @@ var DepartementItem = function (_Component) {
                 _react2.default.createElement(
                     'div',
                     { className: 'children-box' },
-                    _this4.renderBm(dwId, szk1, result.id)
+                    _this4.renderBm(dwId, result.id)
                 )
             );
         });
     };
 
-    DepartementItem.prototype.dwSelect = function dwSelect(dwid, dwmc, szk, event) {
+    DepartementItem.prototype.dwSelect = function dwSelect(dwid, dwmc, event) {
         console.log('title click');
         var _state3 = this.state,
             selectedDw = _state3.selectedDw,
@@ -268,19 +274,22 @@ var DepartementItem = function (_Component) {
         var hoverable = false,
             _dwid = '',
             _dwmc = '',
-            _szk = '',
             _bmid = '',
             _bmmc = '',
             _hoverable = true,
             _scrollTo = null;
         if (selectedDw !== dwid || selectedDwmc !== dwmc) {
             console.log('open');
-            var results = _Linq2.default.from(bm_data).where('$.dwid.trim() == "' + dwid + '" && $.fid.trim() == "-1" && $.szk ==' + '"' + szk + '"').orderBy('$.wzh').toArray();
+            var results = _Linq2.default.from(bm_data).where(function ($) {
+                console.log(11111111111, $.fid, dwid, $.fid && $.fid.trim() == dwid);
+                return $.dwid && $.dwid === dwid;
+                // '$.fid && $.fid.trim() == "' + dwid + '"'
+            }).orderBy('$.wzh').toArray();
+            console.log('results', results);
             _dwid = dwid;
             _dwmc = dwmc;
-            _szk = szk;
             _bmid = results.length > 0 ? results[0].id : '';
-            _bmmc = results.length > 0 ? results[0].title : '';
+            _bmmc = results.length > 0 ? results[0].mc : '';
             _hoverable = false;
             _scrollTo = (0, _jquery2.default)(event.target).parents('li');
         }
@@ -290,7 +299,6 @@ var DepartementItem = function (_Component) {
             selectedBm: _bmid,
             selectedBmmc: _bmmc,
             scrollTo: _scrollTo,
-            szk: _szk,
             hoverable: _hoverable,
             selectAllId: ''
         });
@@ -298,8 +306,7 @@ var DepartementItem = function (_Component) {
             selectedDw: _dwid,
             selectedDwmc: _dwmc,
             selectedBm: _bmid,
-            selectedBmmc: _bmmc,
-            szk: _szk
+            selectedBmmc: _bmmc
         });
     };
 
@@ -307,22 +314,21 @@ var DepartementItem = function (_Component) {
         var onSelectBm = this.props.onSelectBm;
         var _state4 = this.state,
             selectedDw = _state4.selectedDw,
-            selectedDwmc = _state4.selectedDwmc,
-            szk = _state4.szk;
+            selectedDwmc = _state4.selectedDwmc;
 
         var data = {
             selectedBm: bmid,
             selectedBmmc: bmmc
         };
         this.setState(_extends({}, data, { selectAllId: '' }));
-        onSelectBm && onSelectBm(_extends({ selectedDw: selectedDw, selectedDwmc: selectedDwmc, szk: szk }, data));
+        onSelectBm && onSelectBm(_extends({ selectedDw: selectedDw, selectedDwmc: selectedDwmc }, data));
     };
 
-    DepartementItem.prototype.handleMouseOver = function handleMouseOver(id, szk) {
+    DepartementItem.prototype.handleMouseOver = function handleMouseOver(id) {
         var onItemHover = this.props.onItemHover;
         var hoverable = this.state.hoverable;
 
-        var hoverId = id + szk;
+        var hoverId = id;
         if (onItemHover === undefined) {
             this.setState({ innerHoverId: hoverId });
         }
