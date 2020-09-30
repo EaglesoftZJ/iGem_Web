@@ -64,7 +64,7 @@
     "highlight.js": "9.4.0",
     "immutable": "3.8.1",
     "intl": "1.2.4",
-    "jquery": "2.2.1",
+    "jquery": "3.5.1",
     "jquery-bridget": "^2.0.1",
     "jquery.event.drag": "^2.2.2",
     "jquery.mousewheel": "^3.1.9",
