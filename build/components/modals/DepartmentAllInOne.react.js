@@ -227,9 +227,9 @@ var Department = function (_Component) {
           className: resultClassName, key: 'r' + index,
           onClick: function onClick() {
             return _this3.handleDialogSelect({
-              id: result.IGIMID,
+              id: result.iGIMID,
               type: 'user',
-              key: 'u' + result.IGIMID
+              key: 'u' + result.iGIMID
             });
           },
           onMouseOver: function onMouseOver() {

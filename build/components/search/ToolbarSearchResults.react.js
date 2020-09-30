@@ -77,7 +77,7 @@ var ToolbarSearchResults = function (_Component) {
         selectedUserId = _state.selectedUserId;
     var yh_data = department.yh_data;
 
-    var info = _Linq2.default.from(yh_data).where('parseFloat($.IGIMID) ==' + selectedUserId).toArray()[0];
+    var info = _Linq2.default.from(yh_data).where('parseFloat($.iGIMID) ==' + selectedUserId).toArray()[0];
     if (!info) return null;
     return _react2.default.createElement(_ContactDetails2.default, { peerInfo: info });
   };

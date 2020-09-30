@@ -198,12 +198,12 @@ var CreateGroupForm = function (_Component) {
       set = new Set(_Linq2.default.from(members).select('$.peerInfo.peer.id.toString()').toArray());
     }
     if (type === 'item') {
-      isSelected = selectedUserIds.has(contact.IGIMID);
-      isMember = set && set.has(contact.IGIMID);
+      isSelected = selectedUserIds.has(contact.iGIMID);
+      isMember = set && set.has(contact.iGIMID);
       contacts = [contact];
     } else {
       var arr = contact.filter(function (item) {
-        return !selectedUserIds.has(item.IGIMID) && !(set && set.has(item.IGIMID));
+        return !selectedUserIds.has(item.iGIMID) && !(set && set.has(item.iGIMID));
       });
       isSelected = arr.length > 0 ? false : true;
       contacts = contact;
@@ -212,7 +212,7 @@ var CreateGroupForm = function (_Component) {
     var icon = isSelected || isMember ? 'check_box' : 'check_box_outline_blank';
 
     var name = type === 'item' ? contact.xm + (contact.zwmc ? ' (' + contact.zwmc + ')' : '') : '全选';
-    var key = type === 'item' ? contact.IGIMID : 'all';
+    var key = type === 'item' ? contact.iGIMID : 'all';
     var itemClassName = (0, _classnames2.default)('group-name-item', icon, { 'disabled': isMember });
 
     return _react2.default.createElement(
@@ -240,8 +240,8 @@ var CreateGroupForm = function (_Component) {
 
     var userIds = selectedUserIds;
     contacts.forEach(function (item) {
-      if (!set || !set.has(item.IGIMID)) {
-        userIds = isSelected ? userIds.add(item.IGIMID) : userIds.delete(item.IGIMID);
+      if (!set || !set.has(item.iGIMID)) {
+        userIds = isSelected ? userIds.add(item.iGIMID) : userIds.delete(item.iGIMID);
       }
     });
     isSelected && this.setState({ 'shouldScroll': true });
@@ -284,7 +284,7 @@ var CreateGroupForm = function (_Component) {
 
     var contacts = this.getContacts();
     var results = contacts.filter(function (contact, i) {
-      return selectedUserIds.has(contact.IGIMID);
+      return selectedUserIds.has(contact.iGIMID);
     });
     return results.length;
   };
@@ -297,13 +297,13 @@ var CreateGroupForm = function (_Component) {
 
     var results = [];
     selectedUserIds.forEach(function (item) {
-      var result = _Linq2.default.from(yh_data).where('$.IGIMID == "' + item + '"').toArray();
+      var result = _Linq2.default.from(yh_data).where('$.iGIMID == "' + item + '"').toArray();
       result.length > 0 && results.push(result[0]);
     });
     return results.map(function (item) {
       return _react2.default.createElement(
         'div',
-        { key: item.IGIMID, className: 'group-name-select-tag' },
+        { key: item.iGIMID, className: 'group-name-select-tag' },
         _react2.default.createElement(
           'a',
           { href: 'javascript:;', target: '_self', className: 'material-icons delete', onClick: _this5.handleDelete.bind(_this5, item) },
@@ -358,7 +358,7 @@ var CreateGroupForm = function (_Component) {
         selectedUserIds = _props5.selectedUserIds,
         handleDelete = _props5.handleDelete;
 
-    handleDelete && handleDelete(selectedUserIds.delete(item.IGIMID));
+    handleDelete && handleDelete(selectedUserIds.delete(item.iGIMID));
   };
 
   CreateGroupForm.prototype.renderAddUsersButton = function renderAddUsersButton() {
